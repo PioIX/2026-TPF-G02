@@ -12,10 +12,11 @@ export default function Home() {
   let validRoom=false
   let validpass=false
 
+
+
   const userSetter = (event) => {
     setUser(event.target.value)
     if (user!="") {
-      //validacion user existente(fetch)
       validUser=true
     }
   }
@@ -42,6 +43,11 @@ export default function Home() {
   }
 
   const login = () => {
+    fetch("http://localhost:4000/nose")//cambiar ruta
+      .then(response => response.json())
+    /*if () {
+      validar user existente
+    }*/
     router.push(`http://localhost:3000/?room=${room}&user=${user}`)
   }
 
@@ -53,7 +59,7 @@ export default function Home() {
     <input onChange={userSetter} placeholder="Username"></input>
     <input onChange={passwordSetter} placeholder="Password"></input>
     <input onChange={roomSetter} placeholder="Codigo de la partida"></input>
-    <button onClick={login} disabled={!validUser & password != ""}>Unirse a partida</button>
+    <button onClick={login} disabled={password != ""}>Unirse a partida</button>
     <button onClick={register}></button>
   </>)
 }

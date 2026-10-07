@@ -5,7 +5,7 @@ export default function Home() {
   const [password, setPassword] = useState("")
   const [email, setEmail] = useState("")
 
-  let todobien=false
+  let passbien=false
 
   const handleRegister = () => {//cambiar ruta
     const newUser = {user:user, password:password, email:email}
@@ -35,7 +35,7 @@ export default function Home() {
 
   const pass = (event) => {
     if (event.target.value==password) {
-      todobien=true
+      passbien=true
     }
   }
 
@@ -49,6 +49,6 @@ export default function Home() {
     <p>Ya tenes cuenta?:</p>
     <button onClick={login}>Logearse</button>
     ESTOS VAN DE A DOS (CSS LO HACE)
-    <button onClick={handleRegister} disabled={todobien&userbien}>Registrarme</button>
+    <button onClick={handleRegister} disabled={passbien&userbien}>Registrarme</button>
   </>)
 }
