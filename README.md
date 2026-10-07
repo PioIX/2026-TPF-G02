@@ -2,7 +2,7 @@
  
 ## Segundo cuatrimestre
  
-**Título de la propuesta:** a definir  
+**Título de la propuesta:** Gartic Phone
 **Grupo:** 02  
 **División:** A
  
