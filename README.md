@@ -158,7 +158,17 @@ Las fechas corresponden a días de clase del proyecto: lunes y miércoles (2 cla
 | 21 | Documentación y presentación | T17 y T18: actualizar el DER y el README, crear el usuario administrador para los docentes, ensayar la demostración y organizar los turnos del stand | Romano, Carucci | Jue 19/11 |
 | | **EXPO PIO** | **Presentación final** | **Todos** | **Vie 20/11** |
 ---
- 
+
+## DER
+
+DER_TPINF.drawio: https://drive.google.com/file/d/17aauqKlE6dYPF_5I_wjnB6JaQNAhvbA_/view?usp=drive_link
+
+---
+
+## Bocetos de interfaz
+
+Canva: https://canva.link/7gn0jolp1x23ym3
+
 ## Entregables
  
 ### Primer entregable (22/10)
