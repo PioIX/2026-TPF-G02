@@ -3,7 +3,7 @@
 import clsx from "clsx"
 import styles from "./Button.module.css"
 
-export default function Button({ texto, tipo = "claro", chico = false, onClick, disabled = false }) {
+export default function Button({ txt, tipo = "claro", chico = false, onClick, disabled = false }) {
     return (
         <button
             onClick={onClick}
@@ -17,7 +17,7 @@ export default function Button({ texto, tipo = "claro", chico = false, onClick, 
                 [styles.chico]: chico,
             })}
         >
-            {texto}
+            {txt}
         </button>
     )
 }
