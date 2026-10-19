@@ -16,7 +16,7 @@ export default function Home() {
     setUser(event.target.value)
     //fetch para ver que user no este en uso; en ese caso:userbien=true
   }
-  
+
   const emailSetter = (event) => {
     setEmail(event.target.value)
   }
