@@ -3,7 +3,7 @@
 import clsx from "clsx"
 import styles from "./Input.module.css"
 
-export default function Input({ type = "text", value, onChange, placeholder, variante = "claro", error = "", maxLength }) {
+export default function Input({ type = "text", value, onChange, placeholder, variante = "claro", error = "" }) {
     return (
         <div className={styles.contenedor}>
             <input
@@ -11,7 +11,6 @@ export default function Input({ type = "text", value, onChange, placeholder, var
                 value={value}
                 onChange={onChange}
                 placeholder={placeholder}
-                maxLength={maxLength}
                 className={clsx(styles.input, {
                     [styles.oscuro]: variante === "oscuro",
                     [styles.conError]: error !== "",
