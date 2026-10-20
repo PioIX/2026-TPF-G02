@@ -11,7 +11,7 @@
   background: var(--boton);
   border: 0.08rem solid var(--navy);
   border-radius: 0.7rem;
-  box-shadow: 0 0.3rem 0 var(--boton-sombra);
+  box-shadow: 0 0.3rem 0 var(--sombra);
 }
 
 .button:active {
@@ -25,7 +25,7 @@
   transform: none;
 }
 
-/*estos distintos colores cambian ahora solo el fondo y el color de la sombra /* 
+/*estos distintos colores cambian ahora solo el fondo y el color de la sombra */ 
 /*sus valores hexadecimales pasaron a estar en globals.css */
 
 .menta { 
