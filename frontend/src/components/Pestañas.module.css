@@ -7,9 +7,9 @@
   padding: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: #e6d8ff;
-  background: #6c117c;
-  border: 0.1rem solid #b79be8;
+  color: var(--pestaña-texto);
+  background: var(--pestaña);
+  border: 0.1rem solid var(--pestaña-borde);
   border-radius: 1rem 1rem 0 0;
 }
 

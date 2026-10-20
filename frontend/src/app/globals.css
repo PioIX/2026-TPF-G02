@@ -44,9 +44,9 @@
   /* input del código de sala, avatar y pestañas */
   --input-oscuro: #2e1a78;
   --avatar: #8e6bd6;
-  --pestana: #6c117c;
-  --pestana-borde: #b79be8;
-  --pestana-texto: #e6d8ff;
+  --pestaña: #6c117c;
+  --pestaña-borde: #b79be8;
+  --pestaña-texto: #e6d8ff;
 }
 
 * {
