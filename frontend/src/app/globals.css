@@ -29,6 +29,24 @@
   /* acciones */
   --rojo: #e5484d;
   --verde: #2e9e5b;
+
+  /* sombras de los botones */
+  --menta-sombra: #5fd4a4;
+  --violeta-sombra: #3e1c9a;
+  --oscuro-sombra: #1e1457;
+  --rojo-sombra: #a8282d;
+  --verde-sombra: #1b6b3c;
+
+  /* colores de los botones violeta y oscuro */
+  --violeta: #6b34e0;
+  --oscuro: #3a2a8a;
+
+  /* input del código de sala, avatar y pestañas */
+  --input-oscuro: #2e1a78;
+  --avatar: #8e6bd6;
+  --pestana: #6c117c;
+  --pestana-borde: #b79be8;
+  --pestana-texto: #e6d8ff;
 }
 
 * {

@@ -20,7 +20,7 @@
   place-items: center;
   font-weight: 700;
   color: var(--blanco);
-  background: #8e6bd6;
+  background: var(--avatar);
   border: 0.15rem solid var(--blanco);
   border-radius: 50%;
 }
