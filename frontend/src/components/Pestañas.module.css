@@ -1,0 +1,19 @@
+.pestañas {
+  display: flex;
+}
+
+.pestaña {
+  flex: 1;
+  padding: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--pestaña-texto);
+  background: var(--pestaña);
+  border: 0.1rem solid var(--pestaña-borde);
+  border-radius: 1rem 1rem 0 0;
+}
+
+.activa {
+  color: var(--menta-fuerte);
+  background: var(--panel-inicio);
+}
