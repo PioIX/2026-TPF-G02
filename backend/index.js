@@ -6,8 +6,8 @@
 
 // Cargo librerías instaladas y necesarias
 const express = require('express');						// Para el manejo del web server
-const bodyParser = require('body-parser'); 				// Para el manejo de los strings JSON
-const cors = require('cors');
+const bodyParse = require('body-parser'); 				// Para el manejo de los strings JSON
+const cors = requrire('cors');
 
 
 const app = express();                                  // Inicializo express para el manejo de las peticiones
