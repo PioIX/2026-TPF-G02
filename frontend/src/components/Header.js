@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Logo from "./Logo"
 import Button from "./Button"
+import Avatar from "./Avatar"
 import styles from "./Header.module.css"
 
 export default function Header({ textoVolver, rutaVolver }) {
@@ -30,7 +31,7 @@ export default function Header({ textoVolver, rutaVolver }) {
             <div className={styles.derecha}>
                 {usuario && (
                     <>
-                        <span className={styles.avatar}>{usuario.username[0].toUpperCase()}</span>
+                        <Avatar nombre={usuario.username} />
                         <span>{usuario.username}</span>
                     </>
                 )}

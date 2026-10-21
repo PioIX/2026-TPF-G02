@@ -47,6 +47,16 @@
   --pestaña: #6c117c;
   --pestaña-borde: #b79be8;
   --pestaña-texto: #e6d8ff;
+
+  /* colores de los avatares */
+  --avatar-1: #8e6bd6;
+  --avatar-2: #d9487d;
+  --avatar-3: #e8793a;
+  --avatar-4: #2e9e5b;
+  --avatar-5: #1f9aa8;
+  --avatar-6: #3d6fd8;
+  --avatar-7: #a64fc7;
+  --avatar-8: #5b6475;
 }
 
 * {
