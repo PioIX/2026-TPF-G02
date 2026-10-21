@@ -2,21 +2,23 @@
 
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import Button from '@/components/Button';
+import Input from '@/components/Input';
 
 export default function Home() {
 
     // AUTHENTICATION
 
-    let logreg = true
-    
-    function log() {
-        logreg=true
+    const [logreg, setlogreg] = useState(true)
+
+    const log = () => {
+        setlogreg(true)
         setUser("")
         setPassword("")
     }
-
-    function reg() {
-        logreg=false
+    
+    const reg = () => {
+        setlogreg(false)
         setUser("")
         setPassword("")
     }
@@ -111,7 +113,7 @@ export default function Home() {
         response => response.json()
         data => console.log("actualizado", data)
         
-        logreg = true  
+        setlogreg(true)
         } else {
             if (!passbien) {
                 return(alert("La contraseña no coincide con su repetición")    )
@@ -131,7 +133,7 @@ export default function Home() {
                 <>
                 <Input placeholder="Username" onChange={userSetter}></Input>
                 <Input placeholder="Contraseña" onChange={passwordSetter}></Input>
-                <Button onClick={login} disabled={password != "" & user!=""} txt="Entrar"></Button>
+                <Button onClick={login} disabled={password === "" || user === ""} txt="Entrar"></Button>
                 </>
                 :
                 <>
@@ -139,7 +141,7 @@ export default function Home() {
                 <Input placeholder="Email" onChange={emailSetter}></Input>
                 <Input placeholder="Contraseña" onChange={passwordSetter}></Input>
                 <Input placeholder="Repetir contraseña" onChange={passSetter}></Input>
-                <Button onClick={register} disabled={password != "" & user!="" & email!="" & pass!=""} txt="Registrarse"></Button>
+                <Button onClick={register} disabled={password === "" || user ==="" || email ==="" || pass ===""} txt="Registrarse"></Button>
                 </>}
             </div>
         </div>
