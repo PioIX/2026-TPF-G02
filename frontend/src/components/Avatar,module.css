@@ -1,0 +1,23 @@
+.avatar {
+  width: 2.4rem;
+  height: 2.4rem;
+  flex: none;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: var(--blanco);
+  border: 0.15rem solid var(--blanco);
+  border-radius: 50%;
+}
+
+.chico {
+  width: 1.8rem;
+  height: 1.8rem;
+  font-size: 0.8rem;
+}
+
+.grande {
+  width: 3.2rem;
+  height: 3.2rem;
+  font-size: 1.3rem;
+}
