@@ -1,0 +1,66 @@
+.button {
+  --sombra: var(--boton-sombra);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 10rem;
+  padding: 0.7rem 1.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--navy);
+  background: var(--boton);
+  border: 0.08rem solid var(--navy);
+  border-radius: 0.7rem;
+  box-shadow: 0 0.3rem 0 var(--sombra);
+}
+
+.button:active {
+  transform: translateY(0.2rem);
+  box-shadow: 0 0.1rem 0 var(--sombra);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/*estos distintos colores cambian ahora solo el fondo y el color de la sombra */ 
+/*sus valores hexadecimales pasaron a estar en globals.css */
+
+.menta { 
+    background: var(--menta);
+    --sombra: var(--menta-sombra); 
+}
+
+.violeta { 
+    background: var(--violeta); 
+    --sombra: var(--violeta-sombra); 
+}
+
+.oscuro { 
+    background: var(--oscuro); 
+    --sombra: var(--oscuro-sombra); 
+}
+
+.rojo { 
+    background: var(--rojo); 
+    --sombra: var(--rojo-sombra); 
+}
+
+.verde { 
+    background: var(--verde); 
+    --sombra: var(--verde-sombra); 
+}
+
+/* los colores oscuros llevan texto blanco y sin borde */
+.violeta, .oscuro, .rojo, .verde {
+  color: var(--blanco);
+  border-color: transparent;
+}
+
+.chico{
+    min-width: 0; 
+    padding: 0.35rem 0.9rem; 
+    font-size: 0.75rem; 
+}

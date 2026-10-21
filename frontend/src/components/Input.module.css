@@ -1,0 +1,40 @@
+.contenedor {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  font-weight: 600;
+  color: var(--blanco);
+  background: rgb(255 255 255 / 0.18);
+  border: 0.1rem solid var(--blanco);
+  border-radius: 0.7rem;
+}
+
+.input::placeholder {
+  color: rgb(255 255 255 / 0.75);
+}
+
+.input:focus {
+  outline: 0.2rem solid var(--menta);
+  outline-offset: 0.1rem;
+}
+
+/* esta sería la variante para el código de sala que tiene fondo oscuro */
+.oscuro {
+  background: var(--input-oscuro);
+}
+
+/* esto es para que cuando haya error, el borde se ponga rojo */
+.conError {
+  border-color: var(--rojo);
+}
+
+.mensaje {
+  font-size: 0.8rem;
+  color: var(--blanco);
+}
