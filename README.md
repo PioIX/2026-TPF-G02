@@ -55,17 +55,17 @@ https://canva.link/7gn0jolp1x23ym3
 ## Tareas
 
 1. Creación y configuración del repositorio 2026-TPF-G02 en GitHub (organización PioIX): estructura de carpetas frontend/backend/docs, .gitignore, Team, ramas y README con este documento.
-2. Diseño de las pantallas y de la paleta de colores en Canva (hecho el 08/10: 16 pantallas). La pantalla de “Describir” se arma a partir del boceto de referencia.
-3. Base de datos – DER, creación de las tablas en MySQL (hecho el 14/10; el script de creación se guarda en la carpeta docs) y servidor Node.js con la conexión a MySQL (modulos/mysql.js), a partir del backend base del classroom.
-4. Frontend – estructura del proyecto en Next.js y componentes base que se usan en varias pantallas (Botón, Logo, Cabecera con el usuario, Pestañas y Ventana modal), con sus estilos (.module.css) y el CSS global con la paleta y los fondos de cada fase. Fila de jugador y Avatar se arman junto con la sala de espera.
+2. Diseño de las pantallas y de la paleta de colores en Canva. La pantalla de “Describir” se arma a partir del boceto de referencia.
+3. Base de datos – DER, creación de las tablas en MySQL y servidor Node.js con la conexión a MySQL (modulos/mysql.js), a partir del backend base del classroom.
+4. Frontend – estructura del proyecto en Next.js y componentes base que se usan en varias pantallas (Botón, Logo, Input, Header, Pestañas y Avatar), con sus estilos (.module.css) y el CSS global con la paleta y los fondos de cada fase. Fila de jugador se arma junto con la sala de espera.
 5. Investigación del canvas de HTML5 para la Pizarra: cómo dibujar con el mouse, cambiar colores y grosor, borrar, deshacer y exportar el dibujo como imagen.
-6. Backend – registro, login y manejo de roles (jugador / administrador), guardando al usuario en la sesión (express-session).
+6. Backend – registro, login y manejo de roles (jugador / administrador), guardando al usuario en la sesión (localStorage).
 7. Backend – crear, ver, modificar y borrar frases sugeridas (incluida la “frase al azar”), moderación de contenido y bloqueo de usuarios.
 8. Frontend – pantallas de inicio (iniciar sesión y registrarse, con el panel “Cómo jugar” y sus imágenes) y menú principal (crear sala, unirse con código y “Mis álbumes”), con redirección según el rol.
 9. Frontend – panel de administrador (frases, moderación y usuarios).
 10. Frontend – componente Pizarra (canvas con colores, borrador, deshacer y limpiar). Al terminar, el dibujo se convierte en una URL con canvas.toDataURL, en un tamaño fijo y liviano (por ejemplo 800×600 en JPEG) para poder enviarlo y guardarlo; Socket.IO limita cada mensaje a 1 MB.
 11. Backend – WebSockets: creación y unión a salas con código, lista de jugadores (de 4 a 8), expulsión de jugadores e inicio de partida, a partir del backend base del classroom.
-12. Frontend – hook useSocket.js, sala de espera (con los componentes Fila de jugador y Avatar; jugadores, anfitrión, lugares vacíos y expulsar) y ventana para compartir el código.
+12. Frontend – hook useSocket.js, sala de espera (con el componente Fila de jugador; jugadores, anfitrión, lugares vacíos y expulsar) y ventana para compartir el código.
 13. Backend – lógica de rondas: rotación de álbumes y entrega de pasos entre jugadores. Los dibujos viajan como URL por WebSocket, igual que los textos.
 14. Backend – temporizador por ronda (60 s escribir, 60 s dibujar, 30 s describir), cierre de ronda y manejo de jugadores desconectados. Los tiempos se guardan en constantes fáciles de cambiar, para poder alargarlos en la demostración.
 15. Frontend – pantallas de partida (escribir frase con “frase al azar”, dibujar, describir, contador de ronda, reloj del temporizador y pantallas de espera), mostrando la pantalla que corresponde a cada fase de la partida. Al terminar de dibujar, el dibujo se envía como URL.
@@ -82,7 +82,7 @@ https://canva.link/7gn0jolp1x23ym3
 - Carucci: 3, 5, 8, 10, 15 y 16
 - Leonardi: 1, 2, 3, 5, 9, 15 y 16
 
-Las tareas 18, 19 y 20 las realizan los cuatro integrantes en conjunto. Cada integrante trabaja tanto en backend como en frontend y todos deben conocer y poder explicar el funcionamiento general del proyecto, no solo la parte que desarrollaron. En la tarea 3, Carucci hizo el DER y el servidor con la conexión a MySQL, y Leonardi creó las tablas en la base de datos.
+Las tareas 18, 19 y 20 las realizan los cuatro integrantes en conjunto. 
 
 ## Planificación
 
