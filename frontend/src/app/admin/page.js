@@ -1,6 +1,6 @@
 "use client"
 
-import EditFrases from "@/components/editFrases/editFrases"
+import EditFrases from "@/components/EditFrases"
 import { useState,useEffect } from "react"
 
 export default function Admin() {
