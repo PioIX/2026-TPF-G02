@@ -19,6 +19,7 @@ app.use(sessionMiddleware);
 
 // se ponen las rutas del proyecto
 app.use(require("./routes/auth")); 
+app.use(require("./routes/admin"))
 
 const server = app.listen(PORT, () => {
   console.log(`Servidor NodeJS corriendo en http://localhost:${PORT}/`);

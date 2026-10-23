@@ -1,7 +1,7 @@
 // Tarea 7: frases sugeridas, moderación de pasos y bloqueo de usuarios.
 const express = require("express")
-const { realizarQuery } = require("./mysql")
-const { soloLogueado, soloAdmin } = require("./permisos")
+const { realizarQuery } = require("../modulos/mysql")
+const { soloLogueado, soloAdmin } = require("../modulos/permisos")
 
 const router = express.Router()
 const MAX_FRASE = 200
