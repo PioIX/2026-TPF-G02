@@ -1,24 +1,32 @@
 {
-    "name": "node_base",
-    "version": "1.0.0",
-    "description": "Proyecto base de Desarrollo de Aplicaciones Informáticas - Proyecto de Producción - Pio IX",
-    "main": "index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "pio": "nodemon index"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "body-parser": "^1.19.0",
-        "cors": "^2.8.5",
-        "express": "^4.17.1",
-        "express-session": "^1.17.3",
-        "express-ws": "^5.0.2",
-        "http": "0.0.0",
-        "mysql2": "^3.11.1",
-        "nodemon": "^3.1.7",
-        "socket.io": "^4.7.2"
-    }
+  "name": "backend-tpf",
+  "version": "1.0.0",
+  "description": "Backend base",
+  "main": "index.js",
+  "bin": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "build": "pkg . --targets node18-win-x64 --output build/backend-tp2.exe",
+    "home": "nodemon --env-file=.home.env index.js",
+    "pio": "nodemon --env-file=.pio.env index.js"
+  },
+  "keywords": [
+    "socket.io",
+    "express",
+    "nextjs",
+    "backend"
+  ],
+  "author": "Ing. Pablo Morandi",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-session": "^1.18.2",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "pkg": "^5.8.1"
+  }
 }
