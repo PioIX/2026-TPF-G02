@@ -17,12 +17,14 @@
     "nextjs",
     "backend"
   ],
-  "author": "Ing. Pablo Morandi",
+  "author": "Joaquin Brizuela,Mateo Carucci,Juan Ignacio Romano y Mateo Leonardi",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^18.0.9",
     "express": "^4.18.2",
     "express-session": "^1.18.2",
+    "mysql2": "^3.24.6",
     "socket.io": "^4.8.1"
   },
   "devDependencies": {

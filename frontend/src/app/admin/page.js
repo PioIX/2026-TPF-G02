@@ -1,6 +1,7 @@
 "use client"
-
 import EditFrases from "@/components/EditFrases"
+import Moderacion from "@/components/Moderacion"
+import UsuariosAdmin from "@/components/UsuariosAdmin copy"
 import { useSearchParams } from "next/navigation"
 import { useState,useEffect } from "react"
 
@@ -8,6 +9,8 @@ export default function Admin() {
     const searchParams = useSearchParams()
     // Variables para controlar datos de lo que viene -\(¨)/-
     const [frases,setFrases] = useState([])
+    const [moderacion,setModeracion] = useState([])
+    const [usuarios,setUsuarios] = useState([])
     // Variable para las opciones de lo que se muestra en el div de abajo
     const [option,setOption] = useState(0)
     // Controlador de actualizacion para los nuevos datos
@@ -17,25 +20,33 @@ export default function Admin() {
     // Traer datos
     if(update){
         setUpdate(false)
+        // get frases
         useEffect(() => {
-            fetch("http://localhost:4000/") //completar con get correcto
+            fetch("http://localhost:4000/admin/frases")
             .then(response => response.json())
             .then(data => {
             setFrases(data);});
         }, [update]);
+        // get pasos
         useEffect(()=>{
-            fetch("http://localhost:4000/") //completar con get correcto
+            fetch("http://localhost:4000/admin/pasos")
             .then(response => response.json())
             .then(data => {
             setModeracion(data);
+        },[update])})
+        useEffect(()=>{
+            fetch("http://localhost:4000/admin/usuarios")
+            .then(response => response.json())
+            .then(data => {
+            setUsuarios(data);
         },[update])})
     }
     // Funcion para agregar frase
     const nueva = () =>{
         setDatos({
-        // Poner usuario y frase cuando se pueda pedir   
+        // Poner usuario y frase cuando se pueda pedir
         })
-         fetch("http://localhost:4000/agregarFrase  ", {
+         fetch("http://localhost:4000/admin/frases", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(datos)
@@ -53,7 +64,7 @@ export default function Admin() {
         setDatos({
             // Poner id, usuario y frase cuando se pueda pedir   
         })
-        fetch(`http://localhost:4000`, { //completar con put correcto
+        fetch(`http://localhost:4000/admin/frases/:id`, { //completar con put correcto
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(datos)
@@ -63,8 +74,8 @@ export default function Admin() {
             setUpdate(true)
         });
     }
-    const borrar = (id) => {
-            fetch(`http://localhost:4000/`, { //completar con delete correcto
+    const borrarFrase = (id) => {
+            fetch(`http://localhost:4000/admin/frases/:id`, { //completar con delete correcto
             method: 'DELETE'
             })
             .then(response => {
@@ -72,26 +83,72 @@ export default function Admin() {
             }
             });
     }
+    const borrarStep = (id) => {
+            fetch(`http://localhost:4000/admin/pasos/:id`, { //completar con delete correcto
+            method: 'DELETE'
+            })
+            .then(response => {
+            if (response.ok) {
+            }
+            });
+    }
+    const bloqDes = () => {
+        fetch(`http://localhost:4000/admin/usuarios/:id/bloqueo`, { //completar con put correcto
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(datos)
+    })
+        .then(response => response.json())
+        .then(data => {console.log("actualizado", data),
+            setUpdate(true)
+        });
+    }
+    // Reenderizado
     // Reenderizado
     const reenderizar = () =>{
         if (option === 0) return <p>Seleccione una opción</p>;
         if (option === 1) return(
-        /*    <div>
+            <div>
                 <button onClick={() => nueva()}> + Nueva Frase </button>
-                    {frases.map(est => (
+                    {frases.map((est,index) => (
                         <EditFrases
-                         key={est.id}
+                         key={index}
                          nombre={est.frase}
-                         edit={edit(est.id)}
-                         borrar={borrar(est.id)}
+                         edit={() => edit(est.id)}
+                         borrar={() => borrarFrase(est.id)}
                         />
                     ))}
-                </div>;*/
-                <p>Todo bien acá en frases </p>);
-        if (option === 2) return( 
-            <p>Todo bien acá en Moderación</p>);
+                </div>);
+                /*<p>Todo bien acá en frases </p>);*/
+        if (option === 2) return(
+            <div>
+                <p>Contenido de las partidas. Borra lo inapropiado.</p>
+                {moderacion.map((est,index) => ( 
+                        <Moderacion
+                            key={index}
+                            nombre={est.autor}
+                            tipo={est.is_text}
+                            data = {est.content}
+                            borrar={() => borrarStep()}
+                        />
+                    ))
+                }
+            </div>);
+            /*<p>Todo bien acá en Moderación</p>);*/
         if (option === 3) return( 
-            <p>Todo bien con Usuarios</p>);
+            <div>
+                {usuarios.map((est,index) => (
+                    <UsuariosAdmin
+                        key={index}
+                        usuario={est.username}
+                        email={est.email}
+                        bloqueado={est.bloked}
+                        control={() => bloqDes()}
+                    />))
+                    
+                }
+            </div>);
+            /*<p>Todo bien con Usuarios</p>);*/
     }
     return(
         <>
