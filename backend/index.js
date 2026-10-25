@@ -18,8 +18,7 @@ const sessionMiddleware = session({
 app.use(sessionMiddleware);
 
 // se ponen las rutas del proyecto
-app.use(require("./routes/auth")); 
-app.use(require("./routes/admin"))
+require("./routes/auth")(app);
 
 const server = app.listen(PORT, () => {
   console.log(`Servidor NodeJS corriendo en http://localhost:${PORT}/`);
