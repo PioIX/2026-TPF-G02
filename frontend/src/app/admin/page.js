@@ -1,7 +1,7 @@
 "use client"
 import EditFrases from "@/components/EditFrases"
 import Moderacion from "@/components/Moderacion"
-import UsuariosAdmin from "@/components/UsuariosAdmin copy"
+import UsuariosAdmin from "@/components/UsuariosAdmin"
 import { useSearchParams } from "next/navigation"
 import { useState,useEffect } from "react"
 
@@ -11,36 +11,26 @@ export default function Admin() {
     const [frases,setFrases] = useState([])
     const [moderacion,setModeracion] = useState([])
     const [usuarios,setUsuarios] = useState([])
+    const [datos,setDatos] = useState()
     // Variable para las opciones de lo que se muestra en el div de abajo
     const [option,setOption] = useState(0)
     // Controlador de actualizacion para los nuevos datos
     const [update,setUpdate] = useState((true))
     //Recibir datos de la URL
     const user = searchParams.get("user")
+    const recargar = () => setUpdate(prev => !prev)
     // Traer datos
-    if(update){
-        setUpdate(false)
-        // get frases
         useEffect(() => {
             fetch("http://localhost:4000/admin/frases")
             .then(response => response.json())
-            .then(data => {
-            setFrases(data);});
-        }, [update]);
-        // get pasos
-        useEffect(()=>{
+            .then(data => {setFrases(data.frases || []);});
             fetch("http://localhost:4000/admin/pasos")
             .then(response => response.json())
-            .then(data => {
-            setModeracion(data);
-        },[update])})
-        useEffect(()=>{
+            .then(data => {setModeracion(data.pasos || [])});
             fetch("http://localhost:4000/admin/usuarios")
             .then(response => response.json())
-            .then(data => {
-            setUsuarios(data);
+            .then(data => {setUsuarios(data.usuarios || []);
         },[update])})
-    }
     // Funcion para agregar frase
     const nueva = () =>{
         setDatos({
@@ -53,54 +43,50 @@ export default function Admin() {
         })
             .then(response => response.json())
             .then(data => {setFrases([...frases, data]),
-                setUpdate(true)
+                recargar()
             });
             }
 
-        const [datos,setDatos] = useState()
+
     // Funciones para los botones de editar frases
     const edit = (id) => {
         let nuevo = prompt("Ingrese la nueva frase")
         setDatos({
             // Poner id, usuario y frase cuando se pueda pedir   
         })
-        fetch(`http://localhost:4000/admin/frases/:id`, { //completar con put correcto
+        fetch(`http://localhost:4000/admin/frases`, { //completar con put correcto
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(datos)
     })
         .then(response => response.json())
         .then(data => {console.log("actualizado", data),
-            setUpdate(true)
+            recargar()
         });
     }
     const borrarFrase = (id) => {
-            fetch(`http://localhost:4000/admin/frases/:id`, { //completar con delete correcto
+            fetch(`http://localhost:4000/admin/frases`, { //completar con delete correcto
             method: 'DELETE'
             })
-            .then(response => {
-            if (response.ok) {
-            }
-            });
+            .then(response => response.json())
+            .then(() => recargar())
     }
     const borrarStep = (id) => {
-            fetch(`http://localhost:4000/admin/pasos/:id`, { //completar con delete correcto
+            fetch(`http://localhost:4000/admin/pasos`, { //completar con delete correcto
             method: 'DELETE'
             })
-            .then(response => {
-            if (response.ok) {
-            }
-            });
+            .then(response => response.json)
+            .then(() => recargar())
     }
     const bloqDes = () => {
-        fetch(`http://localhost:4000/admin/usuarios/:id/bloqueo`, { //completar con put correcto
+        fetch(`http://localhost:4000/admin/usuarios/bloqueo`, { //completar con put correcto
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(datos)
     })
         .then(response => response.json())
         .then(data => {console.log("actualizado", data),
-            setUpdate(true)
+            recargar()
         });
     }
     // Reenderizado
