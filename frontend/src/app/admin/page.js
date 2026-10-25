@@ -33,8 +33,9 @@ export default function Admin() {
         },[update])})
     // Funcion para agregar frase
     const nueva = () =>{
+        let nuevo = window.prompt("Ingrese la nueva frase")
         setDatos({
-        // Poner usuario y frase cuando se pueda pedir
+        frase: nuevo
         })
          fetch("http://localhost:4000/admin/frases", {
             method: "POST",
@@ -50,9 +51,10 @@ export default function Admin() {
 
     // Funciones para los botones de editar frases
     const edit = (id) => {
-        let nuevo = prompt("Ingrese la nueva frase")
+        let nuevo = window.prompt("Ingrese la nueva frase")
         setDatos({
-            // Poner id, usuario y frase cuando se pueda pedir   
+            id: id,
+            frase: nuevo
         })
         fetch(`http://localhost:4000/admin/frases`, { //completar con put correcto
             method: "PUT",
@@ -65,20 +67,29 @@ export default function Admin() {
         });
     }
     const borrarFrase = (id) => {
-            fetch(`http://localhost:4000/admin/frases`, { //completar con delete correcto
-            method: 'DELETE'
-            })
-            .then(response => response.json())
-            .then(() => recargar())
+        setDatos({
+                id:id
+        })
+        fetch(`http://localhost:4000/admin/frases`, { //completar con delete correcto
+        method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(() => recargar())
     }
     const borrarStep = (id) => {
-            fetch(`http://localhost:4000/admin/pasos`, { //completar con delete correcto
-            method: 'DELETE'
-            })
-            .then(response => response.json)
-            .then(() => recargar())
+        setDatos({
+            id:id
+        })        
+        fetch(`http://localhost:4000/admin/pasos`, { //completar con delete correcto
+        method: 'DELETE'
+        })
+        .then(response => response.json)
+        .then(() => recargar())
     }
-    const bloqDes = () => {
+    const bloqDes = (id) => {
+        setDatos({
+            id:id
+        })        
         fetch(`http://localhost:4000/admin/usuarios/bloqueo`, { //completar con put correcto
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -90,7 +101,6 @@ export default function Admin() {
         });
     }
     // Reenderizado
-    // Reenderizado
     const reenderizar = () =>{
         if (option === 0) return <p>Seleccione una opción</p>;
         if (option === 1) return(
@@ -99,11 +109,16 @@ export default function Admin() {
                     {frases.map((est,index) => (
                         <EditFrases
                          key={index}
-                         nombre={est.frase}
+                         frase={est.frase}
                          edit={() => edit(est.id)}
                          borrar={() => borrarFrase(est.id)}
                         />
                     ))}
+                    <EditFrases // Prueba de componente
+                        frase={"Fortnite prime"}
+                        edit={() => edit(est.id)}
+                        borrar={() => borrarFrase(est.id)}
+                    />
                 </div>);
                 /*<p>Todo bien acá en frases </p>);*/
         if (option === 2) return(
@@ -115,10 +130,16 @@ export default function Admin() {
                             nombre={est.autor}
                             tipo={est.is_text}
                             data = {est.content}
-                            borrar={() => borrarStep()}
+                            borrar={() => borrarStep(est.id)}
                         />
                     ))
                 }
+                <Moderacion // Prueba de componente
+                    nombre={"Juan"}
+                    tipo={1}
+                    data={"chau"}
+                    borrar={() => borrarStep(id)}                    
+                />
             </div>);
             /*<p>Todo bien acá en Moderación</p>);*/
         if (option === 3) return( 
@@ -129,10 +150,16 @@ export default function Admin() {
                         usuario={est.username}
                         email={est.email}
                         bloqueado={est.bloked}
-                        control={() => bloqDes()}
+                        control={() => bloqDes(est.id)}
                     />))
                     
                 }
+                <UsuariosAdmin // Prueba de componente
+                    usuario={"Juan"}
+                    email={"juankeke67"}
+                    bloqueado={1}
+                    control={() => bloqDes(est.id)}
+                />
             </div>);
             /*<p>Todo bien con Usuarios</p>);*/
     }

@@ -1,25 +1,23 @@
+import styles from "./UsuariosAdmin.module.css"
 export default function UsuariosAdmin({usuario,email,bloqueado,control}){
     function status(){
         if(bloqueado === 0){
             return(
-                <>
-                    <p>Activo</p>
-                </>
+                    <p className={styles.activo}>Activo</p>
             )
         }else{
-            <>
-                <p>Bloqueado</p>
-            </>
+            return( 
+                <p className={styles.bloqueado}>Bloqueado</p>)
         }
     }
     return(
-        <div>
-            <p>{usuario}</p>
-            <p>{email}</p>
+        <div className={styles.fila}>
+            <p className={styles.usuario}>{usuario}</p>
+            <p className={styles.email}>{email}</p>
             {
                 status()
             }
-            <button onClick={control}>Desbloquear</button>
+            <button className={styles.boton} onClick={control}>Desbloquear</button>
         </div>
     )
 }
