@@ -56,9 +56,9 @@ module.exports = (app) => {
     })
 
     // Cambia el texto de una frase.
-    app.put("/admin/frases/:id", async (req, res) => {
+    app.put("/admin/frases", async (req, res) => {
         try {
-            const id = Number(req.params.id)
+            const id = Number(req.body.id)
             const frase = String(req.body.frase || "").trim()
             if (!fraseValida(frase)) {
                 return res.json({ ok: false, mensaje: `La frase tiene que tener entre 1 y ${MAX_FRASE} letras` })
@@ -75,9 +75,9 @@ module.exports = (app) => {
     })
 
     // Borra una frase
-    app.delete("/admin/frases/:id", async (req, res) => {
+    app.delete("/admin/frases", async (req, res) => {
         try {
-            const resultado = await realizarQuery("DELETE FROM SuggestedFrases WHERE id = ?", [Number(req.params.id)])
+            const resultado = await realizarQuery("DELETE FROM SuggestedFrases WHERE id = ?", [Number(req.body.id)])
             if (resultado.affectedRows === 0) {
                 return res.json({ ok: false, mensaje: "La frase no existe" })
             }
@@ -111,9 +111,9 @@ module.exports = (app) => {
     })
     
     // Borra un paso inapropiado
-    app.delete("/admin/pasos/:id", async (req, res) => {
+    app.delete("/admin/pasos", async (req, res) => {
         try {
-            const resultado = await realizarQuery("DELETE FROM Steps WHERE id = ?", [Number(req.params.id)])
+            const resultado = await realizarQuery("DELETE FROM Steps WHERE id = ?", [Number(req.body.id)])
             if (resultado.affectedRows === 0) {
                 return res.json({ ok: false, mensaje: "El paso no existe" })
             }
@@ -137,9 +137,9 @@ module.exports = (app) => {
     })
 
     // Bloquea o desbloquea. Recibe { blocked: true } o { blocked: false }
-    app.put("/admin/usuarios/:id/bloqueo", async (req, res) => {
+    app.put("/admin/usuarios/bloqueo", async (req, res) => {
         try {
-            const id = Number(req.params.id)
+            const id = Number(req.body.id)
             const blocked = req.body.blocked ? 1 : 0
 
             const usuarios = await realizarQuery("SELECT admin FROM Users WHERE id = ?", [id])
