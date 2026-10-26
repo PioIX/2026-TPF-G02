@@ -1,11 +1,14 @@
 "use client"
+import styles from "./admin.module.css"
 import EditFrases from "@/components/EditFrases"
 import Moderacion from "@/components/Moderacion"
 import UsuariosAdmin from "@/components/UsuariosAdmin"
 import { useSearchParams } from "next/navigation"
 import { useState,useEffect } from "react"
+import { useRouter } from "next/navigation";
 
 export default function Admin() {
+    const router = useRouter()
     const searchParams = useSearchParams()
     // Variables para controlar datos de lo que viene -\(¨)/-
     const [frases,setFrases] = useState([])
@@ -56,7 +59,7 @@ export default function Admin() {
             id: id,
             frase: nuevo
         })
-        fetch(`http://localhost:4000/admin/frases`, { //completar con put correcto
+        fetch(`http://localhost:4000/admin/frases`, { 
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(datos)
@@ -70,7 +73,7 @@ export default function Admin() {
         setDatos({
                 id:id
         })
-        fetch(`http://localhost:4000/admin/frases`, { //completar con delete correcto
+        fetch(`http://localhost:4000/admin/frases`, { 
         method: 'DELETE'
         })
         .then(response => response.json())
@@ -80,7 +83,7 @@ export default function Admin() {
         setDatos({
             id:id
         })        
-        fetch(`http://localhost:4000/admin/pasos`, { //completar con delete correcto
+        fetch(`http://localhost:4000/admin/pasos`, { 
         method: 'DELETE'
         })
         .then(response => response.json)
@@ -90,7 +93,7 @@ export default function Admin() {
         setDatos({
             id:id
         })        
-        fetch(`http://localhost:4000/admin/usuarios/bloqueo`, { //completar con put correcto
+        fetch(`http://localhost:4000/admin/usuarios/bloqueo`, { 
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(datos)
@@ -105,7 +108,9 @@ export default function Admin() {
         if (option === 0) return <p>Seleccione una opción</p>;
         if (option === 1) return(
             <div>
-                <button onClick={() => nueva()}> + Nueva Frase </button>
+                <button className={styles.nueva} onClick={() => nueva()}> 
+                    <span className={styles.mas} /> Nueva frase 
+                    </button>
                     {frases.map((est,index) => (
                         <EditFrases
                          key={index}
@@ -123,7 +128,7 @@ export default function Admin() {
                 /*<p>Todo bien acá en frases </p>);*/
         if (option === 2) return(
             <div>
-                <p>Contenido de las partidas. Borra lo inapropiado.</p>
+                <p className={styles.sub} >Contenido de las partidas. Borra lo inapropiado.</p>
                 {moderacion.map((est,index) => ( 
                         <Moderacion
                             key={index}
@@ -157,21 +162,29 @@ export default function Admin() {
                 <UsuariosAdmin // Prueba de componente
                     usuario={"Juan"}
                     email={"juankeke67"}
-                    bloqueado={1}
+                    bloqueado={0}
                     control={() => bloqDes(est.id)}
                 />
             </div>);
             /*<p>Todo bien con Usuarios</p>);*/
     }
     return(
-        <>
+        < div className={styles.pagina}>
+            <header className={styles.header}>
+                <button className={styles.volver} onClick={() => router.back()}>
+                    <span className={styles.flecha} />
+                    Volver
+                </button>
+            </header>
             <h1>Panel de administrador</h1>
-            <button onClick={() => setOption(1)}>Frases</button>
-            <button onClick={() => setOption(2)}>Moderación</button>
-            <button onClick={() => setOption(3)}>Usuarios</button>
-            {
-                reenderizar()
-            }
-        </>
+            <button className={styles.tab} onClick={() => setOption(1)}>Frases</button>
+            <button className={styles.tab} onClick={() => setOption(2)}>Moderación</button>
+            <button className={styles.tab} onClick={() => setOption(3)}>Usuarios</button>
+            <section className={styles.panel}>
+                {
+                    reenderizar()
+                }
+            </section>
+        </div>
     )
 }
