@@ -11,6 +11,7 @@
     "dev:b": "cross-env NEXT_DIST_DIR=.next-b PORT=3001 next dev"
   },
   "dependencies": {
+    "babel-plugin-react-compiler": "^1.0.0",
     "clsx": "^2.1.1",
     "next": "16.3.5",
     "react": "19.2.8",
