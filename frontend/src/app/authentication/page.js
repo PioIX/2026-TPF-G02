@@ -5,7 +5,7 @@ import { useState } from "react"
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 
-export default function Home() {
+export default function Authentication() {
 
     // AUTHENTICATION
 
