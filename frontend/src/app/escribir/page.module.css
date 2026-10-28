@@ -6,9 +6,37 @@
     align-items: center;
     justify-content: center;
     gap: 20px;
-    padding: 32px 16px;
+    padding: 96px 16px 32px;
     font-family: "Poppins", sans-serif;
     background: linear-gradient(to top right, #fb8a45 0%, #ee6f4e 45%, #d9405c 100%);
+    position: relative;
+}
+
+/* ---------- ENCABEZADO ---------- */
+.header {
+    position: absolute;
+    top: 20px;
+    left: 32px;
+    right: 32px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;   /* ronda | logo | cronómetro */
+    align-items: center;
+}
+.ronda {
+    justify-self: start;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 2.2rem;
+    font-weight: 700;
+}
+.cronometro {
+    justify-self: end;
+    width: 56px;
+    height: 56px;
+}
+
+.pie {
+    transition: stroke-dasharray 1s linear;   /* el quesito baja suave */
 }
 
 /* ---------- LIBRETA ---------- */
@@ -153,3 +181,10 @@
     opacity: 0.6;
     cursor: not-allowed;
 }   
+
+@media (max-width: 700px) {
+    .header { left: 16px; right: 16px; }
+    .ronda { font-size: 1.6rem; }
+    .logo { height: 40px; }
+    .cronometro { width: 44px; height: 44px; }
+}

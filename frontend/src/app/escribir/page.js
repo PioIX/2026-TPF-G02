@@ -1,8 +1,12 @@
 "use client"
 import { useEffect, useState } from "react"
 import styles from "./page.module.css"
+import { useRouter } from "next/navigation"
 export default function Escribir(){
+    const router = useRouter()
+    const [tiempo,setTiempo] = useState(30)
     const [texto,setTexto] = useState("")
+    const CIRCUNFERENCIA = 2 * Math.PI * 9 
     const fraseAzar = () =>{
             fetch("http://localhost:4000/frases/azar")
             .then(response => response.json())
@@ -14,8 +18,46 @@ export default function Escribir(){
                     console.log(data.mensaje)
                 }});
         }
+    useEffect(() => {
+        const timer = setInterval(() => setTiempo(prev => prev - 1), 1000);
+        return () => clearInterval(timer); // cleanup
+    }, []);
+    useEffect(() => {
+        if(tiempo === 0){
+            router.replace("http://localhost:3000/dibujar")
+        }
+    })
+
+     const fraccion = tiempo/30
+
     return(
         <main className={styles.pagina}>
+            <header className={styles.header}>
+                <p className={styles.ronda}>1</p>
+
+                <img  alt="Gartic Phone" className={styles.logo}/> 
+
+                <svg
+                    className={styles.cronometro}
+                    viewBox="0 0 64 64"
+                    role="img"
+                    aria-label={`Quedan ${tiempo} segundos`}
+                >
+                    <rect x="25" y="2" width="14" height="6" rx="2" fill="white" />
+                    <rect x="29" y="8" width="6" height="6" fill="white" />
+                    <rect x="49" y="12" width="10" height="5" rx="2" fill="white" transform="rotate(45 54 14.5)" />
+                    <circle cx="32" cy="38" r="22" fill="none" stroke="white" strokeWidth="5" />
+                    <circle
+                        className={styles.pie}
+                        cx="32" cy="38" r="9"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="18"
+                        strokeDasharray={`${fraccion * CIRCUNFERENCIA} ${CIRCUNFERENCIA}`}
+                        transform="rotate(-90 32 38)"
+                    />
+                </svg>
+            </header>
             <div className={styles.libreta}>
                 <div className={styles.anillos}>
                     {[0, 1, 2, 3, 4].map(i => (
