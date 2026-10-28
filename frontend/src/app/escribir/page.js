@@ -2,9 +2,8 @@
 import { useEffect, useState } from "react"
 import styles from "./page.module.css"
 export default function Escribir(){
-    const [frase,setFrase] = useState("")
     const [texto,setTexto] = useState("")
-    const fraseAlAzar = () =>{
+    const fraseAzar = () =>{
             fetch("http://localhost:4000/frases/azar")
             .then(response => response.json())
             .then(data => {
@@ -16,8 +15,8 @@ export default function Escribir(){
                 }});
         }
     return(
-        <>
-º           <div className={styles.libreta}>
+        <main className={styles.pagina}>
+            <div className={styles.libreta}>
                 <div className={styles.anillos}>
                     {[0, 1, 2, 3, 4].map(i => (
                         <span key={i} className={styles.anillo} />
@@ -40,14 +39,18 @@ export default function Escribir(){
                 </svg>
             </div>
         <div className={styles.controles}>
-            <input className={styles.input} value={texto} onChange={(e)=>{setTexto(e.target.value)}}/>
+            <input className={styles.input}
+             value={texto}
+             placeholder={"Un arbol con una manzana"}
+            onChange={(e)=>{setTexto(e.target.value)}}/>
+
             <button className={styles.hecho}>
                 <span className={styles.play} />
                 Hecho</button>
-            <button className={styles.azar} onClick={fraseAlAzar}>
+            <button className={styles.azar} onClick={fraseAzar}>
                     Frase al azar
             </button>
         </div>
-        </>
+        </main>
     )
 }
