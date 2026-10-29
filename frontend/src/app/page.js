@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import Button from '@/components/Button';
 import Input from '@/components/Input';
-
+import styles from "./page.module.css"
 export default function Home() {
 
     // AUTHENTICATION
@@ -105,32 +105,37 @@ export default function Home() {
     }
     
     return(
-        <>
-            <div>
-                <Button onClick={log} txt="Iniciar sesión"></Button>
-                <Button onClick={reg} txt="Registrarme"></Button>
-                <div>
-                    {logreg ?
-                    <>
-                    <Input placeholder="Email" onChange={emailSetter}></Input>
-                    <Input type="password" placeholder="Contraseña" onChange={passwordSetter}></Input>
-                    <Button onClick={login} disabled={password === "" || email === ""} txt="Entrar"></Button>
-                    </>
-                    :
-                    <>
-                    <Input placeholder="Username" onChange={userSetter}></Input>
-                    <Input type="email" placeholder="Email" onChange={emailSetter}></Input>
-                    <Input type="password" placeholder="Contraseña" onChange={passwordSetter}></Input>
-                    <Input type="password" placeholder="Repetir contraseña" onChange={passSetter}></Input>
-                    <Button onClick={register} disabled={password === "" || user ==="" || email ==="" || pass ===""} txt="Registrarse"></Button>
-                    </>}
-                </div>
+        <main className={styles.pagina}>
+            <div className={styles.contenido}>
+                    <section>
+                    <div className={styles.tabs}>
+                        <Button onClick={log} txt="Iniciar sesión"/>
+                        <Button onClick={reg} txt="Registrarme"/>
+                    </div>
+                    <div className={styles.panel}>
+                        {logreg ?
+                        <>
+                        <Input placeholder="Email" onChange={emailSetter}/>
+                        <Input type="password" placeholder="Contraseña" onChange={passwordSetter}/>
+                        <Button onClick={login} disabled={password === "" || email === ""} txt="Entrar"/>
+                        </>
+                        :
+                        <>
+                        <Input placeholder="Username" onChange={userSetter}/>
+                        <Input type="email" placeholder="Email" onChange={emailSetter}/>
+                        <Input type="password" placeholder="Contraseña" onChange={passwordSetter}/>
+                        <Input type="password" placeholder="Repetir contraseña" onChange={passSetter}/>
+                        <Button onClick={register} disabled={password === "" || user ==="" || email ==="" || pass ===""} txt="Registrarse"/>
+                        </>}
+                    </div>
+                </section>
+                <aside className={styles.ayuda}>
+                    <h2 className={styles.ayudaTitulo}>Como jugar</h2>
+                    <img alt="lorem"></img>
+                    <h3 className={styles.paso}>1. Escribí una frase</h3>
+                    <p className={styles.descripcion}>Todos escriben una frase que otro jugador va a dibujar</p>
+                </aside>
             </div>
-            <div>
-                <h2>Como jugar</h2>
-                <img alt="lorem"></img>
-                <p>Todos escriben una frase que otro jugador va a dibujar</p>
-            </div>
-        </>
+        </main>
     )
 }
