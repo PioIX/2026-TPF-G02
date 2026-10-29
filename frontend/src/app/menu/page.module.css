@@ -1,0 +1,214 @@
+/* page.module.css */
+.pagina {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    padding: 20px 32px 32px;
+    font-family: "Poppins", sans-serif;
+    color: white;
+    background: linear-gradient(to top right, #6e1bb3 0%, #7b45e8 100%);
+}
+
+/* ---------- ENCABEZADO ---------- */
+.salir {
+    position: absolute;
+    top: 20px;
+    left: 28px;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    padding: 10px 28px 10px 16px;
+    background: #3d3b97;
+    color: #d9d4f5;
+    border: 2px solid #8f87d6;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: filter 0.15s;
+}
+
+.salir:hover {
+    filter: brightness(1.12);
+}
+
+.flecha {                                   /* triángulo hecho con bordes */
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 16px solid white;
+}
+
+.logo {
+    height: 64px;
+    width: auto;
+}
+
+.titulo {
+    margin: 0;
+    color: #5ee0a0;
+    font-size: 1.6rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+/* ---------- TARJETAS ---------- */
+.opciones {
+    width: min(830px, 100%);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+}
+
+.tarjeta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 24px 28px;
+    background: #40399b;
+    border: 2px solid rgba(190, 180, 255, 0.6);
+    border-radius: 24px;
+    text-align: center;
+}
+
+.tarjetaTitulo {
+    margin: 0;
+    color: #5ee0a0;
+    font-size: 1.6rem;
+    font-weight: 400;
+    text-transform: uppercase;
+}
+
+.texto {
+    margin: 0;
+    color: #d9d4f5;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* ---------- CAJA CON EL "+" ---------- */
+.cajaMas {
+    width: 165px;
+    height: 78px;
+    display: grid;
+    place-items: center;
+    background: #fff5f8;
+    border: 2px solid #111;
+    border-radius: 12px;
+}
+
+.circulo {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #771dba;
+}
+
+.circulo::before,
+.circulo::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: white;
+    border-radius: 2px;
+    transform: translate(-50%, -50%);
+}
+
+.circulo::before { width: 30px; height: 8px; }
+.circulo::after  { width: 8px;  height: 30px; }
+
+/* ---------- INPUT DEL CÓDIGO ---------- */
+.codigo {
+    width: 100%;
+    max-width: 236px;
+    height: 78px;
+    background: #22155a;
+    border: 2px solid white;
+    border-radius: 14px;
+    color: white;
+    font-family: inherit;
+    font-size: 1.6rem;
+    letter-spacing: 0.3em;
+    text-align: center;
+    text-transform: uppercase;
+    outline: none;
+}
+
+.codigo::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.codigo:focus {
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+/* ---------- BOTONES CLAROS ---------- */
+.boton {
+    margin-top: auto;                  /* empuja el botón al fondo: quedan alineados en las dos tarjetas */
+    width: 206px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    background: #f0e9ff;
+    color: #2a1a5e;
+    border: none;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: filter 0.15s;
+}
+
+.boton:hover {
+    filter: brightness(0.95);
+}
+
+.boton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.play {
+    width: 0;
+    height: 0;
+    border-top: 11px solid transparent;
+    border-bottom: 11px solid transparent;
+    border-left: 18px solid #5de6a8;
+}
+
+/* ---------- PIE ---------- */
+.pie {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+}
+
+.secundario {
+    padding: 16px 36px;
+    background: #40399b;
+    color: #d9d4f5;
+    border: 2px solid #8f87d6;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: filter 0.15s;
+}
+
+.secundario:hover {
+    filter: brightness(1.12);
+}
