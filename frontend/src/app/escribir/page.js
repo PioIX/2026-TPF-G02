@@ -3,10 +3,23 @@ import { useEffect, useState } from "react"
 import styles from "./page.module.css"
 import { useRouter } from "next/navigation"
 export default function Escribir(){
+    const [datos, setDatos] = useState({});
     const router = useRouter()
-    const [tiempo,setTiempo] = useState(30)
-    const [texto,setTexto] = useState("")
     const CIRCUNFERENCIA = 2 * Math.PI * 9 
+    const [tiempo,setTiempo] = useState(20)
+    const [texto,setTexto] = useState("")
+
+    let user=sessionStorage.getItem("user")
+
+    function terminar() {
+        setDatos({ link: texto, user: user });
+        socket
+    }
+    
+    function socket() {
+        socket.emit("terminado",datos)//terminado
+    }
+
     const fraseAzar = () =>{
             fetch("http://localhost:4000/frases/azar")
             .then(response => response.json())
@@ -28,7 +41,7 @@ export default function Escribir(){
         }
     })
 
-     const fraccion = tiempo/30
+     const fraccion = tiempo/20
 
     return(
         <main className={styles.pagina}>
@@ -86,9 +99,10 @@ export default function Escribir(){
              placeholder={"Un arbol con una manzana"}
             onChange={(e)=>{setTexto(e.target.value)}}/>
 
-            <button className={styles.hecho}>
+            <button className={styles.hecho} onClick={terminar}>
                 <span className={styles.play} />
-                Hecho</button>
+                Hecho
+            </button>
             <button className={styles.azar} onClick={fraseAzar}>
                     Frase al azar
             </button>
