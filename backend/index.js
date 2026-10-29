@@ -28,7 +28,7 @@ const server = app.listen(PORT, () => {
 
 const io = new Server(server, {
   cors: {
-    origin: ORIGENES,
+    origin: ["http://localhost:3000", "http://localhost:3001"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   },
@@ -48,7 +48,7 @@ const {
     agregarJugador,
     quitarJugador,
     datosSala,
-} = require("../modulos/logicaSalas")
+} = require("./modulos/logicaSalas")
 
 // esto es para esperar unos segundos antes de sacar a un jugador desconectado
 const ESPERA_RECONEXION = 3000

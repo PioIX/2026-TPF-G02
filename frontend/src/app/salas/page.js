@@ -6,9 +6,8 @@ import { useSocket } from "@/hooks/useSocket"
 import Header from "@/components/Header"
 import Button from "@/components/Button"
 import FilaJugador from "@/components/FilaJugador"
-import styles from "./page.module.css"
+import styles from "./sala.module.css"
 
-// Sala de espera. Se abre con /sala?codigo=XXXXX (desde el menú, después de crear o validar la sala).
 export default function Sala() {
     const router = useRouter()
     const searchParams = useSearchParams()
@@ -94,22 +93,22 @@ export default function Sala() {
  
     const soyAnfitrion = sala.anfitrion === usuario.id
 
-    // una fila por cada lugar de la sala: los jugadores que ya entraron y, después, los lugares libres
-    // lo que hace Array.from({ length: 8 }) es armar una lista de 8 lugares para poder recorrerla con map
-    const lugares = Array.from({ length: sala.maximo })
-    const filas = lugares.map((_, i) => {
-        const jugador = sala.jugadores[i]
-        if (jugador) {
-            return (
-                <FilaJugador
-                    key={jugador.id}
-                    nombre={jugador.username}
-                    esAnfitrion={jugador.id === sala.anfitrion}
-                    onExpulsar={soyAnfitrion && jugador.id !== usuario.id ? () => expulsar(jugador.id) : undefined}
-                />
-            )
-        }
-        return <FilaJugador key={"vacio" + i} vacia={true} />
+    // Ahora se recorren las filas de los jugadores que ya entraron (map recorre la lista de jugadores)
+    const filas = sala.jugadores.map((jugador) => (
+        <FilaJugador
+            key={jugador.id}
+            nombre={jugador.username}
+            esAnfitrion={jugador.id === sala.anfitrion}
+            onExpulsar={soyAnfitrion && jugador.id !== usuario.id ? () => expulsar(jugador.id) : undefined}
+        />
+    ))
+
+    // después pasamos a los lugares libres. 
+    // De la lista de números de lugar (el máximo de la sala es 8), filter se queda solo con los que todavía no ocupó ningún jugador.
+    const numerosDeLugar = [1, 2, 3, 4, 5, 6, 7, 8]
+    const lugaresLibres = numerosDeLugar.filter((n) => n > sala.jugadores.length && n <= sala.maximo)
+    lugaresLibres.forEach((n) => {
+        filas.push(<FilaJugador key={"vacio" + n} vacia={true} />)
     })
  
     return (
@@ -128,7 +127,34 @@ export default function Sala() {
                 <p> Jugadores: {sala.jugadores.length} de {sala.maximo} (mínimo {sala.minimo}) </p>
  
                 <div className={styles.lista}>{filas}</div>
+                
+                <div className={styles.botones}>
+                    {soyAnfitrion ? (
+                        <Button
+                            txt="Iniciar partida"
+                            tipo="violeta"
+                            onClick={iniciarPartida}
+                            disabled={sala.jugadores.length < sala.minimo}
+                        />
+                    ) : (
+                        <p>Esperando a que el anfitrión inicie la partida...</p>
+                    )}
+                    <Button txt="Salir de la sala" onClick={salir} />
+                </div>
             </div> 
+
+            {verCompartir && (
+                <div className={styles.fondoModal} onClick={() => setVerCompartir(false)}>
+                    {/* el stopPropagation es para que si se toca adentro de la ventana, no se cierre */}
+                    <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+                        <h2>Compartí el código</h2>
+                        <p>Tus amigos tienen que elegir &quot;Unirse a una sala&quot; y escribir este código:</p>
+                        <strong className={styles.codigoGrande}>{sala.codigo}</strong>
+                        <Button txt={copiado ? "¡Copiado!" : "Copiar código"} tipo="menta" onClick={copiar} />
+                        <Button txt="Cerrar" onClick={() => setVerCompartir(false)} />
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
