@@ -4,6 +4,7 @@ import Button from "@/components/Button";
 import Input from "@/components/Input";
 import { useRef, useState,useEffect } from "react";
 import styles from "./page.module.css";
+import { useRouter } from "next/navigation"
 export default function Draw() {
     const [color, setColor] = useState("#000000");
     const [grosor, setGrosor] = useState(5)
@@ -13,6 +14,8 @@ export default function Draw() {
     const ultimo = useRef({ x: 0, y: 0 });
     const [tiempo,setTiempo] = useState(60)
     const circunferencia = 2 * Math.PI * 9 
+    const router = useRouter()
+    const [frase, setFrase] = useState("")
 
     function empezar (event) {
         dibujando.current = true;
@@ -60,16 +63,6 @@ export default function Draw() {
 
     let user=sessionStorage.getItem("user")
 
-    function terminar() {
-        const guardado = canvasRef.current.toDataURL("image/png", 0.8);
-        setDatos({ link: guardado, user: user });
-        socket
-    }
-    
-    function socket() {
-        socket.emit("terminado",datos)//terminado
-    }
-
     const colorSetter = (event) => {
         setColor(event.target.value)
     }
@@ -78,7 +71,7 @@ export default function Draw() {
         setGrosor(Number(event.target.value))
     }
 
-/*    useEffect(() => {
+    useEffect(() => {
         const timer = setInterval(() => setTiempo(prev => prev - 1), 1000);
         return () => clearInterval(timer); // cleanup
     }, []);
@@ -88,11 +81,32 @@ export default function Draw() {
         }
     })
 
-     const fraccion = tiempo/60*/
+    const fraccion = tiempo/60
+
+    //SOCKET
+    
+    function terminar() {
+        const guardado = canvasRef.current.toDataURL("image/png", 0.8)
+        setDatos({ link: guardado, user: user })
+        socket.emit("terminado")
+    }
+
+    socket.on("nextStep", (data) => {//next step
+        socket.emit("envio",datos)
+        if /*Validacion de cual es el siguiente paso*/(data.nextstep==true) {
+            router.replace("http://localhost:3000/escribir")
+        } else {
+            router.replace("http://localhost:3000/albumsrevelacion")
+        }
+    })
+
+    socket.on("recepcion", (data) => {
+        setfrase(data.content)
+    })
     return (
         <>  
             <header>
-                {/*<svg
+                {<svg
                     className={styles.cronometro}
                     viewBox="0 0 64 64"
                     role="img"
@@ -111,7 +125,8 @@ export default function Draw() {
                         strokeDasharray={`${fraccion * circunferencia} ${circunferencia}`}
                         transform="rotate(-90 32 38)"
                     />
-                </svg> */}
+                </svg> }
+                <h1>{frase}</h1>
             </header>
             <canvas ref={canvasRef} width={600} height={400} style={{ backgroundColor: "white" }}
                 onMouseDown={empezar}
@@ -119,8 +134,8 @@ export default function Draw() {
                 onMouseLeave={parar}
                 onMouseMove={dibujar}
             />
-            <input type="color" onChange={colorSetter}/>
-            <input type="range" value={grosor} step="1" min="1" max="20" onChange={grosorSetter}/>
+            <Input type="color" onChange={colorSetter}/>
+            <Input type="range" value={grosor} step="1" min="1" max="20" onChange={grosorSetter}/>
             <Button onClick={limpiar} txt="Limpiar" />
             <Button onClick={terminar} txt="TODO LISTO" />
         </>

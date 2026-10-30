@@ -8,17 +8,10 @@ export default function Escribir(){
     const CIRCUNFERENCIA = 2 * Math.PI * 9 
     const [tiempo,setTiempo] = useState(20)
     const [texto,setTexto] = useState("")
+    const [dibujo,setDibujo] = useState("")
+    const fraccion = tiempo/20
 
-    let user=sessionStorage.getItem("user")
-
-    function terminar() {
-        setDatos({ link: texto, user: user });
-        socket
-    }
-    
-    function socket() {
-        socket.emit("terminado",datos)//terminado
-    }
+    let dibujo_existente=false //quizas tenga que ser usestate
 
     const fraseAzar = () =>{
             fetch("http://localhost:4000/frases/azar")
@@ -41,7 +34,26 @@ export default function Escribir(){
         }
     })
 
-     const fraccion = tiempo/20
+    //SOCKET
+
+    function terminar() {
+        setDatos({ link: texto, user: user });
+        socket.emit("terminado")
+    }
+    
+    socket.on("nextStep", (data) => {//next step
+        socket.emit("envio",datos)
+        if /*Validacion de cual es el siguiente paso*/(data.nextstep==true) {
+            router.replace("http://localhost:3000/dibujar")
+        } else {
+            router.replace("http://localhost:3000/albumsrevelacion")
+        }
+    })
+
+    socket.on("recepcion", (data) => {
+        setDibujo(data.content)
+        dibujo_existente=true
+    })
 
     return(
         <main className={styles.pagina}>
@@ -71,7 +83,12 @@ export default function Escribir(){
                     />
                 </svg>
             </header>
-            <div className={styles.libreta}>
+            
+            { dibujo_existente ? (
+                <canvas defaultValue={dibujo}></canvas>
+                
+            ):(
+                <div className={styles.libreta}>
                 <div className={styles.anillos}>
                     {[0, 1, 2, 3, 4].map(i => (
                         <span key={i} className={styles.anillo} />
@@ -93,6 +110,8 @@ export default function Escribir(){
                     <polygon points="25,108 35,108 30,118" fill="#222" />
                 </svg>
             </div>
+            )}
+            
         <div className={styles.controles}>
             <input className={styles.input}
              value={texto}
