@@ -1,0 +1,32 @@
+.fila {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.6rem 1rem;
+  background: var(--lila);
+  border-radius: 0.8rem;
+  box-shadow: 0 0.25rem 0 var(--lila-sombra);
+}
+
+.nombre {
+  flex: 1;
+}
+
+.etiqueta {
+  padding: 0.15rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--blanco);
+  background: var(--panel-sala);
+  border-radius: 1rem;
+}
+
+/* lugar libre */
+.vacia {
+  justify-content: center;
+  color: var(--blanco);
+  background: transparent;
+  border: 0.15rem dashed var(--panel-borde);
+  box-shadow: none;
+  opacity: 0.8;
+}
