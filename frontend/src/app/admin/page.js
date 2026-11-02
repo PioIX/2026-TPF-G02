@@ -14,7 +14,7 @@ export default function Admin() {
     const [frases,setFrases] = useState([])
     const [moderacion,setModeracion] = useState([])
     const [usuarios,setUsuarios] = useState([])
-    const [datos,setDatos] = useState()
+    const [datos,setDatos] = useState({})
     // Variable para las opciones de lo que se muestra en el div de abajo
     const [option,setOption] = useState(0)
     // Controlador de actualizacion para los nuevos datos
@@ -26,16 +26,35 @@ export default function Admin() {
         useEffect(() => {
             fetch("http://localhost:4000/admin/frases")
             .then(response => response.json())
-            .then(data => {setFrases(data.frases || []);});
+            .then(data => {
+                if(data.ok){
+                    console.log(data)
+                    setFrases(data.frases);
+                }else{
+                    console.log(data.mensaje)
+                }});
             fetch("http://localhost:4000/admin/pasos")
             .then(response => response.json())
-            .then(data => {setModeracion(data.pasos || [])});
+            .then(data => {
+                if(data.ok){
+                  setModeracion(data.pasos || [])
+                }else{
+                    console.log(data.mensaje)
+                }
+            });
             fetch("http://localhost:4000/admin/usuarios")
             .then(response => response.json())
-            .then(data => {setUsuarios(data.usuarios || []);
-        },[update])})
+            .then(data => {
+                if(data.ok){
+                    setUsuarios(data.usuarios || []);
+                }else{
+                    console.log(data.mensaje)
+                }
+            })
+        },[update])
     // Funcion para agregar frase
     const nueva = () =>{
+        console.log("nueva")
         let nuevo = window.prompt("Ingrese la nueva frase")
         setDatos({
         frase: nuevo
@@ -54,6 +73,7 @@ export default function Admin() {
 
     // Funciones para los botones de editar frases
     const edit = (id) => {
+        console.log("edit")
         let nuevo = window.prompt("Ingrese la nueva frase")
         setDatos({
             id: id,
@@ -70,6 +90,7 @@ export default function Admin() {
         });
     }
     const borrarFrase = (id) => {
+        console.log("borrar")
         setDatos({
                 id:id
         })
@@ -80,6 +101,7 @@ export default function Admin() {
         .then(() => recargar())
     }
     const borrarStep = (id) => {
+        console.log("borrarStep")
         setDatos({
             id:id
         })        
@@ -89,9 +111,11 @@ export default function Admin() {
         .then(response => response.json)
         .then(() => recargar())
     }
-    const bloqDes = (id) => {
+    const bloqDes = (id,blocked) => {
+        console.log("bloquear/des")
         setDatos({
-            id:id
+            id:id,
+            blocked:blocked
         })        
         fetch(`http://localhost:4000/admin/usuarios/bloqueo`, { 
             method: "PUT",
@@ -108,12 +132,13 @@ export default function Admin() {
         if (option === 0) return <p>Seleccione una opción</p>;
         if (option === 1) return(
             <div>
-                <button className={styles.nueva} onClick={() => nueva()}> 
+                <button className={styles.nueva} onClick={nueva}> 
                     <span className={styles.mas} /> Nueva frase 
                     </button>
                     {frases.map((est,index) => (
                         <EditFrases
                          key={index}
+                         id = {est.id}  
                          frase={est.frase}
                          edit={() => edit(est.id)}
                          borrar={() => borrarFrase(est.id)}
@@ -132,6 +157,7 @@ export default function Admin() {
                 {moderacion.map((est,index) => ( 
                         <Moderacion
                             key={index}
+                            id = {est.id}
                             nombre={est.autor}
                             tipo={est.is_text}
                             data = {est.content}
@@ -152,9 +178,10 @@ export default function Admin() {
                 {usuarios.map((est,index) => (
                     <UsuariosAdmin
                         key={index}
+                        id = {est.id}
                         usuario={est.username}
                         email={est.email}
-                        bloqueado={est.bloked}
+                        bloqueado={est.blocked}
                         control={() => bloqDes(est.id)}
                     />))
                     

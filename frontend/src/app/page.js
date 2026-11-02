@@ -45,7 +45,11 @@ export default function Home() {
     }
 
     const login = () => {
-        const verif = {email:email,password:password}
+        const verif = {
+            email:email,
+            password:password
+        }
+        console.log(verif)
         fetch(`http://localhost:4000/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -55,8 +59,9 @@ export default function Home() {
         .then((data) => {
             if (data.ok) {
                 localStorage.setItem("usuario", JSON.stringify(data.usuario))
+                console.log(data.usuario)
                 if (data.usuario.admin) {
-                    router.replace("http://localhost:3000/admin")
+                   router.replace("http://localhost:3000/admin")
                 } else {
                     router.replace("http://localhost:3000/menu")
                 }

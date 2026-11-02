@@ -24,17 +24,9 @@ export default function Menu(){
             <section className={styles.opciones}>
                 <div className={styles.tarjeta}> 
                     <h2 className={styles.tarjetaTitulo}>CREAR SALA</h2>
-                    <span className={styles.circulo}/>
-                    <input
-                        className={styles.codigo}
-                        type="text"
-                        placeholder={"AAAAA"}
-                        value={nuevo}
-                        onChange={(e) => {setNuevo(e.target.value)}}
-                        maxLength={5}
-                    />                    
+                    <span className={styles.circulo}/>    
                     <p className={styles.texto} >Crea una sala nueva y comparti el codigo con tus amigos.</p>
-                    <button className={styles.boton} onClick={crear} disabled={nuevo.length < 5}>
+                    <button className={styles.boton} onClick={crear}>
                         <span className={styles.play}/>
                         CREAR SALA</button>
                 </div>

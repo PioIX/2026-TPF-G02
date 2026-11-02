@@ -12,8 +12,8 @@ app.use(express.json());
 
 const sessionMiddleware = session({
   secret: "supersarasa",
-  resave: false,
-  saveUninitialized: false,
+  resave: true,
+  saveUninitialized: true,
 });
 app.use(sessionMiddleware);
 

@@ -69,6 +69,7 @@ module.exports = (app) => {
                 admin: Boolean(usuario.admin),
             }
             req.session.user = datos
+            console.log({datos})
             res.json({ ok: true, usuario: datos })
         } catch (error) {
             errorServidor(res, error)

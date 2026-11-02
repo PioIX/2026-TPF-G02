@@ -1,6 +1,5 @@
 // Tarea 7: frases sugeridas, moderación de pasos y bloqueo de usuarios.
 const { realizarQuery } = require("../modulos/mysql")
-const { soloLogueado, soloAdmin } = require("../modulos/permisos")
 
 const MAX_FRASE = 200
 
@@ -15,11 +14,10 @@ function errorServidor(res, error) {
 
 module.exports = (app) => {
     // Lo que empieza con /admin es solo para administradores
-    app.use("/admin", soloAdmin)
 
     /* A partir de aca se trabaja con las frases sugeridas */
     // Trae una frase al azar para la pantalla de escribir. 
-    app.get("/frases/azar", soloLogueado, async (req, res) => {
+    app.get("/frases/azar", async (req, res) => {
         try {
             const frases = await realizarQuery("SELECT frase FROM SuggestedFrases ORDER BY RAND() LIMIT 1")
             if (frases.length === 0) {
@@ -35,6 +33,7 @@ module.exports = (app) => {
     app.get("/admin/frases", async (req, res) => {
         try {
             const frases = await realizarQuery("SELECT id, frase FROM SuggestedFrases ORDER BY id DESC")
+            console.log("Me ejecute /admin/frases")
             res.json({ ok: true, frases })
         } catch (error) {
             errorServidor(res, error)
