@@ -167,20 +167,20 @@ io.on("connection", (socket) => {
  
   socket.on("iniciarPartida", () => {
     const sala = salaActual();
-    if (!sala) {
-      return error("No estás en una sala");
-    }
-    if (sala.anfitrion !== usuario.id) {
-      return error("Solo el anfitrión puede iniciar la partida");
-    }
-    if (sala.estado !== "esperando") {
-      return error("La partida ya empezó");
-    }
-    if (sala.jugadores.length < MIN_JUGADORES) {
-      return error(`Hacen falta al menos ${MIN_JUGADORES} jugadores`);
-    }
-    sala.estado = "jugando";
-    io.to(sala.codigo).emit("partidaIniciada", { codigo: sala.codigo });
+    if (!sala) { //MAL
+      return error("No estás en una sala");//MAL
+    }//MAL
+    if (sala.anfitrion !== usuario.id) {//MAL
+      return error("Solo el anfitrión puede iniciar la partida");//MAL
+    }//MAL
+    if (sala.estado !== "esperando") {//MAL
+      return error("La partida ya empezó");//MAL
+    }//MAL
+    if (sala.jugadores.length < MIN_JUGADORES) {//BIEN
+      return error(`Hacen falta al menos ${MIN_JUGADORES} jugadores`);//BIEN
+    }//BIEN
+    sala.estado = "jugando";//BIEN
+    io.to(sala.codigo).emit("partidaIniciada", { codigo: sala.codigo });//BIEN
   });
  
   socket.on("salirSala", () => {
