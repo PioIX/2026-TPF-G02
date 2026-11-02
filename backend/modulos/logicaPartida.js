@@ -1,6 +1,29 @@
 const MAX_TEXTO = 200
 const MAX_DIBUJO = 900000 // Socket.IO acepta mensajes de hasta 1 MB
 
+function todosEnviaron(sala) {
+    return sala.partida.enviaron.length === sala.partida.jugadores.length
+}
+
+// si alguien no mandó su paso (se le acabó el tiempo o se desconectó), se guarda "(sin respuesta)".
+function completarPendientes(sala) {
+    const partida = sala.partida
+    partida.jugadores.forEach((id) => {
+        if (!partida.enviaron.includes(id)) {
+            const album = partida.albumes[albumDeJugador(partida, id)]
+            album.pasos[partida.ronda] = { id: id, text: true, contenido: "(sin respuesta)" }
+        }
+    })
+}
+
+// Pasa a la ronda siguiente. Devuelve true si ya no quedan rondas (terminó la partida).
+function siguienteRonda(sala) {
+    completarPendientes(sala)
+    sala.partida.ronda++
+    sala.partida.enviaron = []
+    return sala.partida.ronda >= sala.partida.totalRondas
+}
+
 // qué hay que hacer en cada ronda
 function tipoDeRonda(ronda) {
     if (ronda === 0) {
@@ -85,4 +108,6 @@ module.exports = {
     crearPartida,
     tareaDeRonda,
     guardarPaso,
+    todosEnviaron,
+    siguienteRonda,
 }
