@@ -11,7 +11,7 @@ export default function Escribir(){
     const [dibujo,setDibujo] = useState("")
     const fraccion = tiempo/20
 
-    let dibujo_existente=false //quizas tenga que ser usestate
+    let dibujo_existente=false //quizas tenga que ser usestate (testear)
 
     const fraseAzar = () =>{
             fetch("http://localhost:4000/frases/azar")
