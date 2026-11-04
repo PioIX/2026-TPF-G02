@@ -84,7 +84,7 @@ io.on("connection", (socket) => {
       return error("Tenés que iniciar sesión")
     }
     const sala = buscarSala(data && data.codigo)
-    const motivo = motivoDeRechazo(sala, usuario)
+    const motivo = motivoDeRechazo(sala, data.usuario)
     if (motivo !== "") {
       return error(motivo)
     }

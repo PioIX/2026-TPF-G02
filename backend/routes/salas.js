@@ -13,8 +13,8 @@ module.exports = (app) => {
     })
 
     // avisa si el usuario puede entrar a esa sala.
-    app.get("/salas/codigo", (req, res) => {
-        const sala = buscarSala(req.body.codigo)
+    app.get("/salas", (req, res) => {
+        const sala = buscarSala(req.query.codigo)
         const motivo = motivoDeRechazo(sala, req.session.user)
         if (motivo !== "") {
             return res.json({ ok: false, mensaje: motivo })

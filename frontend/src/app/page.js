@@ -63,7 +63,7 @@ export default function Home() {
                 if (data.usuario.admin) {
                    router.push("/admin")
                 } else {
-                    router.push("/menu")
+                    router.push(`/menu?user=${data.usuario.username}`)
                 }
             }else{
                 alert(data.mensaje)

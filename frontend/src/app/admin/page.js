@@ -75,14 +75,14 @@ export default function Admin() {
     const edit = (id) => {
         console.log("edit")
         let nuevo = window.prompt("Ingrese la nueva frase")
-        setDatos({
+        const datubi = {
             id: id,
             frase: nuevo
-        })
+        }
         fetch(`http://localhost:4000/admin/frases`, { 
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(datos)
+            body: JSON.stringify(datubi)
     })
         .then(response => response.json())
         .then(data => {console.log("actualizado", data),
@@ -91,36 +91,36 @@ export default function Admin() {
     }
     const borrarFrase = (id) => {
         console.log("borrar")
-        setDatos({
+        const datubi = {
                 id:id
-        })
+        }
         fetch(`http://localhost:4000/admin/frases`, { 
         method: 'DELETE'
         })
         .then(response => response.json())
-        .then(() => recargar())
+        .then(recargar())
     }
     const borrarStep = (id) => {
         console.log("borrarStep")
-        setDatos({
+        const datubi = {
             id:id
-        })        
+        }
         fetch(`http://localhost:4000/admin/pasos`, { 
         method: 'DELETE'
         })
         .then(response => response.json)
-        .then(() => recargar())
+        .then(recargar())
     }
     const bloqDes = (id,blocked) => {
         console.log("bloquear/des")
-        setDatos({
+        const datubi ={
             id:id,
-            blocked:blocked
-        })        
+            blocked:!blocked
+        }
         fetch(`http://localhost:4000/admin/usuarios/bloqueo`, { 
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(datos)
+            body: JSON.stringify(datubi)
     })
         .then(response => response.json())
         .then(data => {console.log("actualizado", data),
@@ -135,9 +135,9 @@ export default function Admin() {
                 <button className={styles.nueva} onClick={nueva}> 
                     <span className={styles.mas} /> Nueva frase 
                     </button>
-                    {frases.map((est,index) => (
+                    {frases.map((est) => (
                         <EditFrases
-                         key={index}
+                         key={est.id}
                          id = {est.id}  
                          frase={est.frase}
                          edit={() => edit(est.id)}
@@ -154,9 +154,9 @@ export default function Admin() {
         if (option === 2) return(
             <div>
                 <p className={styles.sub} >Contenido de las partidas. Borra lo inapropiado.</p>
-                {moderacion.map((est,index) => ( 
+                {moderacion.map((est) => ( 
                         <Moderacion
-                            key={index}
+                            key={est.id}
                             id = {est.id}
                             nombre={est.autor}
                             tipo={est.is_text}
@@ -175,14 +175,14 @@ export default function Admin() {
             /*<p>Todo bien acá en Moderación</p>);*/
         if (option === 3) return( 
             <div>
-                {usuarios.map((est,index) => (
+                {usuarios.map((est) => (
                     <UsuariosAdmin
-                        key={index}
+                        key={est.id}
                         id = {est.id}
                         usuario={est.username}
                         email={est.email}
                         bloqueado={est.blocked}
-                        control={() => bloqDes(est.id)}
+                        control={() => bloqDes(est.id,est.blocked)}
                     />))
                     
                 }

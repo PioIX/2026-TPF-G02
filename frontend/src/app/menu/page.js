@@ -3,10 +3,14 @@ import { useState } from "react";
 import styles from "./page.module.css"
 import { useRouter } from "next/navigation";
 import { useSocket } from "@/hooks/useSocket";
+import { useSearchParams } from "next/navigation";
 export default function Menu(){
+    const searchParams = useSearchParams();
     const socket = useSocket()
+    const usuario = searchParams.get("user")
     const [nuevo,setNuevo] = useState("")
     const [codigo,setCodigo] = useState("")
+    const [datos,setDatos] = useState()
     const router = useRouter()
     const volver = () => {
         router.replace("http://localhost:3000/")
@@ -19,13 +23,23 @@ export default function Menu(){
         })
         .then((res) => res.json())
         .then((data) => {
-                socket.emit("unirseSala",(data.data))
+            setDatos({
+                codigo:data.data,
+                username:usuario
+            }),
+                socket.emit("unirseSala",(datos))
         })
     }
     const unirse = () =>{
-        fetch("http://localhost:4000/salas/codigos")
+        fetch(`http://localhost:4000/salas?codigo=${codigo}`)
         .then(response => response.json())
-        .then(data => {});        
+        .then(data => {
+            setDatos({
+                codigo:data.codigo,
+                username:usuario
+            }),
+            socket.emit("unirseSala",(datos))
+        });        
     }
     return(
         <main className={styles.pagina}>
@@ -56,7 +70,7 @@ export default function Menu(){
                         onChange={(e) => {setCodigo(e.target.value)}}
                         maxLength={5}
                     />
-                    <button className={styles.boton} disabled={codigo.length < 5}>
+                    <button className={styles.boton} disabled={codigo.length < 5} onClick={unirse}>
                         <span className={styles.play} />
                         UNIRSE</button>
                 </div>
