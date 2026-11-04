@@ -1,23 +1,28 @@
+import styles from "./Moderacion.module.css"
 export default function Moderacion({nombre,tipo,data,borrar}){
     const imgOTxt = () =>{
-        if(tipo === 0){
+        const text = Boolean(tipo)
+        if(text){
+            return(
             <>
-                <p>Dibujo</p>
+                <p className={styles.tipo}>Frase</p>
+                <p className={styles.contenido}>{data}</p>
+
+            </>)
+        }else{
+            return(
+            <>
+                <p className={styles.tipo}>Dibujo</p>
                 <img src={data}/>
-            </>
-    }else{
-        <>
-            <p>Frase</p>
-            <p>{data}</p>
-        </>
+            </>)
     }}
     return(
-        <div>
-            <p>{nombre}</p>
+        <div className={styles.fila}>
+            <p  className={styles.autor}>{nombre}</p>
             {
                 imgOTxt()
             }
-            <button onClick={borrar}>Borrar</button>
+            <button className={styles.borrar} onClick={borrar}>Borrar</button>
         </div>
     )
 }

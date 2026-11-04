@@ -1,9 +1,10 @@
-export default function EditFrases({id,nombre,edit,borrar}){
+import styles from "./EditFrases.module.css"
+export default function EditFrases({frase,edit,borrar}){
     return(
-        <div>
-            <p>USUARIO:{nombre}</p>
-            <button onClick={edit}>Editar</button>
-            <button onClick={borrar}>Borrar</button>
+        <div className={styles.fila}>
+            <p className={styles.texto}>{frase}</p>
+            <button className={styles.editar} onClick={edit}>Editar</button>
+            <button className={styles.borrar} onClick={borrar}>Borrar</button>
         </div>
     )
 }
