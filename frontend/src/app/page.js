@@ -23,11 +23,13 @@ export default function Home() {
         setlogreg(false)
         setUser("")
         setPassword("")
+        setEmail("")
+        setPass("")
     }
 
     // LOGIN
 
-    const [user, setUser] = useState("")
+    const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const router = useRouter()
     
@@ -68,8 +70,8 @@ export default function Home() {
     }
 
     // REGISTER
-
-    const [email, setEmail] = useState("")
+    
+    const [user, setUser] = useState("")
     const [pass, setPass] = useState("")
 
     const emailSetter = (event) => {
@@ -88,15 +90,16 @@ export default function Home() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(newUser)
             })
-            res => res.json()
-            data => console.log("actualizado", data)
-            
             .then((res) => res.json())
             .then((data) => {
             if (!data.ok) {
+                console.log("actualizado", data)
                 alert(data.mensaje)
                 return
-            }})
+            }
+            log()
+            alert("Cuenta registrada")
+            })
         } else {
             alert("La contraseña no coincide con su repetición")
             return
@@ -106,29 +109,29 @@ export default function Home() {
     
     return(
         <>
-            <div>
+            <div className="container">
                 <Button onClick={log} txt="Iniciar sesión"></Button>
                 <Button onClick={reg} txt="Registrarme"></Button>
-                <div>
+                <div className="auth-form">
                     {logreg ?
                     <>
-                    <Input placeholder="Email" onChange={emailSetter}></Input>
-                    <Input type="password" placeholder="Contraseña" onChange={passwordSetter}></Input>
+                    <Input placeholder="Email" value={email} onChange={emailSetter}></Input>
+                    <Input type="password" value={password} placeholder="Contraseña" onChange={passwordSetter}></Input>
                     <Button onClick={login} disabled={password === "" || email === ""} txt="Entrar"></Button>
                     </>
                     :
                     <>
-                    <Input placeholder="Username" onChange={userSetter}></Input>
-                    <Input type="email" placeholder="Email" onChange={emailSetter}></Input>
-                    <Input type="password" placeholder="Contraseña" onChange={passwordSetter}></Input>
-                    <Input type="password" placeholder="Repetir contraseña" onChange={passSetter}></Input>
+                    <Input placeholder="Username" value={user} onChange={userSetter}></Input>
+                    <Input type="email" value={email} placeholder="Email" onChange={emailSetter}></Input>
+                    <Input type="password" value={password} placeholder="Contraseña" onChange={passwordSetter}></Input>
+                    <Input type="password" value={pass} placeholder="Repetir contraseña" onChange={passSetter}></Input>
                     <Button onClick={register} disabled={password === "" || user ==="" || email ==="" || pass ===""} txt="Registrarse"></Button>
                     </>}
                 </div>
             </div>
-            <div>
+            <div className="info-section">
                 <h2>Como jugar</h2>
-                <img alt="lorem"></img>
+                <img alt="Imagen de como jugar"></img>
                 <p>Todos escriben una frase que otro jugador va a dibujar</p>
             </div>
         </>
