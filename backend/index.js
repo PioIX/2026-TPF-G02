@@ -189,6 +189,8 @@ io.on("connection", (socket) => {
       return error(`Hacen falta al menos ${MIN_JUGADORES} jugadores`);//BIEN
     }//BIEN
     sala.estado = "jugando";//BIEN
+    crearPartida(sala);
+    iniciarReloj(sala); // el reloj de la ronda 0 empieza al iniciar
     io.to(sala.codigo).emit("partidaIniciada", { codigo: sala.codigo });//BIEN
   });
  
