@@ -1,6 +1,11 @@
 const MAX_TEXTO = 200
 const MAX_DIBUJO = 900000 // Socket.IO acepta mensajes de hasta 1 MB
 
+const TIEMPOS = { frase: 60, dibujo: 60, descripcion: 30 }
+
+// el servidor espera unos segundos más que el reloj que ve el jugador
+const MARGEN_SEGUNDOS = 2   
+
 function todosEnviaron(sala) {
     return sala.partida.enviaron.length === sala.partida.jugadores.length
 }
@@ -21,7 +26,11 @@ function siguienteRonda(sala) {
     completarPendientes(sala)
     sala.partida.ronda++
     sala.partida.enviaron = []
-    return sala.partida.ronda >= sala.partida.totalRondas
+    const termino = sala.partida.ronda >= sala.partida.totalRondas
+    if (!termino) {
+        sala.partida.terminaEn = Date.now() + duracionDeRonda(sala) * 1000
+    }
+    return termino
 }
 
 // qué hay que hacer en cada ronda
@@ -35,6 +44,11 @@ function tipoDeRonda(ronda) {
     return "descripcion"
 }
 
+// cuántos segundos dura la ronda actual (depende de si hay que escribir, dibujar o describir)
+function duracionDeRonda(sala) {
+    return TIEMPOS[tipoDeRonda(sala.partida.ronda)]
+}
+
 // se llama cuando el anfitrión inicia la partida
 function crearPartida(sala) {
     const ids = sala.jugadores.map((j) => j.id)
@@ -44,7 +58,9 @@ function crearPartida(sala) {
         jugadores: ids,
         albumes: ids.map((id) => ({ idDueno: id, pasos: [] })),
         enviaron: [],
+        terminaEn: 0,
     }
+    sala.partida.terminaEn = Date.now() + duracionDeRonda(sala) * 1000
 }
 
 // número del álbum que le toca a un jugador en la ronda actual
@@ -72,6 +88,7 @@ function tareaDeRonda(sala, idJugador) {
         tipo: tipoDeRonda(partida.ronda),
         recibido,
         enviado: partida.enviaron.includes(idJugador),
+        segundos: Math.max(0, Math.round((partida.terminaEn - Date.now()) / 1000)),
     }
 }
 
@@ -105,6 +122,9 @@ function guardarPaso(sala, idJugador, contenido) {
 }
 
 module.exports = {
+    TIEMPOS,
+    MARGEN_SEGUNDOS,
+    duracionDeRonda,
     crearPartida,
     tareaDeRonda,
     guardarPaso,

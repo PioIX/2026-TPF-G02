@@ -89,13 +89,22 @@ function enviarRonda(sala) {
   avisarQuienEnvio(sala);
 }
 
+// pone el reloj de la ronda actual. Asi que si se acaba el tiempo, se cierra la ronda con lo que haya
+function iniciarReloj(sala) {
+  const segundos = duracionDeRonda(sala) + MARGEN_SEGUNDOS;
+  sala.partida.reloj = setTimeout(() => pasarDeRonda(sala), segundos * 1000);
+}
+
+
 // cierra la ronda actual y empieza la siguiente (o termina la partida).
 function pasarDeRonda(sala) {
+  clearTimeout(sala.partida.reloj); // se apaga el reloj de la ronda que termina
   const termino = siguienteRonda(sala);
   if (termino) {
     sala.estado = "terminada";
     io.to(sala.codigo).emit("partidaTerminada", { codigo: sala.codigo });
   } else {
+    iniciarReloj(sala); // empieza el reloj de la ronda nueva
     enviarRonda(sala);
   }
 }
