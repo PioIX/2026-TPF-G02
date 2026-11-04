@@ -2,7 +2,9 @@
 import { useState } from "react";
 import styles from "./page.module.css"
 import { useRouter } from "next/navigation";
+import { useSocket } from "@/hooks/useSocket";
 export default function Menu(){
+    const socket = useSocket()
     const [nuevo,setNuevo] = useState("")
     const [codigo,setCodigo] = useState("")
     const router = useRouter()
@@ -10,7 +12,20 @@ export default function Menu(){
         router.replace("http://localhost:3000/")
     }
     const crear = () =>{
-        fetch("http://localhost:4000/salas")
+        fetch("http://localhost:4000/salas",{
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(verif)
+        })
+        .then((res) => res.json())
+        .then((data) => {
+                socket.emit("unirseSala",(data.data))
+        })
+    }
+    const unirse = () =>{
+        fetch("http://localhost:4000/salas/codigos")
+        .then(response => response.json())
+        .then(data => {});        
     }
     return(
         <main className={styles.pagina}>

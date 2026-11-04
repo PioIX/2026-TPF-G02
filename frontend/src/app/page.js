@@ -61,9 +61,9 @@ export default function Home() {
                 localStorage.setItem("usuario", JSON.stringify(data.usuario))
                 console.log(data.usuario)
                 if (data.usuario.admin) {
-                   router.replace("http://localhost:3000/admin")
+                   router.push("/admin")
                 } else {
-                    router.replace("http://localhost:3000/menu")
+                    router.push("/menu")
                 }
             }else{
                 alert(data.mensaje)
