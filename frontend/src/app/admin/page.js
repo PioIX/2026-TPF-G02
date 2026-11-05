@@ -6,7 +6,7 @@ import UsuariosAdmin from "@/components/UsuariosAdmin"
 import { useSearchParams } from "next/navigation"
 import { useState,useEffect } from "react"
 import { useRouter } from "next/navigation";
-
+import Popup from "reactjs-popup"
 export default function Admin() {
     const router = useRouter()
     const searchParams = useSearchParams()
@@ -14,7 +14,7 @@ export default function Admin() {
     const [frases,setFrases] = useState([])
     const [moderacion,setModeracion] = useState([])
     const [usuarios,setUsuarios] = useState([])
-    const [datos,setDatos] = useState({})
+    const [nuevo,setNuevo] = useState("")
     // Variable para las opciones de lo que se muestra en el div de abajo
     const [option,setOption] = useState(0)
     // Controlador de actualizacion para los nuevos datos
@@ -55,14 +55,13 @@ export default function Admin() {
     // Funcion para agregar frase
     const nueva = () =>{
         console.log("nueva")
-        let nuevo = window.prompt("Ingrese la nueva frase")
-        setDatos({
+        const datubi = {
         frase: nuevo
-        })
+        }
          fetch("http://localhost:4000/admin/frases", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(datos)
+            body: JSON.stringify(datubi)
         })
             .then(response => response.json())
             .then(data => {setFrases([...frases, data]),
@@ -127,17 +126,42 @@ export default function Admin() {
             recargar()
         });
     }
+
+
     // Reenderizado
     const reenderizar = () =>{
         if (option === 0) return <p>Seleccione una opción</p>;
         if (option === 1) return(
             <div>
-                <button className={styles.nueva} onClick={nueva}> 
-                    <span className={styles.mas} /> Nueva frase 
-                    </button>
-                    {frases.map((est) => (
+                    {/*<Popup trigger={<button className={styles.nueva}> 
+                        <span className={styles.mas} /> Nueva frase 
+                    </button>} modal nested/>
+                    {(close) => (
+                        <div className={styles.modal}>
+                            <button className={styles.close} onClick={close}>Cerrar</button>
+                            <input type="text" value={nuevo} placeholder={"Nueva frase"} onChange={(e) => {setNuevo(e.target.value)} }/>
+                            <button className={styles.close} onClick={nueva}>enviar</button>
+                        </div>
+                    )}
+                    <Popup/>*/}
+                      <Popup trigger={<button className={styles.nueva}> 
+                        <span className={styles.mas}/>                            
+                        Nueva Frase</button>} modal nested>
+                        <div className={styles.modalFrase}>
+                            <input 
+                                type="text" 
+                                value={nuevo} 
+                                placeholder={"Nueva frase"} 
+                                onChange={(e) => {setNuevo(e.target.value)} }
+                                className={styles.modalInput}
+                                />
+                            <button className={styles.close} onClick={nueva}>enviar</button>
+                        </div>
+                    </Popup>
+
+                    {frases.map((est,index) => (
                         <EditFrases
-                         key={est.id}
+                         key={index}
                          id = {est.id}  
                          frase={est.frase}
                          edit={() => edit(est.id)}

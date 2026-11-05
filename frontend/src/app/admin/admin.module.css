@@ -193,3 +193,39 @@
     width: 1.5px;
     transform: translateX(-50%);
 }
+
+/*PopUp*/
+.modalInput {
+    width: 100%;
+    height: 52px;
+    padding: 0 16px;
+    background: #1d2030;
+    border: 2px solid #3d4259;
+    border-radius: 8px;
+    color: white;
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+}
+
+.modalInput::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.modalInput:focus {
+    border-color: #1fc9a0;
+}
+.modal {
+    position: relative;
+    padding: 20px 24px 28px;
+    font-family: "Poppins", sans-serif;
+    color: white;
+}
+.modalFrase {
+    width: min(560px, 92vw);
+    padding: 0;
+    background: #282c3e;
+    border: 1px solid #3d4259;
+    border-radius: 8px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
