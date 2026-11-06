@@ -12,8 +12,8 @@ app.use(express.json());
 
 const sessionMiddleware = session({
   secret: "supersarasa",
-  resave: false,
-  saveUninitialized: false,
+  resave: true,
+  saveUninitialized: true,
 });
 app.use(sessionMiddleware);
 
@@ -114,11 +114,11 @@ io.on("connection", (socket) => {
   }
 
   socket.on("unirseSala", (data) => {
-    if (!usuario) {
+    if (!data.usuario) {
       return error("Tenés que iniciar sesión")
     }
     const sala = buscarSala(data && data.codigo)
-    const motivo = motivoDeRechazo(sala, usuario)
+    const motivo = motivoDeRechazo(sala, data.usuario)
     if (motivo !== "") {
       return error(motivo);
     }
