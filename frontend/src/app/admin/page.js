@@ -56,17 +56,20 @@ export default function Admin() {
     const nueva = () =>{
         console.log("nueva")
         const datubi = {
-        frase: nuevo
+            frase: nuevo
         }
          fetch("http://localhost:4000/admin/frases", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(datubi)
+            body: JSON.stringify({frase: nuevo})
         })
             .then(response => response.json())
-            .then(data => {setFrases([...frases, data]),
-                recargar()
-            });
+            .then(data => {
+                if(data.ok){
+                    setNuevo("")
+                    recargar()
+            }}
+            )
             }
 
 
@@ -84,7 +87,7 @@ export default function Admin() {
             body: JSON.stringify(datubi)
     })
         .then(response => response.json())
-        .then(data => {console.log("actualizado", data),
+        .then(data => {console.log("actualizado", data);
             recargar()
         });
     }
@@ -122,7 +125,7 @@ export default function Admin() {
             body: JSON.stringify(datubi)
     })
         .then(response => response.json())
-        .then(data => {console.log("actualizado", data),
+        .then(data => {console.log("actualizado", data);
             recargar()
         });
     }
@@ -155,11 +158,15 @@ export default function Admin() {
                                 onChange={(e) => {setNuevo(e.target.value)} }
                                 className={styles.modalInput}
                                 />
-                            <button className={styles.close} onClick={nueva}>enviar</button>
+                            <div className={styles.modalBotones}>
+                                <button className={styles.botonModal} onClick={() => {nueva()}}>enviar</button>
+                            </div>
                         </div>
                     </Popup>
 
-                    {frases.map((est,index) => (
+                    {frases.map((est,index) => {
+                        console.log(est,est.frase,est.id)
+                        return(
                         <EditFrases
                          key={index}
                          id = {est.id}  
@@ -167,12 +174,7 @@ export default function Admin() {
                          edit={() => edit(est.id)}
                          borrar={() => borrarFrase(est.id)}
                         />
-                    ))}
-                    <EditFrases // Prueba de componente
-                        frase={"Fortnite prime"}
-                        edit={() => edit(est.id)}
-                        borrar={() => borrarFrase(est.id)}
-                    />
+                    )})}
                 </div>);
                 /*<p>Todo bien acá en frases </p>);*/
         if (option === 2) return(
@@ -189,12 +191,6 @@ export default function Admin() {
                         />
                     ))
                 }
-                <Moderacion // Prueba de componente
-                    nombre={"Juan"}
-                    tipo={1}
-                    data={"chau"}
-                    borrar={() => borrarStep(id)}                    
-                />
             </div>);
             /*<p>Todo bien acá en Moderación</p>);*/
         if (option === 3) return( 
@@ -210,12 +206,6 @@ export default function Admin() {
                     />))
                     
                 }
-                <UsuariosAdmin // Prueba de componente
-                    usuario={"Juan"}
-                    email={"juankeke67"}
-                    bloqueado={0}
-                    control={() => bloqDes(est.id)}
-                />
             </div>);
             /*<p>Todo bien con Usuarios</p>);*/
     }
