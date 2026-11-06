@@ -50,6 +50,16 @@ const {
     datosSala,
 } = require("./modulos/logicaSalas")
 
+const {
+  MARGEN_SEGUNDOS,
+  duracionDeRonda,
+  crearPartida,
+  tareaDeRonda,
+  guardarPaso,
+  todosEnviaron,
+  siguienteRonda,
+} = require("./modulos/logicaPartida");
+
 // esto es para esperar unos segundos antes de sacar a un jugador desconectado
 const ESPERA_RECONEXION = 3000
 
@@ -63,6 +73,30 @@ function sacarYAvisar(sala, idUsuario) {
   quitarJugador(sala, idUsuario)
   if (sala.jugadores.length > 0) {
     avisarEstado(sala)
+  }
+}
+
+// le avisa a toda la sala quiénes ya mandaron su paso de esta ronda
+function avisarQuienEnvio(sala) {
+  io.to(sala.codigo).emit("estadoRonda", { ronda: sala.partida.ronda, enviaron: sala.partida.enviaron });
+}
+
+// le manda a cada jugador lo que le toca hacer en la ronda actual
+function enviarRonda(sala) {
+  sala.jugadores.forEach((jugador) => {
+    io.to(jugador.socketId).emit("nuevaRonda", tareaDeRonda(sala, jugador.id));
+  });
+  avisarQuienEnvio(sala);
+}
+
+// cierra la ronda actual y empieza la siguiente (o termina la partida).
+function pasarDeRonda(sala) {
+  const termino = siguienteRonda(sala);
+  if (termino) {
+    sala.estado = "terminada";
+    io.to(sala.codigo).emit("partidaTerminada", { codigo: sala.codigo });
+  } else {
+    enviarRonda(sala);
   }
 }
 
@@ -86,13 +120,22 @@ io.on("connection", (socket) => {
     const sala = buscarSala(data && data.codigo)
     const motivo = motivoDeRechazo(sala, data.usuario)
     if (motivo !== "") {
-      return error(motivo)
+      return error(motivo);
     }
-    agregarJugador(sala, data.usuario, socket.id)
-    socket.data.codigo = sala.codigo
-    socket.join(sala.codigo)
-    avisarEstado(sala)
-  })
+    agregarJugador(sala, usuario, socket.id)
+    socket.data.codigo = sala.codigo;
+    socket.join(sala.codigo);
+    avisarEstado(sala);
+    // si la partida ya empezó se le manda lo que le toca hacer en la ronda actual
+    if (sala.estado === "jugando") {
+      socket.emit("nuevaRonda", tareaDeRonda(sala, usuario.id));
+      socket.emit("estadoRonda", { ronda: sala.partida.ronda, enviaron: sala.partida.enviaron });
+    }
+    // si la partida ya terminó se le avisa de nuevo
+    if (sala.estado === "terminada") {
+      socket.emit("partidaTerminada", { codigo: sala.codigo });
+    }
+  });
 
   socket.on("expulsarJugador", (data) => {
     const sala = salaActual();
@@ -124,20 +167,20 @@ io.on("connection", (socket) => {
  
   socket.on("iniciarPartida", () => {
     const sala = salaActual();
-    if (!sala) {
-      return error("No estás en una sala");
-    }
-    if (sala.anfitrion !== usuario.id) {
-      return error("Solo el anfitrión puede iniciar la partida");
-    }
-    if (sala.estado !== "esperando") {
-      return error("La partida ya empezó");
-    }
-    if (sala.jugadores.length < MIN_JUGADORES) {
-      return error(`Hacen falta al menos ${MIN_JUGADORES} jugadores`);
-    }
-    sala.estado = "jugando";
-    io.to(sala.codigo).emit("partidaIniciada", { codigo: sala.codigo });
+    if (!sala) { //MAL
+      return error("No estás en una sala");//MAL
+    }//MAL
+    if (sala.anfitrion !== usuario.id) {//MAL
+      return error("Solo el anfitrión puede iniciar la partida");//MAL
+    }//MAL
+    if (sala.estado !== "esperando") {//MAL
+      return error("La partida ya empezó");//MAL
+    }//MAL
+    if (sala.jugadores.length < MIN_JUGADORES) {//BIEN
+      return error(`Hacen falta al menos ${MIN_JUGADORES} jugadores`);//BIEN
+    }//BIEN
+    sala.estado = "jugando";//BIEN
+    io.to(sala.codigo).emit("partidaIniciada", { codigo: sala.codigo });//BIEN
   });
  
   socket.on("salirSala", () => {
@@ -148,6 +191,23 @@ io.on("connection", (socket) => {
     socket.leave(sala.codigo);
     socket.data.codigo = null;
     sacarYAvisar(sala, usuario.id);
+  });
+
+  socket.on("enviarPaso", (data) => {
+    const sala = salaActual();
+    if (!sala || sala.estado !== "jugando") {
+      return error("No hay una partida en juego");
+    }
+    const motivo = guardarPaso(sala, usuario.id, data && data.contenido);
+    if (motivo !== "") {
+      return error(motivo);
+    }
+    // Cuando todos mandaron su paso, se pasa a la ronda siguiente; si no, se avisa quiénes ya enviaron
+    if (todosEnviaron(sala)) {
+      pasarDeRonda(sala);
+    } else {
+      avisarQuienEnvio(sala);
+    }
   });
  
   socket.on("disconnect", () => {

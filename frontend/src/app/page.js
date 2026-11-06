@@ -23,11 +23,13 @@ export default function Home() {
         setlogreg(false)
         setUser("")
         setPassword("")
+        setEmail("")
+        setPass("")
     }
 
     // LOGIN
 
-    const [user, setUser] = useState("")
+    const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const router = useRouter()
     
@@ -73,8 +75,8 @@ export default function Home() {
     }
 
     // REGISTER
-
-    const [email, setEmail] = useState("")
+    
+    const [user, setUser] = useState("")
     const [pass, setPass] = useState("")
 
     const emailSetter = (event) => {
@@ -93,15 +95,16 @@ export default function Home() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(newUser)
             })
-            res => res.json()
-            data => console.log("actualizado", data)
-            
             .then((res) => res.json())
             .then((data) => {
             if (!data.ok) {
+                console.log("actualizado", data)
                 alert(data.mensaje)
                 return
-            }})
+            }
+            log()
+            alert("Cuenta registrada")
+            })
         } else {
             alert("La contraseña no coincide con su repetición")
             return
