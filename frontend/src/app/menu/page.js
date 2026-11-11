@@ -6,7 +6,7 @@ import { useSocket } from "@/hooks/useSocket";
 import { useSearchParams } from "next/navigation";
 export default function Menu(){
     const searchParams = useSearchParams();
-    const socket = useSocket()
+    const {socket,isConnected} = useSocket()
     const usuario = searchParams.get("user")
     const [nuevo,setNuevo] = useState("")
     const [codigo,setCodigo] = useState("")
@@ -16,6 +16,9 @@ export default function Menu(){
         router.replace("http://localhost:3000/")
     }
     const crear = () =>{
+        const verif = {
+            user: usuario
+        }
         fetch("http://localhost:4000/salas",{
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -23,11 +26,12 @@ export default function Menu(){
         })
         .then((res) => res.json())
         .then((data) => {
-            setDatos({
-                codigo:data.data,
-                username:usuario
-            }),
-                socket.emit("unirseSala",(datos))
+            let datosAux = {
+                codigo:data.data.codigo,
+                usuario:usuario
+            } 
+            setDatos(datosAux)
+            socket.emit("unirseSala",(datosAux))
         })
     }
     const unirse = () =>{
@@ -38,7 +42,7 @@ export default function Menu(){
                 codigo:data.codigo,
                 username:usuario
             }),
-            socket.emit("unirseSala",(datos))
+            socket.emit("unirseSala",{datos})
         });        
     }
     return(
@@ -75,10 +79,10 @@ export default function Menu(){
                         UNIRSE</button>
                 </div>
             </section>
-            <footer className={styles.pie}>
+            {/*<footer className={styles.pie}>
                 <button className={styles.secundario}>MIS ÁLBUMES</button>
                 <button className={styles.secundario}>MIS PARTIDAS</button>
-            </footer>
+            </footer>*/}
         </main>
     )
 }

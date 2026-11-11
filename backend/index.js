@@ -114,7 +114,7 @@ io.on("connection", (socket) => {
   }
 
   socket.on("unirseSala", (data) => {
-    if (!data.usuario) {
+    if (data.usuario == undefined) {
       return error("Tenés que iniciar sesión")
     }
     const sala = buscarSala(data && data.codigo)
@@ -122,7 +122,7 @@ io.on("connection", (socket) => {
     if (motivo !== "") {
       return error(motivo);
     }
-    agregarJugador(sala, usuario, socket.id)
+    agregarJugador(sala, data.usuario, socket.id)
     socket.data.codigo = sala.codigo;
     socket.join(sala.codigo);
     avisarEstado(sala);

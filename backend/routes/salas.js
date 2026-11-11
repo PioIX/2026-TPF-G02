@@ -3,10 +3,10 @@ const { crearSala, buscarSala, motivoDeRechazo } = require("../modulos/logicaSal
 module.exports = (app) => {
     // crea una sala nueva
     app.post("/salas", (req, res) => {
-        console.log(req.session.user)
-        const codigo = crearSala(req.session.user)
+        console.log(req.body.user)
+        const codigo = crearSala(req.body.user)
         const data = {
-            usuario: req.session.user,
+            usuario: req.body.user,
             codigo:codigo
         }
         res.json({ ok: true, data })

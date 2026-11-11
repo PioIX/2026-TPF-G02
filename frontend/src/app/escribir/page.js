@@ -2,7 +2,9 @@
 import { useEffect, useState } from "react"
 import styles from "./page.module.css"
 import { useRouter } from "next/navigation"
+import { useSocket } from "@/hooks/useSocket"
 export default function Escribir(){
+    const socket = useSocket()
     const [datos, setDatos] = useState({});
     const router = useRouter()
     const CIRCUNFERENCIA = 2 * Math.PI * 9 
@@ -40,20 +42,24 @@ export default function Escribir(){
         setDatos({ link: texto, user: user });
         socket.emit("terminado")
     }
-    
-    socket.on("nextStep", (data) => {//next step
-        socket.emit("envio",datos)
-        if /*Validacion de cual es el siguiente paso*/(data.nextstep==true) {
-            router.replace("http://localhost:3000/dibujar")
-        } else {
-            router.replace("http://localhost:3000/albumsrevelacion")
-        }
-    })
+    useEffect(() => {
+        if (!socket) return;
+        
+        socket.on("nextStep", (data) => {//next step
+            socket.emit("envio",datos)
+            if /*Validacion de cual es el siguiente paso*/(data.nextstep==true) {
+                router.replace("http://localhost:3000/dibujar")
+            } else {
+                router.replace("http://localhost:3000/albumsrevelacion")
+            }
+        })
 
-    socket.on("recepcion", (data) => {
-        setDibujo(data.content)
-        dibujo_existente=true
-    })
+        socket.on("recepcion", (data) => {
+            setDibujo(data.content)
+            dibujo_existente=true
+        })    
+    }, [socket]);
+
 
     return(
         <main className={styles.pagina}>

@@ -1,11 +1,12 @@
+"use client"
 import { useEffect, useState } from "react"
-
+import Button from "@/components/Button"
 export default function AlbumsRevelacion() {
     const [player,setPlayer] = useState("")
     const [anfitrion,setAnfitrion] = useState(false)
     const [content,setContent] = useState({})
     const [nextrend,setNextrend] = useState("")
-    const [totalrend,setTotalrend] = useState("")
+    const [totalrend,setTotalrend] = useState(null)
     const [players,setPlayers] = useState({})
     
     //SOCKET
@@ -62,8 +63,8 @@ export default function AlbumsRevelacion() {
     }, [nextrend]);
 
     //ejemplo array content
-/*
-{
+
+/*{
     album1:{
         step1:{
             text:true
@@ -88,8 +89,8 @@ export default function AlbumsRevelacion() {
     }
     album2:{}
     album3:{}
-}
-*/
+}*/
+
 
     return(
         <>
