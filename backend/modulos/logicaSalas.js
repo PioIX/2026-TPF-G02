@@ -24,6 +24,7 @@ function crearSala(datos) {
 }
 
 function buscarSala(codigo) {
+    console.log("probando enviar salas", salas)
     return salas[String(codigo || "").trim().toUpperCase()]
 }
 
@@ -56,7 +57,7 @@ function agregarJugador(sala, data, socketId) {
     if (existente) {
         existente.socketId = socketId
     } else {
-        sala.jugadores.push({ id: data.id, username: data.username, socketId })
+        sala.jugadores.push({ id: data.id, username: data.usuario, socketId })
     }
 }
 

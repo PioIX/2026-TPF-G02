@@ -65,7 +65,9 @@ const ESPERA_RECONEXION = 3000
 
  // le manda a todos los de la sala la lista actualizada
 function avisarEstado(sala) {
-  io.to(sala.codigo).emit("estadoSala", datosSala(sala))
+  console.log("pup pup, estado de sala *ruido de R2-D2*",datosSala(sala))
+  const data = datosSala(sala)
+  io.to(sala.codigo).emit("estadoSala", data)
 }
 
 // saca al jugador y avisa a los que quedan 
@@ -211,18 +213,18 @@ io.on("connection", (socket) => {
     }
   });
  
-  socket.on("disconnect", () => {
-    const sala = salaActual();
-    if (!sala || sala.estado !== "esperando") {
-      return; 
-    }
-    setTimeout(() => {
-      console.log("sala",sala)
-      const jugador = sala.jugadores.find((j) => j.id === data.id);
-      // solo se lo saca si no volvió a conectarse con otro socket
-      if (jugador && jugador.socketId === socket.id) {
-        sacarYAvisar(sala, usuario.id);
-      }
-    }, ESPERA_RECONEXION);
-  });
+//   socket.on("disconnect", () => {
+//     const sala = salaActual();
+//     if (!sala || sala.estado !== "esperando") {
+//       return; 
+//     }
+//     setTimeout(() => {
+//       console.log("sala",sala)
+//       const jugador = sala.jugadores.find((j) => j.id === data.id);
+//       // solo se lo saca si no volvió a conectarse con otro socket
+//       if (jugador && jugador.socketId === socket.id) {
+//         sacarYAvisar(sala, usuario.id);
+//       }
+//     }, ESPERA_RECONEXION);
+//   });
 })

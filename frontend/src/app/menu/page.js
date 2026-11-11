@@ -27,13 +27,10 @@ export default function Menu(){
         .then((res) => res.json())
         .then((data) => {
             let datosAux = {
-                id:data.data.id,
                 codigo:data.data.codigo,
-                username:usuario
+                id:data.data.id
             } 
-            setDatos(datosAux)
-            socket.emit("unirseSala",(datosAux))
-            router.push(`/salas?codigo=${datosAux.codigo}`)
+            router.push(`/salas?codigo=${datosAux.codigo}&user=${usuario}&id=${datosAux.id}`)
         })
     }
     const unirse = () =>{
@@ -43,10 +40,8 @@ export default function Menu(){
             setDatos({
                 codigo:data.codigo,
                 username:usuario
-            }),
-            socket.emit("unirseSala",{datos})
-        });        
-    }
+            })})
+        }
     return(
         <main className={styles.pagina}>
             <header>

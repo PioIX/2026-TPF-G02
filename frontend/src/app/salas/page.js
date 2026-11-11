@@ -12,11 +12,15 @@ export default function Sala() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const codigo = searchParams.get("codigo")
+    const usuario = searchParams.get("user")
+    const id = searchParams.get("id")
+    console.log(codigo)
+    console.log(usuario)
+    console.log(id)
     const { socket } = useSocket()
-
-    const [usuario, setUsuario] = useState(null)
+    //const [usuario, setUsuario] = useState(null)
     // esto sería lo último que mandó el back: { codigo, anfitrion, estado, minimo, maximo, jugadores }
-    const [sala, setSala] = useState(null)
+    const [sala, setSala] = useState()
     const [verCompartir, setVerCompartir] = useState(false)
     const [copiado, setCopiado] = useState(false)
     // pasa a ser true true cuando llega la primera lista de jugadores (o sea, cuando ya se entró a la sala)
@@ -24,30 +28,30 @@ export default function Sala() {
     const yaEntro = useRef(false)
 
     // quién soy (lo guardó el login). Si no inició sesión, vuelve al inicio
-    useEffect(() => {
-        const guardado = localStorage.getItem("usuario")
-        if (!guardado) {
-            router.replace("/")
-            return
-        }
-        setUsuario(JSON.parse(guardado))
-    }, [router])
+    // useEffect(() => {
+    //     const guardado = localStorage.getItem("usuario")
+    //     if (!guardado) {
+    //         router.replace("/")
+    //         return
+    //     }
+    //     setUsuario(JSON.parse(guardado))
+    // }, [router])
 
     // entra a la sala y escucha lo que manda el back 
     useEffect(() => {
-        if (!socket || !codigo) {
+        if (!socket || !codigo || !usuario) {
             return
         }
         socket.on("estadoSala", (data) => {
+            console.log(data)
             yaEntro.current = true
             setSala(data)
         })
-
         socket.on("errorSala", (data) => {
             alert(data.mensaje)
             // si todavía no había entrado (sea que tenga el código mal, sala llena, expulsado) vuelve al menú
             if (!yaEntro.current) {
-                router.replace("/menu")
+                router.push("/")
             }
         })
 
@@ -61,6 +65,12 @@ export default function Sala() {
             router.push(`/partida?codigo=${data.codigo}`)
         })
 
+        socket.emit("unirseSala", {
+            codigo,
+            usuario,
+            id
+        })
+
         return () => {
             socket.off("estadoSala")
             socket.off("errorSala")
@@ -68,10 +78,9 @@ export default function Sala() {
             socket.off("partidaIniciada")
         }
     }, [socket, codigo, router])
-
      const copiar = () => {
         navigator.clipboard
-            .writeText(sala.codigo)
+            .writeText(codigo)
             .then(() => {
                 setCopiado(true)
                 setTimeout(() => setCopiado(false), 2000)
@@ -91,6 +100,7 @@ export default function Sala() {
     const soyAnfitrion = sala.anfitrion === usuario.id
 
     // Ahora se recorren las filas de los jugadores que ya entraron (map recorre la lista de jugadores)
+    console.log(sala)
     const filas = sala.jugadores.map((jugador) => (
         <FilaJugador
             key={jugador.id}
@@ -107,7 +117,7 @@ export default function Sala() {
     lugaresLibres.forEach((n) => {
         filas.push(<FilaJugador key={"vacio" + n} vacia={true} />)
     })
- 
+    
     return (
         <div className={styles.pantalla}>
             <Header />
@@ -136,7 +146,7 @@ export default function Sala() {
                     ) : (
                         <p>Esperando a que el anfitrión inicie la partida...</p>
                     )}
-                    <Button txt="Salir de la sala" onClick={salir} />
+                    <Button txt="Salir de la sala" onClick={() =>{router.back()}} />
                 </div>
             </div> 
 
