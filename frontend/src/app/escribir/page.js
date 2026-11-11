@@ -2,7 +2,10 @@
 import { useEffect, useState } from "react"
 import styles from "./page.module.css"
 import { useRouter } from "next/navigation"
+import { useSocket } from "@/hooks/useSocket"
+
 export default function Escribir(){
+    const { socket, isConnected } = useSocket();
     const [datos, setDatos] = useState({});
     const router = useRouter()
     const CIRCUNFERENCIA = 2 * Math.PI * 9 
@@ -36,25 +39,28 @@ export default function Escribir(){
 
     //SOCKET
 
+    useEffect(() => {
+        if (!socket) return;
+        socket.on("nextStep", (data) => {//next step
+            socket.emit("envio",datos)
+            if /*Validacion de cual es el siguiente paso*/(data.nextstep==true) {
+                router.replace("http://localhost:3000/dibujar")
+            } else {
+                router.replace("http://localhost:3000/albumsrevelacion")
+            }
+        })
+
+        socket.on("recepcion", (data) => {
+            setDibujo(data.content)
+            dibujo_existente=true
+        })
+    }, [socket]);
+  
     function terminar() {
-        setDatos({ link: texto, user: user });
+        //setDatos({ link: texto, user: user });
         socket.emit("terminado")
     }
     
-    socket.on("nextStep", (data) => {//next step
-        socket.emit("envio",datos)
-        if /*Validacion de cual es el siguiente paso*/(data.nextstep==true) {
-            router.replace("http://localhost:3000/dibujar")
-        } else {
-            router.replace("http://localhost:3000/albumsrevelacion")
-        }
-    })
-
-    socket.on("recepcion", (data) => {
-        setDibujo(data.content)
-        dibujo_existente=true
-    })
-
     return(
         <main className={styles.pagina}>
             <header className={styles.header}>
@@ -112,20 +118,20 @@ export default function Escribir(){
             </div>
             )}
             
-        <div className={styles.controles}>
-            <input className={styles.input}
-             value={texto}
-             placeholder={"Un arbol con una manzana"}
-            onChange={(e)=>{setTexto(e.target.value)}}/>
+            <div className={styles.controles}>
+                <input className={styles.input}
+                value={texto}
+                placeholder={"Un arbol con una manzana"}
+                onChange={(e)=>{setTexto(e.target.value)}}/>
 
-            <button className={styles.hecho} onClick={terminar}>
-                <span className={styles.play} />
-                Hecho
-            </button>
-            <button className={styles.azar} onClick={fraseAzar}>
-                    Frase al azar
-            </button>
-        </div>
+                <button className={styles.hecho} onClick={terminar}>
+                    <span className={styles.play} />
+                    Hecho
+                </button>
+                <button className={styles.azar} onClick={fraseAzar}>
+                        Frase al azar
+                </button>
+            </div>
         </main>
     )
 }
