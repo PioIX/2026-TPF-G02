@@ -122,7 +122,8 @@ io.on("connection", (socket) => {
     if (motivo !== "") {
       return error(motivo);
     }
-    agregarJugador(sala, data.usuario, socket.id)
+    console.log("data a jugador", data)
+    agregarJugador(sala, data, socket.id)
     socket.data.codigo = sala.codigo;
     socket.join(sala.codigo);
     avisarEstado(sala);
@@ -216,7 +217,8 @@ io.on("connection", (socket) => {
       return; 
     }
     setTimeout(() => {
-      const jugador = sala.jugadores.find((j) => j.id === usuario.id);
+      console.log("sala",sala)
+      const jugador = sala.jugadores.find((j) => j.id === data.id);
       // solo se lo saca si no volvió a conectarse con otro socket
       if (jugador && jugador.socketId === socket.id) {
         sacarYAvisar(sala, usuario.id);

@@ -27,11 +27,13 @@ export default function Menu(){
         .then((res) => res.json())
         .then((data) => {
             let datosAux = {
+                id:data.data.id,
                 codigo:data.data.codigo,
-                usuario:usuario
+                username:usuario
             } 
             setDatos(datosAux)
             socket.emit("unirseSala",(datosAux))
+            router.push(`/salas?codigo=${datosAux.codigo}`)
         })
     }
     const unirse = () =>{

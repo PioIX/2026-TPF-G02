@@ -13,12 +13,13 @@ function generarCodigo() {
     return codigo
 }
 
-function crearSala(usuario) {
+function crearSala(datos) {
     let codigo = generarCodigo()
     while (salas[codigo]) {
         codigo = generarCodigo() // si el código ya existe, se prueba con otro
     }
-    salas[codigo] = { codigo, anfitrion: usuario.id, estado: "esperando", jugadores: [], expulsados: [] }
+    salas[codigo] = { codigo, anfitrion: datos.id, estado: "esperando", jugadores: [], expulsados: [] }
+    console.log(salas)
     return codigo
 }
 
@@ -48,12 +49,14 @@ function motivoDeRechazo(sala, usuario) {
 }
 
 //si el jugador ya estaba solo actualiza su socketId (se reconectó)
-function agregarJugador(sala, usuario, socketId) {
-    const existente = sala.jugadores.find((j) => j.id === usuario.id)
+function agregarJugador(sala, data, socketId) {
+    console.log("datos agregar",data)
+    const existente = sala.jugadores.find((j) => j.id === data.id) 
+    console.log("existente",existente)
     if (existente) {
         existente.socketId = socketId
     } else {
-        sala.jugadores.push({ id: usuario.id, username: usuario.username, socketId })
+        sala.jugadores.push({ id: data.id, username: data.username, socketId })
     }
 }
 

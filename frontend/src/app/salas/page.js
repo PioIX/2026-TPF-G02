@@ -38,9 +38,6 @@ export default function Sala() {
         if (!socket || !codigo) {
             return
         }
-
-        socket.emit("unirseSala", { codigo })
-
         socket.on("estadoSala", (data) => {
             yaEntro.current = true
             setSala(data)
