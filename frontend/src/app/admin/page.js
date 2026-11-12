@@ -136,17 +136,6 @@ export default function Admin() {
         if (option === 0) return <p>Seleccione una opción</p>;
         if (option === 1) return(
             <div>
-                    {/*<Popup trigger={<button className={styles.nueva}> 
-                        <span className={styles.mas} /> Nueva frase 
-                    </button>} modal nested/>
-                    {(close) => (
-                        <div className={styles.modal}>
-                            <button className={styles.close} onClick={close}>Cerrar</button>
-                            <input type="text" value={nuevo} placeholder={"Nueva frase"} onChange={(e) => {setNuevo(e.target.value)} }/>
-                            <button className={styles.close} onClick={nueva}>enviar</button>
-                        </div>
-                    )}
-                    <Popup/>*/}
                       <Popup trigger={<button className={styles.nueva}> 
                         <span className={styles.mas}/>                            
                         Nueva Frase</button>} modal nested>

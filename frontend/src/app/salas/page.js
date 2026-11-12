@@ -7,16 +7,18 @@ import Header from "@/components/Header"
 import Button from "@/components/Button"
 import FilaJugador from "@/components/FilaJugador"
 import styles from "./sala.module.css"
+import Popup from "reactjs-popup"
 
 export default function Sala() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const codigo = searchParams.get("codigo")
-    const usuario = searchParams.get("user")
+    //const usuario = searchParams.get("user")
     const id = searchParams.get("id")
     console.log(codigo)
-    console.log(usuario)
+    //console.log(usuario)
     console.log(id)
+    const [usuario, setUsuario] = useState("")
     const { socket } = useSocket()
     //const [usuario, setUsuario] = useState(null)
     // esto sería lo último que mandó el back: { codigo, anfitrion, estado, minimo, maximo, jugadores }
@@ -28,14 +30,15 @@ export default function Sala() {
     const yaEntro = useRef(false)
 
     // quién soy (lo guardó el login). Si no inició sesión, vuelve al inicio
-    // useEffect(() => {
-    //     const guardado = localStorage.getItem("usuario")
-    //     if (!guardado) {
-    //         router.replace("/")
-    //         return
-    //     }
-    //     setUsuario(JSON.parse(guardado))
-    // }, [router])
+    useEffect(() => {
+         const guardado = localStorage.getItem("usuario")
+         console.log("guardado",JSON.parse(guardado))
+         if (!guardado) {
+             router.replace("/")
+             return
+         }
+         setUsuario(JSON.parse(guardado))
+     }, [router])
 
     // entra a la sala y escucha lo que manda el back 
     useEffect(() => {
@@ -118,6 +121,14 @@ export default function Sala() {
         filas.push(<FilaJugador key={"vacio" + n} vacia={true} />)
     })
     
+    const iniciarPartida = () => {
+        //socket.emit("iniciarPartida", { codigo })
+    }
+
+    const expulsar = (idJugador) => {
+        //socket.emit("expulsarJugador", { codigo, idJugador })
+    }
+
     return (
         <div className={styles.pantalla}>
             <Header />
@@ -151,16 +162,27 @@ export default function Sala() {
             </div> 
 
             {verCompartir && (
-                <div className={styles.fondoModal} onClick={() => setVerCompartir(false)}>
-                    {/* el stopPropagation es para que si se toca adentro de la ventana, no se cierre */}
-                    <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-                        <h2>Compartí el código</h2>
-                        <p>Tus amigos tienen que elegir &quot;Unirse a una sala&quot; y escribir este código:</p>
-                        <strong className={styles.codigoGrande}>{sala.codigo}</strong>
-                        <Button txt={copiado ? "¡Copiado!" : "Copiar código"} tipo="menta" onClick={copiar} />
-                        <Button txt="Cerrar" onClick={() => setVerCompartir(false)} />
+                // <div className={styles.fondoModal} onClick={() => setVerCompartir(false)}>
+                //     {/* el stopPropagation es para que si se toca adentro de la ventana, no se cierre */}
+                //     <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+                //         <h2>Compartí el código</h2>
+                //         <p>Tus amigos tienen que elegir &quot;Unirse a una sala&quot; y escribir este código:</p>
+                //         <strong className={styles.codigoGrande}>{sala.codigo}</strong>
+                //         <Button txt={copiado ? "¡Copiado!" : "Copiar código"} tipo="menta" onClick={copiar} />
+                //         <Button txt="Cerrar" onClick={() => setVerCompartir(false)} />
+                //     </div>
+                // </div>
+                <Popup open={verCompartir} onClose={() => setVerCompartir(false)} modal nested>
+                    <div className={styles.fondoModal}>    
+                        <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+                            <h2>Compartí el código</h2>
+                                <p>Tus amigos tienen que elegir &quot;Unirse a una sala&quot; y escribir este código:</p>
+                                <strong className={styles.codigoGrande}>{sala.codigo}</strong>
+                                <Button txt={copiado ? "¡Copiado!" : "Copiar código"} tipo="menta" onClick={copiar} />
+                                <Button txt="Cerrar" onClick={() => setVerCompartir(false)} />
+                        </div>      
                     </div>
-                </div>
+                </Popup>
             )}
         </div>
     )

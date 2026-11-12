@@ -21,12 +21,18 @@ module.exports = (app) => {
     })
 
     // avisa si el usuario puede entrar a esa sala.
-    app.get("/salas", (req, res) => {
+    app.get("/salas", async (req, res) => {
         const sala = buscarSala(req.query.codigo)
         const motivo = motivoDeRechazo(sala, req.session.user)
         if (motivo !== "") {
             return res.json({ ok: false, mensaje: motivo })
         }
-        res.json({ ok: true, codigo: sala.codigo })
+        const datosUser = await realizarQuery("SELECT id , username FROM Users WHERE username = ?",[req.body.user] )
+        const datos = {
+            id: datosUser[0].id,
+            username: req.body.user,
+            codigo:sala.codigo
+        }
+        res.json({ ok: true, datos  })
     })
 }

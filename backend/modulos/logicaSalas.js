@@ -1,7 +1,7 @@
 const MIN_JUGADORES = 2 
 const MAX_JUGADORES = 8
 
-const salas = {}
+let salas = []
 
 const CARACTERES = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 
@@ -14,18 +14,36 @@ function generarCodigo() {
 }
 
 function crearSala(datos) {
+    console.log("datos crear sala",datos)
     let codigo = generarCodigo()
-    while (salas[codigo]) {
-        codigo = generarCodigo() // si el código ya existe, se prueba con otro
-    }
-    salas[codigo] = { codigo, anfitrion: datos.id, estado: "esperando", jugadores: [], expulsados: [] }
-    console.log(salas)
+    let contador = 0;
+    let endWhile = false;
+    console.log(codigo)
+
+    //PROBABLEMENTE MAL
+    do {
+        if (salas[contador] == undefined) {
+            endWhile = true;
+        } else if ( (salas[contador]).codigo.trim().toUpperCase() == codigo.trim().toUpperCase()) {
+            codigo = generarCodigo()
+            endWhile = true;
+        }
+        contador++;
+    } while(contador < salas.length && !endWhile)
+    
+    let sala = { codigo: codigo, anfitrion: datos.id, estado: "esperando", jugadores: [], expulsados: [] }
+    console.log("LA SALA ES:",sala)
+    salas.push(sala)
     return codigo
 }
 
 function buscarSala(codigo) {
-    console.log("probando enviar salas", salas)
-    return salas[String(codigo || "").trim().toUpperCase()]
+    salas.map(s => {
+        if (s.codigo.trim().toUpperCase() === codigo.trim().toUpperCase()) {
+            console.log("probando sala",s.codigo.trim().toUpperCase())
+            return s.codigo.trim().toUpperCase()
+        }
+    })
 }
 
 // devuelve "" si el usuario puede entrar a la sala, o el motivo por el que no puede
