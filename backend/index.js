@@ -38,8 +38,7 @@ const io = new Server(server, {
 io.use((socket, next) => {
   sessionMiddleware(socket.request, {}, next);
 });
- 
-// Tarea 11 (parte Socket.IO): sala de espera en tiempo real.
+
 
 const {
     MIN_JUGADORES,
@@ -101,7 +100,74 @@ function pasarDeRonda(sala) {
     enviarRonda(sala);
   }
 }
+// Pedidos al backend
+// Pedidos  de autenticacion
+// Registro
+app.post("/register", async (req, res) => {
+    try {
+        const username = String(req.body.username || "").trim()
+        const email = String(req.body.email || "").trim()
+        const password = String(req.body.password || "")
 
+        if (username === "" || email === "" || password === "") {
+            return res.json({ ok: false, mensaje: "Faltan datos" })
+        }
+
+        // aca se chequea si ya existe alguien con ese username o ese email
+        const existentes = await realizarQuery(
+            "SELECT username FROM Users WHERE username = ? OR email = ?",
+            [username, email]
+        )
+        if (existentes.length > 0) {
+            if (existentes[0].username.toLowerCase() === username.toLowerCase()) {
+                return res.json({ ok: false, mensaje: "El nombre de usuario ya está en uso" })
+            }
+            return res.json({ ok: false, mensaje: "El email ya está registrado" })
+        }
+         // se pone admin = 0 y blocked = 0 de forma que todos empiecen como jugadores comunes
+        await realizarQuery(
+            "INSERT INTO Users (username, email, password, admin, blocked) VALUES (?, ?, ?, 0, 0)",
+            [username, email, password]
+        )
+        res.json({ ok: true })
+    }catch (error) {
+        errorServidor(res, error)
+    }
+})
+// Pedido de login
+app.post("/login", async (req, res) => {
+        try {
+            const email = String(req.body.email || "").trim()
+            const password = String(req.body.password || "")
+
+            const usuarios = await realizarQuery(
+                "SELECT id, username, email, password, admin, blocked FROM Users WHERE email = ?",
+                [email]
+            )
+            const usuario = usuarios[0] // esto quiere decir que, si no existe ese email, queda undefined
+
+            if (usuario === undefined || usuario.password !== password) {
+                return res.json({ ok: false, mensaje: "Email o contraseña incorrectos" })
+            }
+            if (usuario.blocked) {
+                return res.json({ ok: false, mensaje: "Tu usuario está bloqueado" })
+            }
+
+            // estos datos se guardan en la sesión (los usa permisos.js) y se mandan al front
+            const datos = {
+                id: usuario.id,
+                username: usuario.username,
+                email: usuario.email,
+                admin: Boolean(usuario.admin),
+            }
+            req.session.user = datos
+            console.log({datos})
+            res.json({ ok: true, usuario: datos })
+        } catch (error) {
+            errorServidor(res, error)
+        }
+    })
+//
 io.on("connection", (socket) => {
   // este es el usuario que inició sesión (lo guardó el login en la sesión)
   const usuario = socket.request.session.user
