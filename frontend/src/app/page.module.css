@@ -1,150 +1,116 @@
-.page {
-  --background: #fafafa;
-  --foreground: #fff;
-
-  --text-primary: #000;
-  --text-secondary: #666;
-
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
-  --button-secondary-border: #ebebeb;
-
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-geist-sans);
-  background-color: var(--background);
+/* page.module.css */
+.pagina {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 32px 40px;
+    font-family: "Poppins", sans-serif;
+    color: white;
+    background: linear-gradient(to top right, #b0246f 0%, #8a1a97 40%, #6a0fb8 100%);
 }
 
-.main {
-  display: flex;
-  flex: 1;
-  width: 100%;
-  max-width: 800px;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  background-color: var(--foreground);
-  padding: 120px 60px;
+.logo {
+    height: 72px;
+    width: auto;
 }
 
-.intro {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  gap: 24px;
+.contenido {
+    width: min(930px, 100%);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    align-items: start;
 }
 
-.intro h1 {
-  max-width: 320px;
-  font-size: 40px;
-  font-weight: 600;
-  line-height: 48px;
-  letter-spacing: -2.4px;
-  text-wrap: balance;
-  color: var(--text-primary);
+/* ---------- PESTAÑAS ---------- */
+.tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    margin-bottom: -2px;               /* la pestaña se pega al panel */
 }
 
-.intro p {
-  max-width: 440px;
-  font-size: 18px;
-  line-height: 32px;
-  text-wrap: balance;
-  color: var(--text-secondary);
+.tab {
+    height: 50px;
+    background: rgba(122, 18, 128, 0.85);
+    color: white;
+    border: 2px solid #b9a2ee;
+    border-radius: 16px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: filter 0.15s;
 }
 
-.intro a {
-  font-weight: 500;
-  color: var(--text-primary);
+.tab:hover {
+    filter: brightness(1.15);
 }
 
-.ctas {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  max-width: 440px;
-  gap: 16px;
-  font-size: 14px;
+.tabActiva {
+    color: #5ee0a0;
 }
 
-.ctas a {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 40px;
-  padding: 0 16px;
-  border-radius: 128px;
-  border: 1px solid transparent;
-  transition: 0.2s;
-  cursor: pointer;
-  width: fit-content;
-  font-weight: 500;
+/* ---------- FORMULARIO ---------- */
+.panel {
+    min-height: 364px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 26px;
+    padding: 56px 38px 40px;
+    background: rgba(122, 18, 128, 0.95);
+    border: 2px solid #c9b8ee;
 }
 
-a.primary {
-  background: var(--text-primary);
-  color: var(--background);
-  gap: 8px;
+/* ---------- CÓMO JUGAR ---------- */
+.ayuda {
+    min-height: 364px;
+    margin-top: 52px;                  /* alinea el borde superior con el panel del formulario */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 28px 32px 36px;
+    background: rgba(255, 255, 255, 0.28);
+    border: 2px solid #d9c8f5;
+    text-align: center;
 }
 
-a.secondary {
-  border-color: var(--button-secondary-border);
+.ayudaTitulo {
+    margin: 0;
+    color: #5ee0a0;
+    font-size: 1.9rem;
+    font-weight: 400;
+    text-transform: uppercase;
 }
 
-/* Enable hover only on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
-  a.primary:hover {
-    background: var(--button-primary-hover);
-    border-color: transparent;
-  }
-
-  a.secondary:hover {
-    background: var(--button-secondary-hover);
-    border-color: transparent;
-  }
+.foto {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
 }
 
-@media (max-width: 600px) {
-  .main {
-    padding: 48px 24px;
-  }
-
-  .intro {
-    gap: 16px;
-  }
-
-  .intro h1 {
-    font-size: 32px;
-    line-height: 40px;
-    letter-spacing: -1.92px;
-  }
+.foto img {
+    max-width: 100%;
+    max-height: 120px;
+    border-radius: 12px;
 }
 
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
-  }
-
-  .page {
-    --background: #000;
-    --foreground: #000;
-
-    --text-primary: #ededed;
-    --text-secondary: #999;
-
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-    --button-secondary-border: #1a1a1a;
-  }
+.paso {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1.1rem;
+    font-weight: 400;
+    text-transform: uppercase;
 }
 
-.code {
-  font-family: var(--font-geist-mono);
-  font-size: 0.9em;
-  background: color-mix(in srgb, currentColor 8%, transparent);
-  padding: 0.1em 0.4em;
-  border-radius: 6px;
+.descripcion {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.9rem;
+    line-height: 1.5;
 }

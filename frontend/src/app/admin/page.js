@@ -6,7 +6,7 @@ import UsuariosAdmin from "@/components/UsuariosAdmin"
 import { useSearchParams } from "next/navigation"
 import { useState,useEffect } from "react"
 import { useRouter } from "next/navigation";
-
+import Popup from "reactjs-popup"
 export default function Admin() {
     const router = useRouter()
     const searchParams = useSearchParams()
@@ -14,7 +14,7 @@ export default function Admin() {
     const [frases,setFrases] = useState([])
     const [moderacion,setModeracion] = useState([])
     const [usuarios,setUsuarios] = useState([])
-    const [datos,setDatos] = useState()
+    const [nuevo,setNuevo] = useState("")
     // Variable para las opciones de lo que se muestra en el div de abajo
     const [option,setOption] = useState(0)
     // Controlador de actualizacion para los nuevos datos
@@ -26,112 +26,164 @@ export default function Admin() {
         useEffect(() => {
             fetch("http://localhost:4000/admin/frases")
             .then(response => response.json())
-            .then(data => {setFrases(data.frases || []);});
+            .then(data => {
+                if(data.ok){
+                    console.log(data)
+                    setFrases(data.frases);
+                }else{
+                    console.log(data.mensaje)
+                }});
             fetch("http://localhost:4000/admin/pasos")
             .then(response => response.json())
-            .then(data => {setModeracion(data.pasos || [])});
+            .then(data => {
+                if(data.ok){
+                  setModeracion(data.pasos || [])
+                }else{
+                    console.log(data.mensaje)
+                }
+            });
             fetch("http://localhost:4000/admin/usuarios")
             .then(response => response.json())
-            .then(data => {setUsuarios(data.usuarios || []);
-        },[update])})
+            .then(data => {
+                if(data.ok){
+                    setUsuarios(data.usuarios || []);
+                }else{
+                    console.log(data.mensaje)
+                }
+            })
+        },[update])
     // Funcion para agregar frase
     const nueva = () =>{
-        let nuevo = window.prompt("Ingrese la nueva frase")
-        setDatos({
-        frase: nuevo
-        })
+        console.log("nueva")
+        const datubi = {
+            frase: nuevo
+        }
          fetch("http://localhost:4000/admin/frases", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(datos)
+            body: JSON.stringify({frase: nuevo})
         })
             .then(response => response.json())
-            .then(data => {setFrases([...frases, data]),
-                recargar()
-            });
+            .then(data => {
+                if(data.ok){
+                    setNuevo("")
+                    recargar()
+            }}
+            )
             }
 
 
     // Funciones para los botones de editar frases
     const edit = (id) => {
+        console.log("edit")
         let nuevo = window.prompt("Ingrese la nueva frase")
-        setDatos({
+        const datubi = {
             id: id,
             frase: nuevo
-        })
+        }
         fetch(`http://localhost:4000/admin/frases`, { 
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(datos)
+            body: JSON.stringify(datubi)
     })
         .then(response => response.json())
-        .then(data => {console.log("actualizado", data),
+        .then(data => {console.log("actualizado", data);
             recargar()
         });
     }
     const borrarFrase = (id) => {
-        setDatos({
+        console.log("borrar")
+        const datubi = {
                 id:id
-        })
+        }
         fetch(`http://localhost:4000/admin/frases`, { 
         method: 'DELETE'
         })
         .then(response => response.json())
-        .then(() => recargar())
+        .then(recargar())
     }
     const borrarStep = (id) => {
-        setDatos({
+        console.log("borrarStep")
+        const datubi = {
             id:id
-        })        
+        }
         fetch(`http://localhost:4000/admin/pasos`, { 
         method: 'DELETE'
         })
         .then(response => response.json)
-        .then(() => recargar())
+        .then(recargar())
     }
-    const bloqDes = (id) => {
-        setDatos({
-            id:id
-        })        
+    const bloqDes = (id,blocked) => {
+        console.log("bloquear/des")
+        const datubi ={
+            id:id,
+            blocked:!blocked
+        }
         fetch(`http://localhost:4000/admin/usuarios/bloqueo`, { 
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(datos)
+            body: JSON.stringify(datubi)
     })
         .then(response => response.json())
-        .then(data => {console.log("actualizado", data),
+        .then(data => {console.log("actualizado", data);
             recargar()
         });
     }
+
+
     // Reenderizado
     const reenderizar = () =>{
         if (option === 0) return <p>Seleccione una opción</p>;
         if (option === 1) return(
             <div>
-                <button className={styles.nueva} onClick={() => nueva()}> 
-                    <span className={styles.mas} /> Nueva frase 
-                    </button>
-                    {frases.map((est,index) => (
+                    {/*<Popup trigger={<button className={styles.nueva}> 
+                        <span className={styles.mas} /> Nueva frase 
+                    </button>} modal nested/>
+                    {(close) => (
+                        <div className={styles.modal}>
+                            <button className={styles.close} onClick={close}>Cerrar</button>
+                            <input type="text" value={nuevo} placeholder={"Nueva frase"} onChange={(e) => {setNuevo(e.target.value)} }/>
+                            <button className={styles.close} onClick={nueva}>enviar</button>
+                        </div>
+                    )}
+                    <Popup/>*/}
+                      <Popup trigger={<button className={styles.nueva}> 
+                        <span className={styles.mas}/>                            
+                        Nueva Frase</button>} modal nested>
+                        <div className={styles.modalFrase}>
+                            <input 
+                                type="text" 
+                                value={nuevo} 
+                                placeholder={"Nueva frase"} 
+                                onChange={(e) => {setNuevo(e.target.value)} }
+                                className={styles.modalInput}
+                                />
+                            <div className={styles.modalBotones}>
+                                <button className={styles.botonModal} onClick={() => {nueva()}}>enviar</button>
+                            </div>
+                        </div>
+                    </Popup>
+
+                    {frases.map((est,index) => {
+                        console.log(est,est.frase,est.id)
+                        return(
                         <EditFrases
                          key={index}
+                         id = {est.id}  
                          frase={est.frase}
                          edit={() => edit(est.id)}
                          borrar={() => borrarFrase(est.id)}
                         />
-                    ))}
-                    <EditFrases // Prueba de componente
-                        frase={"Fortnite prime"}
-                        edit={() => edit(est.id)}
-                        borrar={() => borrarFrase(est.id)}
-                    />
+                    )})}
                 </div>);
                 /*<p>Todo bien acá en frases </p>);*/
         if (option === 2) return(
             <div>
                 <p className={styles.sub} >Contenido de las partidas. Borra lo inapropiado.</p>
-                {moderacion.map((est,index) => ( 
+                {moderacion.map((est) => ( 
                         <Moderacion
-                            key={index}
+                            key={est.id}
+                            id = {est.id}
                             nombre={est.autor}
                             tipo={est.is_text}
                             data = {est.content}
@@ -139,32 +191,21 @@ export default function Admin() {
                         />
                     ))
                 }
-                <Moderacion // Prueba de componente
-                    nombre={"Juan"}
-                    tipo={1}
-                    data={"chau"}
-                    borrar={() => borrarStep(id)}                    
-                />
             </div>);
             /*<p>Todo bien acá en Moderación</p>);*/
         if (option === 3) return( 
             <div>
-                {usuarios.map((est,index) => (
+                {usuarios.map((est) => (
                     <UsuariosAdmin
-                        key={index}
+                        key={est.id}
+                        id = {est.id}
                         usuario={est.username}
                         email={est.email}
-                        bloqueado={est.bloked}
-                        control={() => bloqDes(est.id)}
+                        bloqueado={est.blocked}
+                        control={() => bloqDes(est.id,est.blocked)}
                     />))
                     
                 }
-                <UsuariosAdmin // Prueba de componente
-                    usuario={"Juan"}
-                    email={"juankeke67"}
-                    bloqueado={0}
-                    control={() => bloqDes(est.id)}
-                />
             </div>);
             /*<p>Todo bien con Usuarios</p>);*/
     }

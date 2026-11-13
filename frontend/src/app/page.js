@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import Button from '@/components/Button';
 import Input from '@/components/Input';
-
+import styles from "./page.module.css"
 export default function Home() {
 
     // AUTHENTICATION
@@ -23,11 +23,13 @@ export default function Home() {
         setlogreg(false)
         setUser("")
         setPassword("")
+        setEmail("")
+        setPass("")
     }
 
     // LOGIN
 
-    const [user, setUser] = useState("")
+    const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const router = useRouter()
     
@@ -45,7 +47,11 @@ export default function Home() {
     }
 
     const login = () => {
-        const verif = {email:email,password:password}
+        const verif = {
+            email:email,
+            password:password
+        }
+        console.log(verif)
         fetch(`http://localhost:4000/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -55,10 +61,11 @@ export default function Home() {
         .then((data) => {
             if (data.ok) {
                 localStorage.setItem("usuario", JSON.stringify(data.usuario))
+                console.log(data.usuario)
                 if (data.usuario.admin) {
-                    router.replace("http://localhost:3000/admin")
+                   router.push("/admin")
                 } else {
-                    router.replace("http://localhost:3000/menu")
+                    router.push(`/menu?user=${data.usuario.username}`)
                 }
             }else{
                 alert(data.mensaje)
@@ -68,8 +75,8 @@ export default function Home() {
     }
 
     // REGISTER
-
-    const [email, setEmail] = useState("")
+    
+    const [user, setUser] = useState("")
     const [pass, setPass] = useState("")
 
     const emailSetter = (event) => {
@@ -88,15 +95,16 @@ export default function Home() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(newUser)
             })
-            res => res.json()
-            data => console.log("actualizado", data)
-            
             .then((res) => res.json())
             .then((data) => {
             if (!data.ok) {
+                console.log("actualizado", data)
                 alert(data.mensaje)
                 return
-            }})
+            }
+            log()
+            alert("Cuenta registrada")
+            })
         } else {
             alert("La contraseña no coincide con su repetición")
             return
@@ -105,32 +113,37 @@ export default function Home() {
     }
     
     return(
-        <>
-            <div>
-                <Button onClick={log} txt="Iniciar sesión"></Button>
-                <Button onClick={reg} txt="Registrarme"></Button>
-                <div>
-                    {logreg ?
-                    <>
-                    <Input placeholder="Email" onChange={emailSetter}></Input>
-                    <Input type="password" placeholder="Contraseña" onChange={passwordSetter}></Input>
-                    <Button onClick={login} disabled={password === "" || email === ""} txt="Entrar"></Button>
-                    </>
-                    :
-                    <>
-                    <Input placeholder="Username" onChange={userSetter}></Input>
-                    <Input type="email" placeholder="Email" onChange={emailSetter}></Input>
-                    <Input type="password" placeholder="Contraseña" onChange={passwordSetter}></Input>
-                    <Input type="password" placeholder="Repetir contraseña" onChange={passSetter}></Input>
-                    <Button onClick={register} disabled={password === "" || user ==="" || email ==="" || pass ===""} txt="Registrarse"></Button>
-                    </>}
-                </div>
+        <main className={styles.pagina}>
+            <div className={styles.contenido}>
+                    <section>
+                    <div className={styles.tabs}>
+                        <Button onClick={log} txt="Iniciar sesión"/>
+                        <Button onClick={reg} txt="Registrarme"/>
+                    </div>
+                    <div className={styles.panel}>
+                        {logreg ?
+                        <>
+                        <Input placeholder="Email" onChange={emailSetter}/>
+                        <Input type="password" placeholder="Contraseña" onChange={passwordSetter}/>
+                        <Button onClick={login} disabled={password === "" || email === ""} txt="Entrar"/>
+                        </>
+                        :
+                        <>
+                        <Input placeholder="Username" onChange={userSetter}/>
+                        <Input type="email" placeholder="Email" onChange={emailSetter}/>
+                        <Input type="password" placeholder="Contraseña" onChange={passwordSetter}/>
+                        <Input type="password" placeholder="Repetir contraseña" onChange={passSetter}/>
+                        <Button onClick={register} disabled={password === "" || user ==="" || email ==="" || pass ===""} txt="Registrarse"/>
+                        </>}
+                    </div>
+                </section>
+                <aside className={styles.ayuda}>
+                    <h2 className={styles.ayudaTitulo}>Como jugar</h2>
+                    <img alt="lorem"></img>
+                    <h3 className={styles.paso}>1. Escribí una frase</h3>
+                    <p className={styles.descripcion}>Todos escriben una frase que otro jugador va a dibujar</p>
+                </aside>
             </div>
-            <div>
-                <h2>Como jugar</h2>
-                <img alt="lorem"></img>
-                <p>Todos escriben una frase que otro jugador va a dibujar</p>
-            </div>
-        </>
+        </main>
     )
 }

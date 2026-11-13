@@ -1,6 +1,5 @@
 // Tarea 7: frases sugeridas, moderación de pasos y bloqueo de usuarios.
 const { realizarQuery } = require("../modulos/mysql")
-const { soloLogueado, soloAdmin } = require("../modulos/permisos")
 
 const MAX_FRASE = 200
 
@@ -15,11 +14,10 @@ function errorServidor(res, error) {
 
 module.exports = (app) => {
     // Lo que empieza con /admin es solo para administradores
-    app.use("/admin", soloAdmin)
 
     /* A partir de aca se trabaja con las frases sugeridas */
     // Trae una frase al azar para la pantalla de escribir. 
-    app.get("/frases/azar", soloLogueado, async (req, res) => {
+    app.get("/frases/azar", async (req, res) => {
         try {
             const frases = await realizarQuery("SELECT frase FROM SuggestedFrases ORDER BY RAND() LIMIT 1")
             if (frases.length === 0) {
@@ -35,6 +33,7 @@ module.exports = (app) => {
     app.get("/admin/frases", async (req, res) => {
         try {
             const frases = await realizarQuery("SELECT id, frase FROM SuggestedFrases ORDER BY id DESC")
+            console.log("Me ejecute /admin/frases")
             res.json({ ok: true, frases })
         } catch (error) {
             errorServidor(res, error)
@@ -139,20 +138,24 @@ module.exports = (app) => {
     // Bloquea o desbloquea. Recibe { blocked: true } o { blocked: false }
     app.put("/admin/usuarios/bloqueo", async (req, res) => {
         try {
-            const id = Number(req.body.id)
+            const id = req.body.id
+            console.log(id)
             const blocked = req.body.blocked ? 1 : 0
 
-            const usuarios = await realizarQuery("SELECT admin FROM Users WHERE id = ?", [id])
+            const usuarios = await realizarQuery("SELECT admin FROM Users WHERE id = ?",[id])
+            console.log(usuarios)
             if (usuarios.length === 0) {
                 return res.json({ ok: false, mensaje: "El usuario no existe" })
-            }
-            // un administrador no se puede bloquear (ni a sí mismo)
-            if (usuarios[0].admin) {
-                return res.json({ ok: false, mensaje: "No se puede bloquear a un administrador" })
-            }
-
+            }else{
+                if (usuarios[0].admin) {
+                    // un administrador no se puede bloquear (ni a si mismo)
+                    return res.json({ ok: false, mensaje: "No se puede bloquear a un administrador" })
+                }else{
+                    
             await realizarQuery("UPDATE Users SET blocked = ? WHERE id = ?", [blocked, id])
             res.json({ ok: true, blocked: blocked === 1 })
+                }
+            }
         } catch (error) {
             errorServidor(res, error)
         }
