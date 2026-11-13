@@ -7,15 +7,6 @@ const { realizarQuery } = require("../modulos/mysql");
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// se pone credentials true para que el navegador guarde y mande la cookie de la sesión
-app.use(
-  cors({
-    origin: ["http://localhost:3000", "http://localhost:3001"],
-    credentials: true,
-  }),
-);
-app.use(express.json());
-
 const sessionMiddleware = session({
   secret: "supersarasa",
   resave: true,
@@ -23,7 +14,6 @@ const sessionMiddleware = session({
 });
 app.use(sessionMiddleware);
 
-require("./routes/salas")(app);
 const server = app.listen(PORT, () => {
   console.log(`Servidor NodeJS corriendo en http://localhost:${PORT}/`);
 });
@@ -36,34 +26,146 @@ const io = new Server(server, {
   },
 });
 
-// esto es para que los sockets también puedan leer la sesión (socket.request.session.user)
-io.use((socket, next) => {
-  sessionMiddleware(socket.request, {}, next);
-});
 
-const {
-  MIN_JUGADORES,
-  buscarSala,
-  motivoDeRechazo,
-  agregarJugador,
-  quitarJugador,
-  datosSala,
-} = require("./modulos/logicaSalas");
 
-const {
-  MARGEN_SEGUNDOS,
-  duracionDeRonda,
-  crearPartida,
-  tareaDeRonda,
-  guardarPaso,
-  todosEnviaron,
-  siguienteRonda,
-} = require("./modulos/logicaPartida");
+// SALA Y PARTIDA
 
-// esto es para esperar unos segundos antes de sacar a un jugador desconectado
+
+// mientras no hay ninguna sala, vale null
+let sala = null;
+
+const MIN_JUGADORES = 2;
+const MAX_JUGADORES = 8;
+
+// segundos de cada tipo de ronda 
+const TIEMPO_ESCRIBIR = 60;
+const TIEMPO_DIBUJAR = 60;
+const TIEMPO_DESCRIBIR = 30;
+// segundos de mas que espera el back, para que lleguen los envios automaticos del front
+const MARGEN_SEGUNDOS = 3;
+// segundos que se espera antes de sacar a un jugador desconectado
 const ESPERA_RECONEXION = 3000;
+ 
+// SALA
+// basicamente se manejan las funciones de la sala de espera: codigo, lista de jugadores y sacar jugadores
 
-const MAX_FRASE = 200;
+// código de 5 números
+function generarCodigo() {
+  return String(Math.floor(10000 + Math.random() * 90000));
+}
+
+// le manda a todos los de la sala la lista actualizada de jugadores
+function avisarEstado() {
+  io.to(sala.codigo).emit("estadoSala", {
+    codigo: sala.codigo,
+    anfitrion: sala.anfitrion,
+    minimo: MIN_JUGADORES,
+    maximo: MAX_JUGADORES,
+    jugadores: sala.jugadores.map((j) => ({ id: j.id, username: j.username })),
+  });
+}
+
+// si se va el anfitrión, pasa a ser anfitrión el siguiente. Si no hay nadie, se borra la sala
+function quitarJugador(idJugador) {
+  sala.jugadores = sala.jugadores.filter((j) => j.id !== idJugador);
+  if (sala.jugadores.length === 0) {
+    sala = null;
+    return;
+  }
+  if (sala.anfitrion === idJugador) {
+    sala.anfitrion = sala.jugadores[0].id;
+  }
+  avisarEstado();
+}
+
+// PARTIDA
+// las funciones de la partida: rondas, albumes, el reloj y el guardado en la base de datos
+
+function segundosDeRonda() {
+  if (sala.ronda === 0) {
+    return TIEMPO_ESCRIBIR;
+  }
+  if (sala.ronda % 2 === 1) { // si es impar es de dibujar
+    return TIEMPO_DIBUJAR;
+  }
+  return TIEMPO_DESCRIBIR;
+}
+
+// el álbum que le toca a un jugador en esta ronda
+function albumDe(idJugador) {
+  let posicion = sala.jugadores.findIndex((j) => j.id === idJugador) - sala.ronda;
+  if (posicion < 0) {
+    posicion = posicion + sala.jugadores.length; // se da la vuelta
+  }
+  return sala.albumes[posicion];
+}
+
+// guarda un paso en el álbum que le toca al jugador
+function guardarPaso(jugador, contenido, esTexto) {
+  albumDe(jugador.id).pasos.push({
+    idAutor: jugador.id,
+    autor: jugador.username,
+    esTexto: esTexto,
+    contenido: contenido,
+  });
+  sala.enviaron.push(jugador.id);
+}
+
+// arma lo que se le muestra al jugador según le toque describir o dibujar
+function datosDeRonda(idJugador) {
+  // lo que le llegó es el paso de la ronda anterior (en la ronda 0 no le llega nada)
+  let recibido = null;
+  if (sala.ronda > 0) {
+    recibido = albumDe(idJugador).pasos[sala.ronda - 1];
+  }
+  return {
+    ronda: sala.ronda + 1, // el front muestra 1/4, 2/4...
+    totalRondas: sala.jugadores.length,
+    recibido: recibido,
+    segundos: segundosDeRonda(),
+    enviado: sala.enviaron.includes(idJugador),
+  };
+}
+
+function empezarPartida() {
+  sala.estado = "jugando";
+  sala.ronda = 0;
+  sala.albumes = sala.jugadores.map((j) => ({ idDueno: j.id, dueno: j.username, pasos: [] }));
+  empezarRonda();
+}
+
+function empezarRonda() {
+  sala.enviaron = [];
+  sala.reloj = setTimeout(terminarRonda, (segundosDeRonda() + MARGEN_SEGUNDOS) * 1000); // termina la ronda cuando se acaba el tiempo
+}
+
+// se llama cuando mandaron todos o cuando se acabó el tiempo
+function terminarRonda() {
+  clearTimeout(sala.reloj);
+  // al que no mandó nada se le guarda "(sin respuesta)"
+  sala.jugadores.forEach((j) => {
+    if (!sala.enviaron.includes(j.id)) {
+      guardarPaso(j, "(sin respuesta)", true);
+    }
+  });
+  sala.ronda++;
+  if (sala.ronda < sala.jugadores.length) {
+    empezarRonda();
+    io.to(sala.codigo).emit("nextStep", { nextstep: true });
+  } else {
+    sala.estado = "terminada";
+    guardarPartida();
+    io.to(sala.codigo).emit("nextStep", { nextstep: false });
+  }
+}
+
+// PEDIDOS HTTP
+
+
+// le manda a todos los de la sala la lista actualizada de jugadores
+function avisarEstado() {
+  io.to(sala.codigo).emit("estadoSala", datosSala());
+}
 
 function fraseValida(frase) {
   return frase !== "" && frase.length <= MAX_FRASE;
