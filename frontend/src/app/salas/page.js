@@ -31,14 +31,14 @@ export default function Sala() {
 
     // quién soy (lo guardó el login). Si no inició sesión, vuelve al inicio
     useEffect(() => {
-         const guardado = localStorage.getItem("usuario")
-         console.log("guardado",JSON.parse(guardado))
-         if (!guardado) {
-             router.replace("/")
-             return
-         }
-         setUsuario(JSON.parse(guardado))
-     }, [router])
+        const guardado = localStorage.getItem("usuario")
+        console.log("guardado", JSON.parse(guardado))
+        if (!guardado) {
+            router.replace("/")
+            return
+        }
+        setUsuario(JSON.parse(guardado))
+    }, [router])
 
     // entra a la sala y escucha lo que manda el back 
     useEffect(() => {
@@ -63,16 +63,11 @@ export default function Sala() {
             router.replace("/menu")
         })
 
-        // esta pantalla no se hizo todavía
-        socket.on("partidaIniciada", (data) => {
-            router.push(`/partida?codigo=${data.codigo}`)
+        socket.on("partidaIniciada", () => {
+            router.push("/escribir")
         })
 
-        socket.emit("unirseSala", {
-            codigo,
-            usuario,
-            id
-        })
+        socket.emit("unirseSala", { codigo, usuario: JSON.parse(localStorage.getItem("usuario")) })
 
         return () => {
             socket.off("estadoSala")
@@ -81,7 +76,21 @@ export default function Sala() {
             socket.off("partidaIniciada")
         }
     }, [socket, codigo, router])
-     const copiar = () => {
+
+    const expulsar = (idJugador) => {
+        socket.emit("expulsarJugador", { usuario, idJugador })
+    }
+
+    const iniciarPartida = () => {
+        socket.emit("iniciarPartida", { usuario })
+    }
+
+    const salir = () => {
+        socket.emit("salirSala", { usuario })
+        router.replace("/menu")
+    }
+
+    const copiar = () => {
         navigator.clipboard
             .writeText(codigo)
             .then(() => {
@@ -90,7 +99,7 @@ export default function Sala() {
             })
             .catch(() => alert("No se pudo copiar, escribilo a mano"))
     }
- 
+
     if (!sala || !usuario) {
         return (
             <div className={styles.pantalla}>
@@ -99,7 +108,7 @@ export default function Sala() {
             </div>
         )
     }
- 
+
     const soyAnfitrion = sala.anfitrion === usuario.id
 
     // Ahora se recorren las filas de los jugadores que ya entraron (map recorre la lista de jugadores)
@@ -120,32 +129,26 @@ export default function Sala() {
     lugaresLibres.forEach((n) => {
         filas.push(<FilaJugador key={"vacio" + n} vacia={true} />)
     })
-    
-    const iniciarPartida = () => {
-        //socket.emit("iniciarPartida", { codigo })
-    }
 
-    const expulsar = (idJugador) => {
-        //socket.emit("expulsarJugador", { codigo, idJugador })
-    }
+    
 
     return (
         <div className={styles.pantalla}>
             <Header />
- 
+
             <div className={styles.panel}>
                 <h1>Sala de espera</h1>
- 
+
                 <div className={styles.codigo}>
                     <span>Código de la sala</span>
                     <strong>{sala.codigo}</strong>
                     <Button txt="Compartir código" tipo="menta" chico={true} onClick={() => setVerCompartir(true)} />
                 </div>
- 
+
                 <p> Jugadores: {sala.jugadores.length} de {sala.maximo} (mínimo {sala.minimo}) </p>
- 
+
                 <div className={styles.lista}>{filas}</div>
-                
+
                 <div className={styles.botones}>
                     {soyAnfitrion ? (
                         <Button
@@ -157,9 +160,9 @@ export default function Sala() {
                     ) : (
                         <p>Esperando a que el anfitrión inicie la partida...</p>
                     )}
-                    <Button txt="Salir de la sala" onClick={() =>{router.back()}} />
+                    <Button txt="Salir de la sala" onClick={() => { router.back() }} />
                 </div>
-            </div> 
+            </div>
 
             {verCompartir && (
                 // <div className={styles.fondoModal} onClick={() => setVerCompartir(false)}>
@@ -173,14 +176,14 @@ export default function Sala() {
                 //     </div>
                 // </div>
                 <Popup open={verCompartir} onClose={() => setVerCompartir(false)} modal nested>
-                    <div className={styles.fondoModal}>    
+                    <div className={styles.fondoModal}>
                         <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
                             <h2>Compartí el código</h2>
-                                <p>Tus amigos tienen que elegir &quot;Unirse a una sala&quot; y escribir este código:</p>
-                                <strong className={styles.codigoGrande}>{sala.codigo}</strong>
-                                <Button txt={copiado ? "¡Copiado!" : "Copiar código"} tipo="menta" onClick={copiar} />
-                                <Button txt="Cerrar" onClick={() => setVerCompartir(false)} />
-                        </div>      
+                            <p>Tus amigos tienen que elegir &quot;Unirse a una sala&quot; y escribir este código:</p>
+                            <strong className={styles.codigoGrande}>{sala.codigo}</strong>
+                            <Button txt={copiado ? "¡Copiado!" : "Copiar código"} tipo="menta" onClick={copiar} />
+                            <Button txt="Cerrar" onClick={() => setVerCompartir(false)} />
+                        </div>
                     </div>
                 </Popup>
             )}

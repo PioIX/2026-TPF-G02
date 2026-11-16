@@ -4,45 +4,39 @@ import styles from "./page.module.css"
 import { useRouter } from "next/navigation";
 import { useSocket } from "@/hooks/useSocket";
 import { useSearchParams } from "next/navigation";
-export default function Menu(){
+export default function Menu() {
     const searchParams = useSearchParams();
-    const {socket,isConnected} = useSocket()
+    const { socket, isConnected } = useSocket()
     const usuario = searchParams.get("user")
-    const [nuevo,setNuevo] = useState("")
-    const [codigo,setCodigo] = useState("")
-    const [datos,setDatos] = useState()
+    const [nuevo, setNuevo] = useState("")
+    const [codigo, setCodigo] = useState("")
+    const [datos, setDatos] = useState()
     const router = useRouter()
     const volver = () => {
         router.replace("http://localhost:3000/")
     }
-    const crear = () =>{
+    const crear = () => {
         const verif = {
-            user: usuario
+            usuario: JSON.parse(localStorage.getItem("usuario"))
         }
-        fetch("http://localhost:4000/salas",{
+        fetch("http://localhost:4000/salas", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(verif)
         })
         .then((res) => res.json())
         .then((data) => {
-            let datosAux = {
-                codigo:data.data.codigo,
-                id:data.data.id
-            } 
-            router.push(`/salas?codigo=${datosAux.codigo}&user=${usuario}&id=${datosAux.id}`)
+            if (data.ok) {
+                router.push(`/salas?codigo=${data.codigo}`)
+            } else {
+                alert(data.mensaje)
+            }
         })
     }
-    const unirse = () =>{
-        fetch(`http://localhost:4000/salas?codigo=${codigo}`)
-        .then(response => response.json())
-        .then(data => {
-            setDatos({
-                codigo:data.codigo,
-                username:usuario
-            })})
-        }
-    return(
+    const unirse = () => {
+        router.push(`/salas?codigo=${codigo}`)
+    }
+    return (
         <main className={styles.pagina}>
             <header>
                 <button className={styles.salir} onClick={volver}>
@@ -52,23 +46,23 @@ export default function Menu(){
                 <h1>¿Qué queres hacer?</h1>
             </header>
             <section className={styles.opciones}>
-                <div className={styles.tarjeta}> 
+                <div className={styles.tarjeta}>
                     <h2 className={styles.tarjetaTitulo}>CREAR SALA</h2>
-                    <span className={styles.circulo}/>    
+                    <span className={styles.circulo} />
                     <p className={styles.texto} >Crea una sala nueva y comparti el codigo con tus amigos.</p>
                     <button className={styles.boton} onClick={crear}>
-                        <span className={styles.play}/>
+                        <span className={styles.play} />
                         CREAR SALA</button>
                 </div>
-                <div  className={styles.tarjeta}>
+                <div className={styles.tarjeta}>
                     <h2 className={styles.tarjetaTitulo} >UNIRSE A SALA</h2>
                     <p className={styles.texto} >Ingresa el código que te pasaron</p>
                     <input
                         className={styles.codigo}
                         type="text"
-                        placeholder={"AAAAA"}
+                        placeholder={"12345"}
                         value={codigo}
-                        onChange={(e) => {setCodigo(e.target.value)}}
+                        onChange={(e) => { setCodigo(e.target.value) }}
                         maxLength={5}
                     />
                     <button className={styles.boton} disabled={codigo.length < 5} onClick={unirse}>

@@ -123,16 +123,16 @@ export default function Home() {
                     <div className={styles.panel}>
                         {logreg ?
                         <>
-                        <Input placeholder="Email" onChange={emailSetter}/>
-                        <Input type="password" placeholder="Contraseña" onChange={passwordSetter}/>
+                        <Input placeholder="Email" value={email} onChange={emailSetter}/>
+                        <Input type="password" placeholder="Contraseña" value={password} onChange={passwordSetter}/>
                         <Button onClick={login} disabled={password === "" || email === ""} txt="Entrar"/>
                         </>
                         :
                         <>
-                        <Input placeholder="Username" onChange={userSetter}/>
-                        <Input type="email" placeholder="Email" onChange={emailSetter}/>
-                        <Input type="password" placeholder="Contraseña" onChange={passwordSetter}/>
-                        <Input type="password" placeholder="Repetir contraseña" onChange={passSetter}/>
+                        <Input placeholder="Username" value={user} onChange={userSetter}/>
+                        <Input type="email" placeholder="Email" value={email} onChange={emailSetter}/>
+                        <Input type="password" placeholder="Contraseña" value={password} onChange={passwordSetter}/>
+                        <Input type="password" placeholder="Repetir contraseña" value={pass} onChange={passSetter}/>
                         <Button onClick={register} disabled={password === "" || user ==="" || email ==="" || pass ===""} txt="Registrarse"/>
                         </>}
                     </div>
