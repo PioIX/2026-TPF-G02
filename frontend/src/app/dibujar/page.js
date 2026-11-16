@@ -1,11 +1,13 @@
-"use client";
+"use client"
 
-import Button from "@/components/Button";
-import Input from "@/components/Input";
-import { useRef, useState,useEffect } from "react";
-import styles from "./page.module.css";
+import Button from "@/components/Button"
+import Input from "@/components/Input"
+import { useRef, useState,useEffect } from "react"
+import styles from "./page.module.css"
+import { useSocket } from "@/hooks/useSocket"
 import { useRouter } from "next/navigation"
 export default function Draw() {
+    const { socket } = useSocket()
     const [color, setColor] = useState("#000000");
     const [grosor, setGrosor] = useState(5)
     const [datos, setDatos] = useState({});
@@ -61,7 +63,7 @@ export default function Draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    let user=sessionStorage.getItem("user")
+    //let user=sessionStorage.getItem("user")
 
     const colorSetter = (event) => {
         setColor(event.target.value)
@@ -91,18 +93,21 @@ export default function Draw() {
         socket.emit("terminado")
     }
 
-    socket.on("nextStep", (data) => {//next step
-        socket.emit("envio",datos)
-        if /*Validacion de cual es el siguiente paso*/(data.nextstep==true) {
-            router.replace("http://localhost:3000/escribir")
-        } else {
-            router.replace("http://localhost:3000/albumsrevelacion")
-        }
-    })
+    useEffect(() => {
+        socket.on("nextStep", (data) => {
+            socket.emit("envio",datos)
+            if(data.nextstep==true) {
+                router.push("/escribir")
+            } else {
+                router.push("/albumsrevelacion")
+            }
+        })
 
-    socket.on("recepcion", (data) => {
-        setfrase(data.content)
-    })
+        socket.on("recepcion", (data) => {
+            setFrase(data.recibido?.contenido || "")
+        })
+    }, [socket]);
+    
     return (
         <>  
             <header>
@@ -134,8 +139,8 @@ export default function Draw() {
                 onMouseLeave={parar}
                 onMouseMove={dibujar}
             />
-            <Input type="color" onChange={colorSetter}/>
-            <Input type="range" value={grosor} step="1" min="1" max="20" onChange={grosorSetter}/>
+            <input type="color" onChange={colorSetter}/>
+            <input type="range" value={grosor} step="1" min="1" max="20" onChange={grosorSetter}/>
             <Button onClick={limpiar} txt="Limpiar" />
             <Button onClick={terminar} txt="TODO LISTO" />
         </>

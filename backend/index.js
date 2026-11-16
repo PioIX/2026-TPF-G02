@@ -41,13 +41,13 @@ const MIN_JUGADORES = 2;
 const MAX_JUGADORES = 8;
 
 // segundos de cada tipo de ronda 
-const TIEMPO_ESCRIBIR = 60;
+const TIEMPO_ESCRIBIR = 20;
 const TIEMPO_DIBUJAR = 60;
-const TIEMPO_DESCRIBIR = 30;
+const TIEMPO_DESCRIBIR = 20;
 // segundos de mas que espera el back, para que lleguen los envios automaticos del front
 const MARGEN_SEGUNDOS = 3;
 // segundos que se espera antes de sacar a un jugador desconectado
-const ESPERA_RECONEXION = 3000;
+const ESPERA_RECONEXION = 30
  
 // SALA
 // basicamente se manejan las funciones de la sala de espera: codigo, lista de jugadores y sacar jugadores
