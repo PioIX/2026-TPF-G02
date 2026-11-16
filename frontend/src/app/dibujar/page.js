@@ -107,7 +107,8 @@ export default function Draw() {
 
         socket.on("recepcion", (data) => {
             console.log("LLEGÓ RECEPCIÓN:", data)
-            setFrase(data.contenido)
+            setFrase(data.recibido.contenido)
+            console.log(frase)
         })
     }, [socket]);
 

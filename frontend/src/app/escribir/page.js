@@ -39,6 +39,7 @@ export default function Escribir() {
     //SOCKET
 
     function terminar() {
+        console.log(JSON.parse(localStorage.getItem("usuario")), texto)
         socket.emit("envio", { usuario: JSON.parse(localStorage.getItem("usuario")), contenido: texto, esTexto:true})
         setEnviado(true)
     }
@@ -56,6 +57,7 @@ export default function Escribir() {
 
         socket.on("recepcion", (data) => {
             if (data.recibido && !data.recibido.esTexto) {
+                console.log(data.recibido," ",data.recibido.contenido)
                 setDibujo(data.recibido.contenido)
             }
             setRonda(data.ronda)

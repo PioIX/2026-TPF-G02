@@ -511,4 +511,8 @@ io.on("connection", (socket) => {
   });
 
   // PARTIDA
+  socket.on("envio",(data) => {
+    guardarPaso(data.usuario,data.contenido,data.esTexto)
+  })
+
 });
