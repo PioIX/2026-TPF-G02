@@ -63,7 +63,7 @@ export default function Draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    //let user=sessionStorage.getItem("user")
+    let user=localStorage.getItem("user")
 
     const colorSetter = (event) => {
         setColor(event.target.value)
@@ -79,7 +79,7 @@ export default function Draw() {
     }, []);
     useEffect(() => {
         if(tiempo === 0){
-            router.replace("http://localhost:3000/dibujar")
+            router.push("/dibujar")
         }
     })
 
@@ -90,12 +90,13 @@ export default function Draw() {
     function terminar() {
         const guardado = canvasRef.current.toDataURL("image/png", 0.8)
         setDatos({ link: guardado, user: user })
-        socket.emit("terminado")
+        socket.emit("envio",datos)
     }
 
     useEffect(() => {
+        if (!socket) return
         socket.on("nextStep", (data) => {
-            socket.emit("envio",datos)
+            
             if(data.nextstep==true) {
                 router.push("/escribir")
             } else {
@@ -109,8 +110,8 @@ export default function Draw() {
     }, [socket]);
     
     return (
-        <>  
-            <header>
+        <main className={styles.pagina}>  
+            <header className={styles.header}>
                 {<svg
                     className={styles.cronometro}
                     viewBox="0 0 64 64"
@@ -131,18 +132,26 @@ export default function Draw() {
                         transform="rotate(-90 32 38)"
                     />
                 </svg> }
-                <h1>{frase}</h1>
+               <p className={styles.instruccion}>Dibuja esta frase</p>
+                {frase && <h1 className={styles.frase}>{frase}</h1>}
             </header>
-            <canvas ref={canvasRef} width={600} height={400} style={{ backgroundColor: "white" }}
-                onMouseDown={empezar}
-                onMouseUp={parar}
-                onMouseLeave={parar}
-                onMouseMove={dibujar}
-            />
-            <input type="color" onChange={colorSetter}/>
-            <input type="range" value={grosor} step="1" min="1" max="20" onChange={grosorSetter}/>
-            <Button onClick={limpiar} txt="Limpiar" />
-            <Button onClick={terminar} txt="TODO LISTO" />
-        </>
+            <div className={styles.contenido}>
+                <canvas ref={canvasRef} width={600} height={400} style={{ backgroundColor: "white" }}
+                    onMouseDown={empezar}
+                    onMouseUp={parar}
+                    onMouseLeave={parar}
+                    onMouseMove={dibujar}
+                />
+            </div>
+            <div className={styles.controles}>
+                <input type="color" onChange={colorSetter} className={styles.color}/>
+                <input type="range" value={grosor} step="1" min="1" max="20" onChange={grosorSetter} className={styles.grosor}/>
+                <Button onClick={limpiar} txt="Limpiar" />
+                <button onClick={terminar} className={styles.hecho}>
+                    <span className={styles.play} />
+                    TODO LISTO
+                </button>
+            </div>
+        </main>
     );
 }

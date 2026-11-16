@@ -5,14 +5,12 @@ import { useRouter } from "next/navigation"
 import { useSocket } from "@/hooks/useSocket"
 export default function Escribir() {
     const { socket } = useSocket()
-    const [datos, setDatos] = useState({});
     const router = useRouter()
     const CIRCUNFERENCIA = 2 * Math.PI * 9
     const [tiempo, setTiempo] = useState(20)
     const [tiempoTotal, setTiempoTotal] = useState(20)
     const [ronda, setRonda] = useState(1)
     const [enviado, setEnviado] = useState(false)
-
     const [texto, setTexto] = useState("")
     const [dibujo, setDibujo] = useState("")
     const fraccion = tiempo / tiempoTotal
@@ -47,8 +45,8 @@ export default function Escribir() {
     useEffect(() => {
         if (!socket) return;
         socket.emit("unirseSala", { usuario: JSON.parse(localStorage.getItem("usuario")) })
-        socket.on("nextStep", (data) => {//next step
-            if /*Validacion de cual es el siguiente paso*/(data.nextstep == true) {
+        socket.on("nextStep", (data) => {
+            if (data.nextstep == true) {
                 router.push("/dibujar")
             } else {
                 router.push("/albumsrevelacion")

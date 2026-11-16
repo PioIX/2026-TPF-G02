@@ -65,6 +65,7 @@ export default function Home() {
                 if (data.usuario.admin) {
                    router.push("/admin")
                 } else {
+                    localStorage.setItem('user', data.usuario.username)
                     router.push(`/menu?user=${data.usuario.username}`)
                 }
             }else{
