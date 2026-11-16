@@ -31,13 +31,13 @@ export default function Sala() {
 
     // quién soy (lo guardó el login). Si no inició sesión, vuelve al inicio
     useEffect(() => {
-        const guardado = localStorage.getItem("usuario")
-        console.log("guardado", JSON.parse(guardado))
-        if (!guardado) {
+        const user = localStorage.getItem("usuario")
+        console.log("user", JSON.parse(user))
+        if (!user) {
             router.replace("/")
             return
         }
-        setUsuario(JSON.parse(guardado))
+        setUsuario(JSON.parse(user))
     }, [router])
 
     // entra a la sala y escucha lo que manda el back 

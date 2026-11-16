@@ -51,7 +51,6 @@ export default function Home() {
             email:email,
             password:password
         }
-        console.log(verif)
         fetch(`http://localhost:4000/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -61,11 +60,9 @@ export default function Home() {
         .then((data) => {
             if (data.ok) {
                 localStorage.setItem("usuario", JSON.stringify(data.usuario))
-                console.log(data.usuario)
                 if (data.usuario.admin) {
                    router.push("/admin")
                 } else {
-                    localStorage.setItem('user', data.usuario.username)
                     router.push(`/menu?user=${data.usuario.username}`)
                 }
             }else{

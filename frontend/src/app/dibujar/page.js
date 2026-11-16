@@ -1,7 +1,6 @@
 "use client"
 
 import Button from "@/components/Button"
-import Input from "@/components/Input"
 import { useRef, useState,useEffect } from "react"
 import styles from "./page.module.css"
 import { useSocket } from "@/hooks/useSocket"
@@ -10,9 +9,8 @@ export default function Draw() {
     const { socket } = useSocket()
     const [color, setColor] = useState("#000000");
     const [grosor, setGrosor] = useState(5)
-    const [datos, setDatos] = useState({});
-    const canvasRef = useRef(null);
-    const dibujando = useRef(false);
+    const canvasRef = useRef(null)
+    const dibujando = useRef(false)
     const ultimo = useRef({ x: 0, y: 0 });
     const [tiempo,setTiempo] = useState(60)
     const circunferencia = 2 * Math.PI * 9 
@@ -89,8 +87,8 @@ export default function Draw() {
     
     function terminar() {
         const guardado = canvasRef.current.toDataURL("image/png", 0.8)
-        setDatos({ link: guardado, user: user })
-        socket.emit("envio",datos)
+        const datubi = {link: guardado,user: user}
+        socket.emit("envio",datubi)
     }
 
     useEffect(() => {
@@ -105,6 +103,8 @@ export default function Draw() {
         })
 
         socket.on("recepcion", (data) => {
+            console.log("LLEGÓ RECEPCIÓN:", data)
+            console.log("FRASE RECIBIDA:", data.recibido?.contenido)
             setFrase(data.recibido?.contenido || "")
         })
     }, [socket]);
