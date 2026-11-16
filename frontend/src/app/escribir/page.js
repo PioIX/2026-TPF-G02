@@ -49,9 +49,9 @@ export default function Escribir() {
         socket.emit("unirseSala", { usuario: JSON.parse(localStorage.getItem("usuario")) })
         socket.on("nextStep", (data) => {//next step
             if /*Validacion de cual es el siguiente paso*/(data.nextstep == true) {
-                router.replace("http://localhost:3000/dibujar")
+                router.push("/dibujar")
             } else {
-                router.replace("http://localhost:3000/albumsrevelacion")
+                router.push("/albumsrevelacion")
             }
         })
 
@@ -129,7 +129,8 @@ export default function Escribir() {
                 <input className={styles.input}
                     value={texto}
                     placeholder={"Un arbol con una manzana"}
-                    onChange={(e) => { setTexto(e.target.value) }} />
+                    onChange={(e) => { setTexto(e.target.value) }} 
+                    disabled={enviado}/>
 
                 <button className={styles.hecho} onClick={terminar} disabled={enviado || texto === ""}>
                     <span className={styles.play} />
