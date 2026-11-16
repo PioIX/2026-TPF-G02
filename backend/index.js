@@ -139,6 +139,7 @@ function empezarPartida() {
 
 function empezarRonda() {
   sala.enviaron = [];
+  const ronda = sala.ronda;
   setTimeout(() => {
     // termina la ronda si se acabó el tiempo y por seguir en la misma ronda (no mandaron todos)
     if (sala !== null && sala.ronda === ronda) {
@@ -157,6 +158,7 @@ function terminarRonda() {
   });
   sala.ronda++;
   if (sala.ronda < sala.jugadores.length) {
+    //
     empezarRonda();
     io.to(sala.codigo).emit("nextStep", { nextstep: true });
   } else {
@@ -238,7 +240,7 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   try {
     const usuarios = await realizarQuery(
-      "SELECT id, username, email, password, admin, blocked FROM Users WHERE email = ? AND password = ?", 
+      "SELECT id, username, email, admin, blocked FROM Users WHERE email = ? AND password = ?", 
       [req.body.email.trim(), req.body.password],
     );
     if (usuarios.length === 0) {
@@ -456,7 +458,7 @@ io.on("connection", (socket) => {
     if (sala === null || sala.anfitrion !== data.usuario.id) {
       return error("Solo el anfitrión puede expulsar jugadores");
     }
-    const jugador = sala.jugadores.find((j) => j.id === idJugador);
+    const jugador = sala.jugadores.find((j) => j.id === data.idJugador);
     if (!jugador) {
       return;
     }
