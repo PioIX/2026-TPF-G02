@@ -61,8 +61,6 @@ export default function Draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    let user=localStorage.getItem("user")
-
     const colorSetter = (event) => {
         setColor(event.target.value)
     }
@@ -86,13 +84,18 @@ export default function Draw() {
     //SOCKET
     
     function terminar() {
-        const guardado = canvasRef.current.toDataURL("image/png", 0.8)
-        const datubi = {link: guardado,user: user}
-        socket.emit("envio",datubi)
+        const guardado = canvasRef.current.toDataURL("image/png", 0.8);
+        const data={
+            user:JSON.parse(localStorage.getItem("usuario")),
+            contenido: guardado,
+            esTexto:false
+        }
+        socket.emit("envio", {data})
     }
 
     useEffect(() => {
         if (!socket) return
+        socket.emit("unirseSala", { usuario: JSON.parse(localStorage.getItem("usuario")) })
         socket.on("nextStep", (data) => {
             
             if(data.nextstep==true) {
@@ -104,11 +107,10 @@ export default function Draw() {
 
         socket.on("recepcion", (data) => {
             console.log("LLEGÓ RECEPCIÓN:", data)
-            console.log("FRASE RECIBIDA:", data.recibido?.contenido)
-            setFrase(data.recibido?.contenido || "")
+            setFrase(data.contenido)
         })
     }, [socket]);
-    
+
     return (
         <main className={styles.pagina}>  
             <header className={styles.header}>
@@ -133,7 +135,7 @@ export default function Draw() {
                     />
                 </svg> }
                <p className={styles.instruccion}>Dibuja esta frase</p>
-                {frase && <h1 className={styles.frase}>{frase}</h1>}
+                {frase!== "" && <h1 className={styles.frase}>{frase}</h1>}
             </header>
             <div className={styles.contenido}>
                 <canvas ref={canvasRef} width={600} height={400} style={{ backgroundColor: "white" }}

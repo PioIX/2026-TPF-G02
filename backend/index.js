@@ -104,14 +104,14 @@ function albumDe(idJugador) {
 }
 
 // guarda un paso en el álbum que le toca al jugador
-function guardarPaso(jugador, contenido, esTexto) {
-  albumDe(jugador.id).pasos.push({
-    idAutor: jugador.id,
-    autor: jugador.username,
+function guardarPaso(user,contenido,esTexto) {
+  albumDe(user.id).pasos.push({
+    idAutor: user.id,
+    autor: user.username,
     esTexto: esTexto,
     contenido: contenido,
   });
-  sala.enviaron.push(jugador.id);
+  sala.enviaron.push(user.id);
 }
 
 // arma lo que se le muestra al jugador según le toque describir o dibujar
@@ -451,6 +451,7 @@ io.on("connection", (socket) => {
       socket.emit("recepcion", datosDeRonda(usuario.id));
     } else {
       // acá falta
+      //Ucci: Que falta? Un "Chupala puto"
     }
   });
 
@@ -505,8 +506,9 @@ io.on("connection", (socket) => {
       if (jugador && jugador.socketId === socket.id) {
         quitarJugador(id);
       }
-    }, ESPERA_RECONEXION);
+    }, ESPERA_RECONEXION)
+
   });
 
-  // PARTIDA: falta
+  // PARTIDA
 });

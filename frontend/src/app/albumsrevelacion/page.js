@@ -1,7 +1,9 @@
 "use client"
 import { useEffect, useState } from "react"
+import { useSocket } from "@/hooks/useSocket"
 import Button from "@/components/Button"
 export default function AlbumsRevelacion() {
+    const { socket } = useSocket()
     const [player,setPlayer] = useState("")
     const [anfitrion,setAnfitrion] = useState(false)
     const [content,setContent] = useState({})

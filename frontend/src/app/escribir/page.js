@@ -39,9 +39,10 @@ export default function Escribir() {
     //SOCKET
 
     function terminar() {
-        socket.emit("envio", { usuario: JSON.parse(localStorage.getItem("usuario")), contenido: texto })
+        socket.emit("envio", { usuario: JSON.parse(localStorage.getItem("usuario")), contenido: texto, esTexto:true})
         setEnviado(true)
     }
+
     useEffect(() => {
         if (!socket) return;
         socket.emit("unirseSala", { usuario: JSON.parse(localStorage.getItem("usuario")) })
