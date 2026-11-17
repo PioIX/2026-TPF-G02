@@ -514,5 +514,15 @@ io.on("connection", (socket) => {
   socket.on("envio",(data) => {
     guardarPaso(data.usuario,data.contenido,data.esTexto)
   })
-
+  socket.on("emitea albums", () => {
+    for (let i = 0; i < sala.jugadores.length; i++) {
+      const data = data + albumDe(sala.jugadores[i].id)
+      socket.emit("albums",data)
+    }
+  })
 });
+//albumDe(user.id).pasos.push({
+//    idAutor: user.id,
+//    autor: user.username,
+//    esTexto: esTexto,
+//    contenido: contenido,

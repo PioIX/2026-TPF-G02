@@ -11,22 +11,26 @@ export default function AlbumsRevelacion() {
     const [totalrend,setTotalrend] = useState(null)
     const [players,setPlayers] = useState({})
     
+    //albumDe(user.id).pasos.push({
+//    idAutor: user.id,
+//    autor: user.username,
+//    esTexto: esTexto,
+//    contenido: contenido,
     //SOCKET
+    useEffect(() => {
+        socket.on("albums", (data) => {
+            console.log(data)
+            setContent(data.content)
+            setAnfitrion(data.anfitrion)
+            setPlayers(data.players)
+        })
+    }, [socket]);
 
-    socket.on("albums", (data) => {
-        setContent(data.content)
-        setAnfitrion(data.anfitrion)
-        setPlayers(data.players)
-    })
+    function llamado() {
+        socket.emit("emitea albums")
+    }
 
     //PAGINA
-
-    {players.map(player => (
-        <div key={player.id}>
-            <img src={player.img}></img>
-            <p>{player.nombre}</p>
-        </div>
-    ))}
 
     let a=0
     let b=0
@@ -34,7 +38,7 @@ export default function AlbumsRevelacion() {
     function revelar() {
         for (let i = 0; i < content.length; i++) {
             if (a>content.length) {
-                setTotalrend(<h3>Se termino, JUUUUUUUUUUAQUIIIIIIIIIIII</h3>)
+                setTotalrend(<h3>SE TERMINO.</h3>)
                 return
             }
             if (i==a) {
@@ -64,41 +68,16 @@ export default function AlbumsRevelacion() {
         setTotalrend(totalrend+nextrend)
     }, [nextrend]);
 
-    //ejemplo array content
-
-/*{
-    album1:{
-        step1:{
-            text:true
-            contenido:lorem
-            id:1
-        }
-        step2:{
-            text:true
-            contenido:lorem
-            id:2
-        }
-        step3:{
-            text:true
-            contenido:lorem
-            id:3
-        }
-        step4:{
-            text:true
-            contenido:lorem
-            id:4
-        }
-    }
-    album2:{}
-    album3:{}
-}*/
-
-
     return(
         <>
-        <h2>JUGADORES</h2>
+        <h2 onLoad={llamado}>JUGADORES</h2>
         <div>
-            players
+            {/* {players.map(player => (
+                <div key={player.id}>
+                    <img src={player.img}></img>
+                    <p>{player.nombre}</p>
+                </div>
+            ))} */}
         </div>
         <h2>ALBUM DE {player}</h2>
         <div>

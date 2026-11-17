@@ -33,17 +33,12 @@ export default function Home() {
     const [password, setPassword] = useState("")
     const router = useRouter()
     
-    let validUser=false
-    let validPass=false
-    
     const userSetter = (event) => {
         setUser(event.target.value)
-        validUser=false
     }
 
     const passwordSetter = (event) => {
         setPassword(event.target.value)
-        validPass=false
     }
 
     const login = () => {
@@ -98,6 +93,7 @@ export default function Home() {
             if (!data.ok) {
                 console.log("actualizado", data)
                 alert(data.mensaje)
+                router.refresh()
                 return
             }
             log()
@@ -105,9 +101,9 @@ export default function Home() {
             })
         } else {
             alert("La contraseña no coincide con su repetición")
+            router.refresh()
             return
         }
-    router.refresh()
     }
     
     return(
