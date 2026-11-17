@@ -16,6 +16,7 @@ export default function Draw() {
     const circunferencia = 2 * Math.PI * 9 
     const router = useRouter()
     const [frase, setFrase] = useState("")
+    const [enviado, setEnviado] = useState(false)
 
     function empezar (event) {
         dibujando.current = true;
@@ -61,6 +62,13 @@ export default function Draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
+    function terminar() {
+        const guardado = canvasRef.current.toDataURL("image/png", 0.8);
+        console.log("tamaño del dibujo:", guardado.length)
+        socket.emit("envio", { usuario: JSON.parse(localStorage.getItem("usuario")), contenido: guardado })
+        setEnviado(true)
+    }
+
     const colorSetter = (event) => {
         setColor(event.target.value)
     }
@@ -70,28 +78,18 @@ export default function Draw() {
     }
 
     useEffect(() => {
-        const timer = setInterval(() => setTiempo(prev => prev - 1), 1000);
+        const timer = setInterval(() => setTiempo(prev => (prev > 0 ? prev - 1 : 0)), 1000);
         return () => clearInterval(timer); // cleanup
     }, []);
     useEffect(() => {
-        if(tiempo === 0){
-            router.push("/dibujar")
+        if(tiempo === 0 && !enviado){
+            terminar()
         }
     })
 
     const fraccion = tiempo/60
 
     //SOCKET
-    
-    function terminar() {
-        const guardado = canvasRef.current.toDataURL("image/png", 0.8);
-        const data={
-            user:JSON.parse(localStorage.getItem("usuario")),
-            contenido: guardado,
-            esTexto:false
-        }
-        socket.emit("envio", {data})
-    }
 
     useEffect(() => {
         if (!socket) return
@@ -108,6 +106,8 @@ export default function Draw() {
         socket.on("recepcion", (data) => {
             console.log("LLEGÓ RECEPCIÓN:", data)
             setFrase(data.recibido.contenido)
+            setTiempo(data.segundos)
+            setEnviado(data.enviado)
             console.log(frase)
         })
     }, [socket]);
@@ -150,7 +150,7 @@ export default function Draw() {
                 <input type="color" onChange={colorSetter} className={styles.color}/>
                 <input type="range" value={grosor} step="1" min="1" max="20" onChange={grosorSetter} className={styles.grosor}/>
                 <Button onClick={limpiar} txt="Limpiar" />
-                <button onClick={terminar} className={styles.hecho}>
+                <button onClick={terminar} className={styles.hecho} disabled={enviado}>
                     <span className={styles.play} />
                     TODO LISTO
                 </button>

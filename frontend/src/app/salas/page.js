@@ -75,7 +75,7 @@ export default function Sala() {
             socket.off("expulsado")
             socket.off("partidaIniciada")
         }
-    }, [socket, codigo, router])
+    }, [socket, codigo, usuario, router])
 
     const expulsar = (idJugador) => {
         socket.emit("expulsarJugador", { usuario, idJugador })
@@ -160,7 +160,7 @@ export default function Sala() {
                     ) : (
                         <p>Esperando a que el anfitrión inicie la partida...</p>
                     )}
-                    <Button txt="Salir de la sala" onClick={() => { router.back() }} />
+                    <Button txt="Salir de la sala" onClick={salir} />
                 </div>
             </div>
 

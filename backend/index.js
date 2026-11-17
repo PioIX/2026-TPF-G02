@@ -555,6 +555,7 @@ io.on("connection", (socket) => {
   // PARTIDA
   // para cuando alguien aprete hecho
   socket.on("envio",(data) => {
+    console.log("llegó envio de", data.usuario && data.usuario.username, "- ya mandaron:", sala.enviaron.length + 1, "de", sala.jugadores.length)
     const jugador = sala.jugadores.find((j) => j.id === data.usuario.id);
     // si ya mandó en esta ronda (por ejemplo, apretó dos veces), no se hace nada
     if (sala.enviaron.includes(jugador.id)) {

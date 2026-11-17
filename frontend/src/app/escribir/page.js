@@ -27,7 +27,7 @@ export default function Escribir() {
             });
     }
     useEffect(() => {
-        const timer = setInterval(() => setTiempo(prev => prev - 1), 1000);
+        const timer = setInterval(() => setTiempo(prev => (prev > 0 ? prev - 1 : 0)), 1000);
         return () => clearInterval(timer); // cleanup
     }, []);
     useEffect(() => {

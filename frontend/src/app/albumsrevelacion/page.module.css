@@ -1,0 +1,123 @@
+.pagina {
+  min-height: 100vh;
+  padding: 32px;
+  color: var(--blanco);
+  background: linear-gradient(to top right, var(--album-b), var(--album-a));
+}
+
+/* jugadores | álbum */
+.contenido {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 40px;
+}
+
+/* "JUGADORES" y "ÁLBUM DE ..." */
+.titulo {
+  margin: 0 0 16px;
+  color: var(--menta-fuerte);
+  font-size: 1.6rem;
+  text-align: center;
+  text-transform: uppercase;
+  -webkit-text-stroke: 1.5px var(--navy);
+}
+
+/* JUGADORES */
+
+.panelJugadores {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 60vh;
+  padding: 20px;
+  background: var(--panel-jugadores);
+  border: 2px solid var(--panel-borde);
+  border-radius: 24px;
+}
+
+.jugador {
+  padding: 14px 20px;
+  background: var(--lila);
+  color: var(--navy);
+  border-radius: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* el dueño del álbum que se está mostrando */
+.resaltado {
+  background: var(--menta);
+}
+
+.jugador p {
+  margin: 0;
+}
+
+/*  ÁLBUM  */
+
+.panelAlbum {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 60vh;
+  padding: 20px;
+  background: var(--panel-album);
+  border: 2px solid var(--panel-borde);
+  border-radius: 24px;
+}
+
+/* cada paso; los dibujos van a la izquierda */
+.mensaje {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+/* las frases van a la derecha */
+.derecha {
+  align-items: flex-end;
+}
+
+.autor {
+  margin: 0;
+  color: var(--lila);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.texto {
+  margin: 0;
+  min-width: 300px;
+  padding: 18px 32px;
+  background: var(--blanco);
+  color: var(--navy);
+  border: 2px solid var(--lila);
+  border-radius: 14px;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.dibujo {
+  width: 360px;
+  aspect-ratio: 3 / 2; /* el canvas es de 600x400 */
+  background: var(--blanco);
+  border: 2px solid var(--lila);
+  border-radius: 14px;
+}
+
+/* "SE TERMINO." */
+.panelAlbum h3 {
+  margin: 8px 0 0;
+  color: var(--menta);
+  text-align: center;
+}
+
+/* el botón queda abajo y al centro */
+.botones {
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+}
