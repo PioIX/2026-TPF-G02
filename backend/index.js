@@ -163,6 +163,8 @@ function terminarRonda() {
     io.to(sala.codigo).emit("nextStep", { nextstep: true });
   } else {
     sala.estado = "terminada";
+    sala.albumMostrado = 0;
+    sala.pasoMostrado = -1;
     guardarPartida();
     io.to(sala.codigo).emit("nextStep", { nextstep: false });
   }
@@ -401,7 +403,42 @@ app.post("/salas", (req, res) => {
   res.json({ ok: true, codigo: sala.codigo });
 });
 
-// PARTIDA: esto no está Todavía
+// PARTIDA
+// trae los albumes de un usuario, con la fecha, el codigo de la partida, y el ultimo paso para la vista previa
+app.get("/mis-albumes", async (req, res) => {
+  try {
+    const albumes = await realizarQuery(
+      `SELECT Albums.id, Games.roomcode, Games.fecha,
+         (SELECT content FROM Steps WHERE Steps.album_id = Albums.id ORDER BY orden DESC LIMIT 1) AS ultimoContenido,
+         (SELECT is_text FROM Steps WHERE Steps.album_id = Albums.id ORDER BY orden DESC LIMIT 1) AS ultimoEsTexto
+       FROM Albums
+       INNER JOIN Games ON Games.id = Albums.game_id
+       WHERE Albums.user_id = ?
+       ORDER BY Albums.id DESC`,
+      [req.query.idUsuario],
+    );
+    res.json({ ok: true, albumes });
+  } catch (error) {
+    errorServidor(res, error);
+  }
+});
+
+// todos los pasos de un álbum, en orden, con el nombre de quien hizo cada uno
+app.get("/pasos", async (req, res) => {
+  try {
+    const pasos = await realizarQuery(
+      `SELECT Steps.orden, Steps.is_text, Steps.content, Users.username AS autor
+       FROM Steps
+       INNER JOIN Users ON Users.id = Steps.user_id
+       WHERE Steps.album_id = ?
+       ORDER BY Steps.orden`,
+      [req.query.idAlbum],
+    );
+    res.json({ ok: true, pasos });
+  } catch (error) {
+    errorServidor(res, error);
+  }
+});
 
 
 // WEBSOCKETS: todos los eventos reciben { usuario } (el de localStorage) desde el front
@@ -450,8 +487,13 @@ io.on("connection", (socket) => {
     } else if (sala.estado === "jugando") {
       socket.emit("recepcion", datosDeRonda(usuario.id));
     } else {
-      // acá falta
-      //Ucci: Que falta? Un "Chupala puto"
+      socket.emit("albums", {
+        content: sala.albumes,
+        anfitrion: sala.anfitrion,
+        players: sala.jugadores.map((j) => ({ id: j.id, username: j.username })),
+        album: sala.albumMostrado,
+        paso: sala.pasoMostrado,
+      });
     }
   });
 
@@ -511,9 +553,17 @@ io.on("connection", (socket) => {
   });
 
   // PARTIDA
+  // para cuando alguien aprete hecho
   socket.on("envio",(data) => {
-    guardarPaso(data.usuario,data.contenido,data.esTexto)
+    const jugador = sala.jugadores.find((j) => j.id === data.usuario.id);
+    // si ya mandó en esta ronda (por ejemplo, apretó dos veces), no se hace nada
+    if (sala.enviaron.includes(jugador.id)) {
+      return;
+    }
+    const esTexto = sala.ronda % 2 === 0; // las rondas pares son de escribir o describir
+    guardarPaso(jugador, data.contenido, esTexto)
   })
+  
   socket.on("emitea albums", () => {
     for (let i = 0; i < sala.jugadores.length; i++) {
       const data = data + albumDe(sala.jugadores[i].id)
@@ -521,6 +571,7 @@ io.on("connection", (socket) => {
     }
   })
 });
+
 //albumDe(user.id).pasos.push({
 //    idAutor: user.id,
 //    autor: user.username,
