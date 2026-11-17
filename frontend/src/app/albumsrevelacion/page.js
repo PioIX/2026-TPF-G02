@@ -9,7 +9,9 @@ export default function AlbumsRevelacion() {
     const [content,setContent] = useState({})
     const [nextrend,setNextrend] = useState("")
     const [totalrend,setTotalrend] = useState(null)
-    const [players,setPlayers] = useState({})
+    const [players,setPlayers] = useState([])
+    const [album,setAlbum] = useState(0) 
+    const [paso,setPaso] = useState(-1) 
     
     //albumDe(user.id).pasos.push({
 //    idAutor: user.id,
@@ -18,12 +20,18 @@ export default function AlbumsRevelacion() {
 //    contenido: contenido,
     //SOCKET
     useEffect(() => {
+        if (!socket) return 
+        const usuario = JSON.parse(localStorage.getItem("usuario")) 
+        socket.emit("unirseSala", { usuario })
         socket.on("albums", (data) => {
             console.log(data)
             setContent(data.content)
-            setAnfitrion(data.anfitrion)
+            setAnfitrion(data.anfitrion === usuario.id)
             setPlayers(data.players)
+            setAlbum(data.album) 
+            setPaso(data.paso) 
         })
+        
     }, [socket]);
 
     function llamado() {

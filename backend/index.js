@@ -563,7 +563,25 @@ io.on("connection", (socket) => {
     const esTexto = sala.ronda % 2 === 0; // las rondas pares son de escribir o describir
     guardarPaso(jugador, data.contenido, esTexto)
   })
-  
+
+// el anfitrión muestra el paso siguiente de la revelación (a todos al mismo tiempo)
+  socket.on("revelar", (data) => {
+    if (sala === null || sala.estado !== "terminada" || sala.anfitrion !== data.usuario.id) {
+      return error("Solo el anfitrión puede revelar los álbumes");
+    }
+    sala.pasoMostrado++;
+    // si ya se mostraron todos los pasos del álbum, se pasa al siguiente
+    if (sala.pasoMostrado >= sala.jugadores.length) {
+      sala.albumMostrado++;
+      sala.pasoMostrado = 0;
+    }
+    // si ya se mostraron todos los álbumes, se terminó
+    if (sala.albumMostrado >= sala.albumes.length) {
+      return io.to(sala.codigo).emit("pasoRevelado", { fin: true });
+    }
+    io.to(sala.codigo).emit("pasoRevelado", { album: sala.albumMostrado, paso: sala.pasoMostrado });
+  });
+
   socket.on("emitea albums", () => {
     for (let i = 0; i < sala.jugadores.length; i++) {
       const data = data + albumDe(sala.jugadores[i].id)
