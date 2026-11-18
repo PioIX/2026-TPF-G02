@@ -460,6 +460,9 @@ io.on("connection", (socket) => {
     if (sala.expulsados.includes(usuario.id)) {
       return error("Te expulsaron de esta sala");
     }
+    if (data.codigo && data.codigo !== sala.codigo) {
+      return error("El código no es correcto");
+    }
 
     const jugador = sala.jugadores.find((j) => j.id === usuario.id);
     if (jugador) {
