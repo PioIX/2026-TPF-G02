@@ -9,15 +9,14 @@ import Avatar from "@/components/Avatar"
 export default function AlbumsRevelacion() {
     const { socket } = useSocket()
     const router = useRouter()
-    const [anfitrion, setAnfitrion] = useState(false)
-    const [content, setContent] = useState({})
-    const [totalrend, setTotalrend] = useState(null)
-    const [players, setPlayers] = useState([])
-    const [album, setAlbum] = useState(0)
-    const [paso, setPaso] = useState(-1)
-    const [fin, setFin] = useState(false)
-    const [idAnfitrion, setIdAnfitrion] = useState(null)
-
+    const [anfitrion,setAnfitrion] = useState(false)
+    const [content,setContent] = useState({})
+    const [totalrend,setTotalrend] = useState(null)
+    const [players,setPlayers] = useState([])
+    const [album,setAlbum] = useState(0) 
+    const [paso,setPaso] = useState(-1) 
+    const [fin,setFin] = useState(false)
+    const code = localStorage.getItem("code")
     //SOCKET
     useEffect(() => {
         if (!socket) return
@@ -86,7 +85,7 @@ export default function AlbumsRevelacion() {
                         {totalrend}
                         <div className={styles.botones}>
                             {fin ? (
-                                <Button onClick={() => router.push("/menu")} txt="Volver al menú"></Button>
+                                <Button onClick={() => router.push(`/salas?codigo=${code}`)} txt="Volver a la sala"></Button>
                             ) : anfitrion ? (
                                 <Button onClick={revelar} txt={finDelAlbum ? "Seguir" : "Revelar"}></Button>
                             ) : (

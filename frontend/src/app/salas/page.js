@@ -13,6 +13,7 @@ export default function Sala() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const codigo = searchParams.get("codigo")
+    localStorage.setItem("code",codigo)
     //const usuario = searchParams.get("user")
     const id = searchParams.get("id")
     console.log(codigo)

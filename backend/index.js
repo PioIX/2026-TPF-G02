@@ -417,6 +417,7 @@ app.get("/mis-albumes", async (req, res) => {
        ORDER BY Albums.id DESC`,
       [req.query.idUsuario],
     );
+    console.log(albumes)
     res.json({ ok: true, albumes });
   } catch (error) {
     errorServidor(res, error);
