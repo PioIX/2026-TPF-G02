@@ -15,7 +15,7 @@ export default function AlbumsRevelacion() {
     const [album,setAlbum] = useState(0) 
     const [paso,setPaso] = useState(-1) 
     const [fin,setFin] = useState(false)
-    
+    const code = localStorage.getItem("code")
     //SOCKET
     useEffect(() => {
         if (!socket) return 
@@ -78,7 +78,7 @@ export default function AlbumsRevelacion() {
                         {totalrend}
                         <div className={styles.botones}>
                             {fin ? (
-                                <Button onClick={() => router.push("/menu")} txt="Volver al menú"></Button>
+                                <Button onClick={() => router.push(`/salas?codigo=${code}`)} txt="Volver a la sala"></Button>
                             ) : anfitrion ? (
                                 <Button onClick={revelar} txt={finDelAlbum ? "Seguir" : "Revelar"} disabled={!anfitrion}></Button>
                             ) : (
