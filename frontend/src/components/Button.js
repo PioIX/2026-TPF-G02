@@ -11,6 +11,7 @@ export default function Button({ txt, tipo = "claro", chico = false, flecha = fa
             className={clsx(styles.button, {
                 [styles.menta]: tipo === "menta",
                 [styles.rojo]: tipo === "rojo",
+                [styles.violeta]: tipo === "violeta",
                 [styles.chico]: chico,
                 [styles.volver]: tipo === "volver",
             })}

@@ -11,7 +11,6 @@ export default function AlbumsRevelacion() {
     const router = useRouter()
     const [anfitrion,setAnfitrion] = useState(false)
     const [content,setContent] = useState({})
-    const [totalrend,setTotalrend] = useState(null)
     const [players,setPlayers] = useState([])
     const [album,setAlbum] = useState(0) 
     const [paso,setPaso] = useState(-1) 
@@ -32,7 +31,6 @@ export default function AlbumsRevelacion() {
         })
         socket.on("pasoRevelado", (data) => {
             if (data.fin) {
-                setTotalrend(<h3>SE TERMINÓ.</h3>)
                 setFin(true)
             } else {
                 setAlbum(data.album)
@@ -82,7 +80,7 @@ export default function AlbumsRevelacion() {
                                 </div>
                             </div>
                         ))}
-                        {totalrend}
+                        {fin && <h3>SE TERMINÓ.</h3>}
                         <div className={styles.botones}>
                             {fin ? (
                                 <Button onClick={() => router.push("/menu")} txt="Volver al menú"></Button>

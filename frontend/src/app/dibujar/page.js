@@ -17,6 +17,7 @@ export default function Draw() {
     const router = useRouter()
     const [frase, setFrase] = useState("")
     const [enviado, setEnviado] = useState(false)
+    const [tiempoTotal, setTiempoTotal] = useState(60)
 
     function empezar (event) {
         dibujando.current = true;
@@ -87,7 +88,7 @@ export default function Draw() {
         }
     })
 
-    const fraccion = tiempo/60
+    const fraccion = tiempo/tiempoTotal
 
     //SOCKET
 
@@ -108,6 +109,7 @@ export default function Draw() {
             setFrase(data.recibido.contenido)
             setTiempo(data.segundos)
             setEnviado(data.enviado)
+            setTiempoTotal(data.segundos)
             console.log(frase)
         })
     }, [socket]);

@@ -585,11 +585,4 @@ io.on("connection", (socket) => {
     }
     io.to(sala.codigo).emit("pasoRevelado", { album: sala.albumMostrado, paso: sala.pasoMostrado });
   });
-
-  socket.on("emitea albums", () => {
-    for (let i = 0; i < sala.jugadores.length; i++) {
-      const data = data + albumDe(sala.jugadores[i].id)
-      socket.emit("albums",data)
-    }
-  })
 });

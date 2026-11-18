@@ -2,8 +2,6 @@
 import { useState } from "react";
 import styles from "./page.module.css"
 import { useRouter } from "next/navigation";
-import { useSocket } from "@/hooks/useSocket";
-import { useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
 export default function Menu() {
     const [codigo, setCodigo] = useState("")

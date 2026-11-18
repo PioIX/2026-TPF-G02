@@ -13,7 +13,6 @@ export default function Input({ type = "text", value, onChange, placeholder}) {
                 placeholder={placeholder}
                 className={styles.input}
             />
-            {error !== "" && <p className={styles.mensaje}>{error}</p>}
         </div>
     )
 }
