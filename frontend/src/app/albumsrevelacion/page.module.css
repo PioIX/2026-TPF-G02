@@ -35,8 +35,13 @@
   border-radius: 24px;
 }
 
-.jugador {
-  padding: 14px 20px;
+/* lo común a las dos filas de jugador */
+.jugador,
+.jugadorResaltado {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px;
   background: var(--lila);
   color: var(--navy);
   border-radius: 14px;
@@ -44,13 +49,21 @@
   text-transform: uppercase;
 }
 
-/* el dueño del álbum que se está mostrando */
-.resaltado {
+/* lo que cambia en el dueño del álbum que se está mostrando */
+.jugadorResaltado {
   background: var(--menta);
 }
 
-.jugador p {
+.jugador p,
+.jugadorResaltado p {
   margin: 0;
+}
+
+/* corona del anfitrión, al lado del nombre */
+.corona {
+  margin-left: auto;
+  color: var(--amarillo, #f5c542);
+  font-size: 1.4rem;
 }
 
 /*  ÁLBUM  */
@@ -66,17 +79,21 @@
   border-radius: 24px;
 }
 
-/* cada paso; los dibujos van a la izquierda */
-.mensaje {
+/* lo común a los dos tipos de paso: avatar + burbuja */
+.mensaje,
+.mensajeDerecha {
   display: flex;
-  flex-direction: column;
   align-items: flex-start;
-  gap: 6px;
+  gap: 14px;
 }
 
-/* las frases van a la derecha */
-.derecha {
-  align-items: flex-end;
+/* lo que cambia en las frases: van a la derecha, con el avatar del lado derecho */
+.mensajeDerecha {
+  flex-direction: row-reverse;
+}
+
+.mensajeDerecha .autor {
+  text-align: right;
 }
 
 .autor {
@@ -102,7 +119,8 @@
 
 .dibujo {
   width: 360px;
-  aspect-ratio: 3 / 2; /* el canvas es de 600x400 */
+  aspect-ratio: 3 / 2;
+  /* el canvas es de 600x400 */
   background: var(--blanco);
   border: 2px solid var(--lila);
   border-radius: 14px;
@@ -120,4 +138,11 @@
   display: flex;
   justify-content: center;
   margin-top: auto;
+}
+
+/* nombre del autor + texto o dibujo, uno arriba del otro */
+.burbuja {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
