@@ -47,7 +47,7 @@ const TIEMPO_DESCRIBIR = 20;
 // segundos de mas que espera el back, para que lleguen los envios automaticos del front
 const MARGEN_SEGUNDOS = 3;
 // segundos que se espera antes de sacar a un jugador desconectado
-const ESPERA_RECONEXION = 30
+const ESPERA_RECONEXION = 3000
  
 // SALA
 // basicamente se manejan las funciones de la sala de espera: codigo, lista de jugadores y sacar jugadores
@@ -555,7 +555,6 @@ io.on("connection", (socket) => {
   // PARTIDA
   // para cuando alguien aprete hecho
   socket.on("envio",(data) => {
-    console.log("llegó envio de", data.usuario && data.usuario.username, "- ya mandaron:", sala.enviaron.length + 1, "de", sala.jugadores.length)
     const jugador = sala.jugadores.find((j) => j.id === data.usuario.id);
     // si ya mandó en esta ronda (por ejemplo, apretó dos veces), no se hace nada
     if (sala.enviaron.includes(jugador.id)) {
@@ -563,6 +562,10 @@ io.on("connection", (socket) => {
     }
     const esTexto = sala.ronda % 2 === 0; // las rondas pares son de escribir o describir
     guardarPaso(jugador, data.contenido, esTexto)
+    // si ya mandaron todos, no hace falta esperar a que se acabe el tiempo
+    if (sala.enviaron.length === sala.jugadores.length) {
+      terminarRonda();
+    }
   })
 
 // el anfitrión muestra el paso siguiente de la revelación (a todos al mismo tiempo)
@@ -590,9 +593,3 @@ io.on("connection", (socket) => {
     }
   })
 });
-
-//albumDe(user.id).pasos.push({
-//    idAutor: user.id,
-//    autor: user.username,
-//    esTexto: esTexto,
-//    contenido: contenido,

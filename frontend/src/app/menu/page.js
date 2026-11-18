@@ -4,6 +4,7 @@ import styles from "./page.module.css"
 import { useRouter } from "next/navigation";
 import { useSocket } from "@/hooks/useSocket";
 import { useSearchParams } from "next/navigation";
+import Header from "@/components/Header";
 export default function Menu() {
     const searchParams = useSearchParams();
     const { socket, isConnected } = useSocket()
@@ -12,9 +13,6 @@ export default function Menu() {
     const [codigo, setCodigo] = useState("")
     const [datos, setDatos] = useState()
     const router = useRouter()
-    const volver = () => {
-        router.replace("http://localhost:3000/")
-    }
     const crear = () => {
         const verif = {
             usuario: JSON.parse(localStorage.getItem("usuario"))
@@ -24,27 +22,22 @@ export default function Menu() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(verif)
         })
-        .then((res) => res.json())
-        .then((data) => {
-            if (data.ok) {
-                router.push(`/salas?codigo=${data.codigo}`)
-            } else {
-                alert(data.mensaje)
-            }
-        })
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.ok) {
+                    router.push(`/salas?codigo=${data.codigo}`)
+                } else {
+                    alert(data.mensaje)
+                }
+            })
     }
     const unirse = () => {
         router.push(`/salas?codigo=${codigo}`)
     }
     return (
         <main className={styles.pagina}>
-            <header>
-                <button className={styles.salir} onClick={volver}>
-                    <span className={styles.flecha} />
-                    Salir
-                </button>
-                <h1>¿Qué queres hacer?</h1>
-            </header>
+            <Header textoVolver="Salir" rutaVolver="/" />
+            <h1>¿Qué queres hacer?</h1>
             <section className={styles.opciones}>
                 <div className={styles.tarjeta}>
                     <h2 className={styles.tarjetaTitulo}>CREAR SALA</h2>
@@ -70,10 +63,9 @@ export default function Menu() {
                         UNIRSE</button>
                 </div>
             </section>
-            {/*<footer className={styles.pie}>
-                <button className={styles.secundario}>MIS ÁLBUMES</button>
-                <button className={styles.secundario}>MIS PARTIDAS</button>
-            </footer>*/}
+            <footer className={styles.pie}>
+                <button className={styles.secundario} onClick={() => router.push("/misalbumes")}>MIS ÁLBUMES</button>
+            </footer>
         </main>
     )
 }

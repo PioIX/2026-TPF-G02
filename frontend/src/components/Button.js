@@ -3,7 +3,7 @@
 import clsx from "clsx"
 import styles from "./Button.module.css"
 
-export default function Button({ txt, tipo = "claro", chico = false, onClick, disabled = false }) {
+export default function Button({ txt, tipo = "claro", chico = false, flecha = false, onClick, disabled = false }) {
     return (
         <button
             onClick={onClick}
@@ -15,8 +15,10 @@ export default function Button({ txt, tipo = "claro", chico = false, onClick, di
                 [styles.rojo]: tipo === "rojo",
                 [styles.verde]: tipo === "verde",
                 [styles.chico]: chico,
+                [styles.volver]: tipo === "volver",
             })}
         >
+            {flecha && <span className={styles.flecha} />}
             {txt}
         </button>
     )

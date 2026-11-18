@@ -64,3 +64,24 @@
     padding: 0.35rem 0.9rem; 
     font-size: 0.75rem; 
 }
+
+.volver {
+  --sombra: transparent;
+  background: #3d3b97;
+  color: #d9d4f5;
+  border: 2px solid #8f87d6;
+  padding: 8px 20px;      
+  font-size: 0.85rem;
+}
+
+/* triángulo hecho con bordes (para los botones de volver) */
+.flecha {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-right: 14px;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 13px solid currentColor;
+    vertical-align: middle;
+}

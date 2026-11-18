@@ -134,7 +134,7 @@ export default function Sala() {
 
     return (
         <div className={styles.pantalla}>
-            <Header />
+            <Header textoVolver="Volver" rutaVolver="/menu" />
 
             <div className={styles.panel}>
                 <h1>Sala de espera</h1>
@@ -165,16 +165,6 @@ export default function Sala() {
             </div>
 
             {verCompartir && (
-                // <div className={styles.fondoModal} onClick={() => setVerCompartir(false)}>
-                //     {/* el stopPropagation es para que si se toca adentro de la ventana, no se cierre */}
-                //     <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-                //         <h2>Compartí el código</h2>
-                //         <p>Tus amigos tienen que elegir &quot;Unirse a una sala&quot; y escribir este código:</p>
-                //         <strong className={styles.codigoGrande}>{sala.codigo}</strong>
-                //         <Button txt={copiado ? "¡Copiado!" : "Copiar código"} tipo="menta" onClick={copiar} />
-                //         <Button txt="Cerrar" onClick={() => setVerCompartir(false)} />
-                //     </div>
-                // </div>
                 <Popup open={verCompartir} onClose={() => setVerCompartir(false)} modal nested>
                     <div className={styles.fondoModal}>
                         <div className={styles.modal} onClick={(e) => e.stopPropagation()}>

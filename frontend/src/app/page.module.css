@@ -4,16 +4,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 12px;
     padding: 20px 32px 40px;
     font-family: "Poppins", sans-serif;
     color: white;
-    background: linear-gradient(to top right, #b0246f 0%, #8a1a97 40%, #6a0fb8 100%);
-}
-
-.logo {
-    height: 72px;
-    width: auto;
+    background: linear-gradient(to top right, var(--inicio-b), var(--inicio-a));
 }
 
 .contenido {
@@ -28,89 +23,151 @@
 .tabs {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 4px;
     margin-bottom: -2px;               /* la pestaña se pega al panel */
 }
 
-.tab {
-    height: 50px;
-    background: rgba(122, 18, 128, 0.85);
-    color: white;
-    border: 2px solid #b9a2ee;
-    border-radius: 16px;
+/* lo común a las dos pestañas */
+.tab,
+.tabActiva {
+    height: 54px;
+    background: var(--pestaña);
+    color: var(--pestaña-texto);
+    border: 2px solid var(--pestaña-borde);
+    border-radius: 16px 16px 0 0;
     font-family: inherit;
-    font-size: 0.85rem;
+    font-size: 1rem;
+    font-weight: 700;
     text-transform: uppercase;
     cursor: pointer;
     transition: filter 0.15s;
 }
 
-.tab:hover {
+.tab:hover,
+.tabActiva:hover {
     filter: brightness(1.15);
 }
 
 .tabActiva {
-    color: #5ee0a0;
+    background: var(--panel-inicio);
+    color: var(--menta-fuerte);
+    -webkit-text-stroke: 1px var(--navy);
 }
 
 /* ---------- FORMULARIO ---------- */
 .panel {
-    min-height: 364px;
+    min-height: 400px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 26px;
-    padding: 56px 38px 40px;
-    background: rgba(122, 18, 128, 0.95);
-    border: 2px solid #c9b8ee;
+    padding: 48px 38px 40px;
+    background: var(--panel-inicio);
+    border: 2px solid var(--pestaña-borde);
+    border-radius: 0 0 20px 20px;
 }
 
 /* ---------- CÓMO JUGAR ---------- */
 .ayuda {
-    min-height: 364px;
-    margin-top: 52px;                  /* alinea el borde superior con el panel del formulario */
+    min-height: 456px;                
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
     gap: 24px;
-    padding: 28px 32px 36px;
-    background: rgba(255, 255, 255, 0.28);
-    border: 2px solid #d9c8f5;
+    padding: 28px 32px 32px;
+    background: rgba(255, 255, 255, 0.18);
+    border: 2px solid var(--pestaña-borde);
+    border-radius: 20px;
     text-align: center;
 }
 
 .ayudaTitulo {
     margin: 0;
-    color: #5ee0a0;
+    color: var(--menta-fuerte);
     font-size: 1.9rem;
-    font-weight: 400;
+    font-weight: 700;
     text-transform: uppercase;
+    -webkit-text-stroke: 1.5px var(--navy);
 }
 
-.foto {
-    margin: 0;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 1.1rem;
+/* el recuadro con "ABC → [ ] → ABC" */
+.esquema {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    width: 260px;
+    height: 140px;
+    background: var(--panel-inicio);
+    border-radius: 14px;
+    font-size: 1.4rem;
+    font-weight: 700;
 }
 
-.foto img {
-    max-width: 100%;
-    max-height: 120px;
-    border-radius: 12px;
+.flechita {
+    color: var(--menta-fuerte);
 }
 
 .paso {
     margin: 0;
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 1.1rem;
-    font-weight: 400;
+    font-size: 1.2rem;
+    font-weight: 700;
     text-transform: uppercase;
 }
 
 .descripcion {
     margin: 0;
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 0.9rem;
+    max-width: 300px;
+    font-size: 0.95rem;
+    font-weight: 600;
     line-height: 1.5;
+}
+
+/* flechas y puntitos de abajo */
+.navegacion {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;                  /* quedan abajo del recuadro */
+}
+
+.puntos {
+    display: flex;
+    gap: 14px;
+}
+
+/* lo común a los dos puntitos */
+.punto,
+.puntoActivo {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* lo que cambia en el puntito del paso actual */
+.puntoActivo {
+    background: var(--blanco);
+}
+
+/* las flechas son triángulos hechos con bordes */
+.flechaIzquierda,
+.flechaDerecha {
+    width: 0;
+    height: 0;
+    padding: 0;
+    background: none;
+    border-top: 18px solid transparent;
+    border-bottom: 18px solid transparent;
+    cursor: pointer;
+}
+
+.flechaIzquierda {
+    border-right: 30px solid var(--lila);
+    border-left: none;
+}
+
+.flechaDerecha {
+    border-left: 30px solid var(--lila);
+    border-right: none;
 }

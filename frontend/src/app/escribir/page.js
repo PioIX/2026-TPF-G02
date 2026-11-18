@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import styles from "./page.module.css"
 import { useRouter } from "next/navigation"
 import { useSocket } from "@/hooks/useSocket"
+import Logo from "@/components/Logo"
 export default function Escribir() {
     const { socket } = useSocket()
     const router = useRouter()
@@ -13,6 +14,7 @@ export default function Escribir() {
     const [enviado, setEnviado] = useState(false)
     const [texto, setTexto] = useState("")
     const [dibujo, setDibujo] = useState("")
+    const [totalRondas, setTotalRondas] = useState(1)
     const fraccion = tiempo / tiempoTotal
 
     const fraseAzar = () => {
@@ -40,7 +42,7 @@ export default function Escribir() {
 
     function terminar() {
         console.log(JSON.parse(localStorage.getItem("usuario")), texto)
-        socket.emit("envio", { usuario: JSON.parse(localStorage.getItem("usuario")), contenido: texto, esTexto:true})
+        socket.emit("envio", { usuario: JSON.parse(localStorage.getItem("usuario")), contenido: texto, esTexto: true })
         setEnviado(true)
     }
 
@@ -57,10 +59,11 @@ export default function Escribir() {
 
         socket.on("recepcion", (data) => {
             if (data.recibido && !data.recibido.esTexto) {
-                console.log(data.recibido," ",data.recibido.contenido)
+                console.log(data.recibido, " ", data.recibido.contenido)
                 setDibujo(data.recibido.contenido)
             }
             setRonda(data.ronda)
+            setTotalRondas(data.totalRondas)
             setTiempo(data.segundos)
             setTiempoTotal(data.segundos)
             setEnviado(data.enviado)
@@ -71,10 +74,8 @@ export default function Escribir() {
     return (
         <main className={styles.pagina}>
             <header className={styles.header}>
-                <p className={styles.ronda}>{ronda}</p>
-
-                <img alt="Gartic Phone" className={styles.logo} />
-
+                <p className={styles.ronda}>{ronda}/{totalRondas}</p>
+                <Logo />
                 <svg
                     className={styles.cronometro}
                     viewBox="0 0 64 64"
@@ -125,22 +126,28 @@ export default function Escribir() {
                 </div>
             )}
 
-            <div className={styles.controles}>
-                {enviado && <p className={styles.titulo}>Esperando a los demás jugadores...</p>}
-                <input className={styles.input}
-                    value={texto}
-                    placeholder={"Un arbol con una manzana"}
-                    onChange={(e) => { setTexto(e.target.value) }} 
-                    disabled={enviado}/>
-
-                <button className={styles.hecho} onClick={terminar} disabled={enviado || texto === ""}>
-                    <span className={styles.play} />
-                    Hecho
-                </button>
-                <button className={styles.azar} onClick={fraseAzar}>
-                    Frase al azar
-                </button>
-            </div>
+            {enviado ? (
+                <h1 className={styles.titulo}>Esperando a los demás jugadores...</h1>
+            ) : (
+                <>
+                    <h1 className={styles.titulo}>{dibujo !== "" ? "Describí lo que ves" : "Escribí una frase"}</h1>
+                    <div className={styles.controles}>
+                        <input className={styles.input}
+                            value={texto}
+                            placeholder={"Un árbol con una manzana"}
+                            onChange={(e) => { setTexto(e.target.value) }} />
+                        <button className={styles.hecho} onClick={terminar} disabled={texto === ""}>
+                            <span className={styles.play} />
+                            Hecho
+                        </button>
+                        {dibujo === "" && (
+                            <button className={styles.azar} onClick={fraseAzar}>
+                                Frase al azar
+                            </button>
+                        )}
+                    </div>
+                </>
+            )}
         </main>
     )
 }

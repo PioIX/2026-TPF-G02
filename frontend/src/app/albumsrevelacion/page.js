@@ -31,7 +31,7 @@ export default function AlbumsRevelacion() {
         })
         socket.on("pasoRevelado", (data) => {
             if (data.fin) {
-                setTotalrend(<h3>SE TERMINO.</h3>)
+                setTotalrend(<h3>SE TERMINÓ.</h3>)
                 setFin(true)
             } else {
                 setAlbum(data.album)
