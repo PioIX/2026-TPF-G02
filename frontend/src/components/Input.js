@@ -1,6 +1,4 @@
 "use client"
-
-import clsx from "clsx"
 import styles from "./Input.module.css"
 
 export default function Input({ type = "text", value, onChange, placeholder}) {

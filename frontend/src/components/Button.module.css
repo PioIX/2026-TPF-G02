@@ -1,4 +1,5 @@
-.button {
+/* lo común a todos los botones */
+.claro, .menta, .mentaChico, .rojo, .rojoChico, .violeta, .volver {
   --sombra: var(--boton-sombra);
   display: inline-flex;
   align-items: center;
@@ -14,74 +15,67 @@
   box-shadow: 0 0.3rem 0 var(--sombra);
 }
 
-.button:active {
+/* al apretarlo, baja un poco */
+.claro:active, .menta:active, .mentaChico:active, .rojo:active, .rojoChico:active, .violeta:active, .volver:active {
   transform: translateY(0.2rem);
   box-shadow: 0 0.1rem 0 var(--sombra);
 }
 
-.button:disabled {
+/* deshabilitado */
+.claro:disabled, .menta:disabled, .mentaChico:disabled, .rojo:disabled, .rojoChico:disabled, .violeta:disabled, .volver:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
 }
 
-/*estos distintos colores cambian ahora solo el fondo y el color de la sombra */ 
-/*sus valores hexadecimales pasaron a estar en globals.css */
-
-.menta { 
-    background: var(--menta);
-    --sombra: var(--menta-sombra); 
+/* los colores: cada tipo cambia el fondo y el color de la sombra */
+/* sus valores hexadecimales están en globals.css */
+.menta, .mentaChico {
+  background: var(--menta);
+  --sombra: var(--menta-sombra);
 }
 
-.violeta { 
-    background: var(--violeta); 
-    --sombra: var(--violeta-sombra); 
+.violeta {
+  background: var(--violeta);
+  --sombra: var(--violeta-sombra);
 }
 
-.oscuro { 
-    background: var(--oscuro); 
-    --sombra: var(--oscuro-sombra); 
-}
-
-.rojo { 
-    background: var(--rojo); 
-    --sombra: var(--rojo-sombra); 
-}
-
-.verde { 
-    background: var(--verde); 
-    --sombra: var(--verde-sombra); 
+.rojo, .rojoChico {
+  background: var(--rojo);
+  --sombra: var(--rojo-sombra);
 }
 
 /* los colores oscuros llevan texto blanco y sin borde */
-.violeta, .oscuro, .rojo, .verde {
+.violeta, .rojo, .rojoChico {
   color: var(--blanco);
   border-color: transparent;
 }
 
-.chico{
-    min-width: 0; 
-    padding: 0.35rem 0.9rem; 
-    font-size: 0.75rem; 
+/* lo que cambia en los chicos */
+.mentaChico, .rojoChico {
+  min-width: 0;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.75rem;
 }
 
+/* el botón de volver del Header */
 .volver {
   --sombra: transparent;
   background: #3d3b97;
   color: #d9d4f5;
   border: 2px solid #8f87d6;
-  padding: 8px 20px;      
+  padding: 8px 20px;
   font-size: 0.85rem;
 }
 
 /* triángulo hecho con bordes (para los botones de volver) */
 .flecha {
-    display: inline-block;
-    width: 0;
-    height: 0;
-    margin-right: 14px;
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-    border-right: 13px solid currentColor;
-    vertical-align: middle;
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-right: 14px;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 13px solid currentColor;
+  vertical-align: middle;
 }

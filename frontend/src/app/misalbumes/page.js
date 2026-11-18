@@ -60,7 +60,7 @@ export default function MisAlbumes() {
                                     </div>
                                     <p>Partida {album.roomcode}</p>
                                     <p>{new Date(album.fecha).toLocaleDateString("es-AR")}</p>
-                                    <Button txt="Ver" tipo="menta" chico={true} onClick={() => ver(album)} />
+                                    <Button txt="Ver" tipo="mentaChico" onClick={() => ver(album)} />
                                 </div>
                             ))}
                         </div>

@@ -142,7 +142,7 @@ export default function Sala() {
                 <div className={styles.codigo}>
                     <span>Código de la sala</span>
                     <strong>{sala.codigo}</strong>
-                    <Button txt="Compartir código" tipo="menta" chico={true} onClick={() => setVerCompartir(true)} />
+                    <Button txt="Compartir código" tipo="mentaChico" onClick={() => setVerCompartir(true)} />
                 </div>
 
                 <p> Jugadores: {sala.jugadores.length} de {sala.maximo} (mínimo {sala.minimo}) </p>
