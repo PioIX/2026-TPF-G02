@@ -1,6 +1,5 @@
 import styles from "./UsuariosAdmin.module.css"
 export default function UsuariosAdmin({usuario,email,bloqueado,control}){
-    Boolean(bloqueado)
     function status(){
         if(!bloqueado){
             return(

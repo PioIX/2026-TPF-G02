@@ -153,7 +153,6 @@ export default function Admin() {
                     return (
                         <EditFrases
                             key={index}
-                            id={est.id}
                             frase={est.frase}
                             edit={() => edit(est.id)}
                             borrar={() => borrarFrase(est.id)}
@@ -168,7 +167,6 @@ export default function Admin() {
                 {moderacion.map((est) => (
                     <Moderacion
                         key={est.id}
-                        id={est.id}
                         nombre={est.autor}
                         tipo={est.is_text}
                         data={est.content}
@@ -183,7 +181,6 @@ export default function Admin() {
                 {usuarios.map((est) => (
                     <UsuariosAdmin
                         key={est.id}
-                        id={est.id}
                         usuario={est.username}
                         email={est.email}
                         bloqueado={est.blocked}

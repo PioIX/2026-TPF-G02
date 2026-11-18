@@ -13,7 +13,6 @@ export default function Sala() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const codigo = searchParams.get("codigo")
-    localStorage.setItem("code",codigo)
     //const usuario = searchParams.get("user")
     const id = searchParams.get("id")
     console.log(codigo)
@@ -55,7 +54,7 @@ export default function Sala() {
             alert(data.mensaje)
             // si todavía no había entrado (sea que tenga el código mal, sala llena, expulsado) vuelve al menú
             if (!yaEntro.current) {
-                router.push("/")
+                router.push("/menu")
             }
         })
 
@@ -135,7 +134,7 @@ export default function Sala() {
 
     return (
         <div className={styles.pantalla}>
-            <Header textoVolver="Volver" rutaVolver="/menu" />
+            <Header />
 
             <div className={styles.panel}>
                 <h1>Sala de espera</h1>

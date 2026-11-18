@@ -6,12 +6,7 @@ import { useSocket } from "@/hooks/useSocket";
 import { useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
 export default function Menu() {
-    const searchParams = useSearchParams();
-    const { socket, isConnected } = useSocket()
-    /*const usuario = searchParams.get("user")*/
-    const [nuevo, setNuevo] = useState("")
     const [codigo, setCodigo] = useState("")
-    const [datos, setDatos] = useState()
     const router = useRouter()
     const crear = () => {
         const verif = {
