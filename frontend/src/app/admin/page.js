@@ -3,13 +3,10 @@ import styles from "./admin.module.css"
 import EditFrases from "@/components/EditFrases"
 import Moderacion from "@/components/Moderacion"
 import UsuariosAdmin from "@/components/UsuariosAdmin"
-import { useSearchParams } from "next/navigation"
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation";
 import Popup from "reactjs-popup"
+import Header from "@/components/Header"
 export default function Admin() {
-    const router = useRouter()
-    const searchParams = useSearchParams()
     // Variables para controlar datos de lo que viene -\(¨)/-
     const [frases, setFrases] = useState([])
     const [moderacion, setModeracion] = useState([])
@@ -19,8 +16,6 @@ export default function Admin() {
     const [option, setOption] = useState(0)
     // Controlador de actualizacion para los nuevos datos
     const [update, setUpdate] = useState((true))
-    //Recibir datos de la URL
-    const user = searchParams.get("user")
     const recargar = () => setUpdate(prev => !prev)
     // Traer datos
     useEffect(() => {
@@ -56,9 +51,6 @@ export default function Admin() {
     // Funcion para agregar frase
     const nueva = () => {
         console.log("nueva")
-        const datubi = {
-            frase: nuevo
-        }
         fetch("http://localhost:4000/admin/frases", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -79,6 +71,7 @@ export default function Admin() {
     const edit = (id) => {
         console.log("edit")
         let nuevo = window.prompt("Ingrese la nueva frase")
+        if (!nuevo) return
         const datubi = {
             id: id,
             frase: nuevo
@@ -102,7 +95,7 @@ export default function Admin() {
             body: JSON.stringify({ id: id })
         })
             .then(response => response.json())
-            .then(recargar())
+            .then(() => recargar())
     }
     const borrarStep = (id) => {
         console.log("borrarStep")
@@ -111,8 +104,8 @@ export default function Admin() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id: id })
         })
-            .then(response => response.json)
-            .then(recargar())
+            .then(response => response.json())
+            .then(() => recargar())
     }
     const bloqDes = (id, blocked) => {
         console.log("bloquear/des")
@@ -203,12 +196,7 @@ export default function Admin() {
     }
     return (
         < div className={styles.pagina}>
-            <header className={styles.header}>
-                <button className={styles.volver} onClick={() => router.back()}>
-                    <span className={styles.flecha} />
-                    Volver
-                </button>
-            </header>
+            <Header textoVolver="Volver" rutaVolver="/menu" />
             <h1>Panel de administrador</h1>
             <button className={styles.tab} onClick={() => setOption(1)}>Frases</button>
             <button className={styles.tab} onClick={() => setOption(2)}>Moderación</button>
