@@ -114,9 +114,8 @@ export default function Home() {
     const pasos = [
         { titulo: "1. Escribí una frase", texto: "Todos escriben una frase que otro jugador va a dibujar." },
         { titulo: "2. Dibujá", texto: "Te llega la frase de otro jugador y tenés que dibujarla." },
-        { titulo: "3. Describí el dibujo", texto: "Te llega un dibujo y escribís qué te parece que es." },
-        { titulo: "4. Pasá el álbum", texto: "Se va alternando entre dibujar y describir hasta que cada álbum pasa por todos." },
-        { titulo: "5. Mirá cómo terminó", texto: "Al final se revelan los álbumes y se ve cómo cambió cada frase." },
+        { titulo: "3. Pasá el álbum", texto: "Se va alternando entre dibujar y describir hasta que cada álbum pasa por todos." },
+        { titulo: "4. Mirá cómo terminó", texto: "Al final se revelan los álbumes y se ve cómo cambió cada frase." },
     ]
 
     // qué paso del "Cómo jugar" se está mostrando (0 es el primero)
