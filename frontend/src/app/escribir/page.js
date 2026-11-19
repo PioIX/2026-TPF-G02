@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { useSocket } from "@/hooks/useSocket"
 import Logo from "@/components/Logo"
 export default function Escribir() {
-    const { socket } = useSocket()
+    const { socket,isConnected } = useSocket()
     const router = useRouter()
     const CIRCUNFERENCIA = 2 * Math.PI * 9
     const [tiempo, setTiempo] = useState(20)
@@ -45,10 +45,12 @@ export default function Escribir() {
         socket.emit("envio", { usuario: JSON.parse(localStorage.getItem("usuario")), contenido: texto })
         setEnviado(true)
     }
-
+    useEffect(() => {
+        if(!isConnected) return;
+        socket.emit("unirseSala", {usuario: JSON.parse(localStorage.getItem("usuario")) })
+    })
     useEffect(() => {
         if (!socket) return;
-        socket.emit("unirseSala", { usuario: JSON.parse(localStorage.getItem("usuario")) })
         socket.on("nextStep", (data) => {
             if (data.nextstep == true) {
                 router.push("/dibujar")

@@ -14,12 +14,10 @@ export default function Sala() {
     const searchParams = useSearchParams()
     const codigo = searchParams.get("codigo")
     //const usuario = searchParams.get("user")
-    const id = searchParams.get("id")
     console.log(codigo)
-    //console.log(usuario)
-    console.log(id)
     const [usuario, setUsuario] = useState("")
-    const { socket } = useSocket()
+    const { socket, isConnected } = useSocket()
+    console.log(isConnected)
     //const [usuario, setUsuario] = useState(null)
     // esto sería lo último que mandó el back: { codigo, anfitrion, estado, minimo, maximo, jugadores }
     const [sala, setSala] = useState()
@@ -39,6 +37,11 @@ export default function Sala() {
         }
         setUsuario(JSON.parse(user))
     }, [router])
+
+    useEffect(() => {
+        if(!isConnected) return;
+            socket.emit("unirseSala", { codigo, usuario: JSON.parse(localStorage.getItem("usuario")) })
+    })
 
     // entra a la sala y escucha lo que manda el back 
     useEffect(() => {
@@ -66,8 +69,6 @@ export default function Sala() {
         socket.on("partidaIniciada", () => {
             router.push("/escribir")
         })
-
-        socket.emit("unirseSala", { codigo, usuario: JSON.parse(localStorage.getItem("usuario")) })
 
         return () => {
             socket.off("estadoSala")

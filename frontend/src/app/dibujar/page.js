@@ -6,7 +6,7 @@ import styles from "./page.module.css"
 import { useSocket } from "@/hooks/useSocket"
 import { useRouter } from "next/navigation"
 export default function Draw() {
-    const { socket } = useSocket()
+    const { socket,isConnected } = useSocket()
     const [color, setColor] = useState("#000000");
     const [grosor, setGrosor] = useState(5)
     const canvasRef = useRef(null)
@@ -91,10 +91,12 @@ export default function Draw() {
     const fraccion = tiempo/tiempoTotal
 
     //SOCKET
-
+    useEffect(() => {
+        if(!isConnected) return;
+        socket.emit("unirseSala", {usuario: JSON.parse(localStorage.getItem("usuario")) })
+    })
     useEffect(() => {
         if (!socket) return
-        socket.emit("unirseSala", { usuario: JSON.parse(localStorage.getItem("usuario")) })
         socket.on("nextStep", (data) => {
             
             if(data.nextstep==true) {

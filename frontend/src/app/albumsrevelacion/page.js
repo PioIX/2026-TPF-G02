@@ -7,7 +7,7 @@ import Button from "@/components/Button"
 import Header from "@/components/Header"
 import Avatar from "@/components/Avatar"
 export default function AlbumsRevelacion() {
-    const { socket } = useSocket()
+    const { socket,isConnected } = useSocket()
     const router = useRouter()
     const [anfitrion,setAnfitrion] = useState(false)
     const [content,setContent] = useState({})
@@ -18,9 +18,11 @@ export default function AlbumsRevelacion() {
     const [idAnfitrion, setIdAnfitrion] = useState(null)
     //SOCKET
     useEffect(() => {
+        if(!isConnected) return;
+        socket.emit("unirseSala", {usuario: JSON.parse(localStorage.getItem("usuario")) })
+    })
+    useEffect(() => {
         if (!socket) return
-        const usuario = JSON.parse(localStorage.getItem("usuario"))
-        socket.emit("unirseSala", { usuario })
         socket.on("albums", (data) => {
             setContent(data.content)
             setAnfitrion(data.anfitrion === usuario.id)
