@@ -130,7 +130,7 @@ export default function Sala() {
         filas.push(<FilaJugador key={"vacio" + n} vacia={true} />)
     })
 
-    
+
 
     return (
         <div className={styles.pantalla}>
@@ -164,19 +164,19 @@ export default function Sala() {
                 </div>
             </div>
 
-            {verCompartir && (
-                <Popup open={verCompartir} onClose={() => setVerCompartir(false)} modal nested>
-                    <div className={styles.fondoModal}>
-                        <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-                            <h2>Compartí el código</h2>
-                            <p>Tus amigos tienen que elegir &quot;Unirse a una sala&quot; y escribir este código:</p>
-                            <strong className={styles.codigoGrande}>{sala.codigo}</strong>
+            <Popup open={verCompartir} onClose={() => setVerCompartir(false)} modal>
+                <div className={styles.fondoModal}>
+                    <div className={styles.modal}>
+                        <h2>Compartí el código</h2>
+                        <p>Tus amigos tienen que elegir &quot;Unirse a una sala&quot; y escribir este código:</p>
+                        <strong className={styles.codigoGrande}>{sala.codigo}</strong>
+                        <div className={styles.botonesModal}>
                             <Button txt={copiado ? "¡Copiado!" : "Copiar código"} tipo="menta" onClick={copiar} />
                             <Button txt="Cerrar" onClick={() => setVerCompartir(false)} />
                         </div>
                     </div>
-                </Popup>
-            )}
+                </div>
+            </Popup>
         </div>
     )
 }

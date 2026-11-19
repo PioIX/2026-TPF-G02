@@ -3,6 +3,8 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Header from "@/components/Header"
 import Button from "@/components/Button"
+import styles from "./page.module.css"
+import Avatar from "@/components/Avatar"
 
 export default function MisAlbumes() {
     const router = useRouter()
@@ -38,28 +40,28 @@ export default function MisAlbumes() {
     }
 
     return (
-        <main>
+        <main className={styles.pagina}>
             <Header textoVolver="Volver" rutaVolver="/menu" />
-            <h1>{viendo === null ? "Mis álbumes" : `Partida ${viendo.roomcode}`}</h1>
-            <section>
+            <h1 className={styles.titulo}>{viendo === null ? "Mis álbumes" : `Partida ${viendo.roomcode}`}</h1>
+            <section className={styles.panel}>
                 {viendo === null ? (
                     // LISTA DE ÁLBUMES
                     albumes.length === 0 ? (
-                        <p>Todavía no tenés álbumes. ¡Jugá una partida!</p>
+                        <p className={styles.vacio}>Todavía no tenés álbumes. ¡Jugá una partida!</p>
                     ) : (
-                        <div>
+                        <div className={styles.grilla}>
                             {albumes.map((album) => (
-                                <div key={album.id}>
+                                <div key={album.id} className={styles.tarjeta}>
                                     {/* vista previa: el último paso del álbum */}
-                                    <div>
+                                    <div className={styles.vista}>
                                         {album.ultimoEsTexto ? (
                                             <p>{album.ultimoContenido}</p>
                                         ) : (
                                             <img src={album.ultimoContenido} alt="Último paso del álbum" />
                                         )}
                                     </div>
-                                    <p>Partida {album.roomcode}</p>
-                                    <p>{new Date(album.fecha).toLocaleDateString("es-AR")}</p>
+                                    <p className={styles.codigo}>Partida {album.roomcode}</p>
+                                    <p className={styles.fecha}>{new Date(album.fecha).toLocaleDateString("es-AR")}</p>
                                     <Button txt="Ver" tipo="mentaChico" onClick={() => ver(album)} />
                                 </div>
                             ))}
@@ -68,6 +70,22 @@ export default function MisAlbumes() {
                 ) : (
                     // UN ÁLBUM ENTERO
                     <>
+                    {pasos.map((paso) => (
+                            <div key={paso.orden} className={paso.is_text ? styles.mensajeDerecha : styles.mensaje}>
+                                <Avatar nombre={paso.autor} />
+                                <div className={styles.burbuja}>
+                                    <p className={styles.autor}>{paso.autor}</p>
+                                    {paso.is_text ? (
+                                        <p className={styles.texto}>{paso.content}</p>
+                                    ) : (
+                                        <img className={styles.dibujo} src={paso.content} alt={"Dibujo de " + paso.autor} />
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                        <div className={styles.botones}>
+                            <Button txt="Volver a mis álbumes" onClick={() => setViendo(null)} />
+                        </div>
                     </>
                 )}
             </section>

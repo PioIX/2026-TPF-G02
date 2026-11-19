@@ -6,6 +6,9 @@ import UsuariosAdmin from "@/components/UsuariosAdmin"
 import { useState, useEffect } from "react"
 import Popup from "reactjs-popup"
 import Header from "@/components/Header"
+import Button from "@/components/Button"
+import Input from "@/components/Input"
+
 export default function Admin() {
     // Variables para controlar datos de lo que viene -\(¨)/-
     const [frases, setFrases] = useState([])
@@ -135,15 +138,9 @@ export default function Admin() {
                     <span className={styles.mas} />
                     Nueva Frase</button>} modal nested>
                     <div className={styles.modalFrase}>
-                        <input
-                            type="text"
-                            value={nuevo}
-                            placeholder={"Nueva frase"}
-                            onChange={(e) => { setNuevo(e.target.value) }}
-                            className={styles.modalInput}
-                        />
+                        <Input placeholder="Nueva frase" value={nuevo} onChange={(e) => { setNuevo(e.target.value) }} />
                         <div className={styles.modalBotones}>
-                            <button className={styles.botonModal} onClick={() => { nueva() }}>enviar</button>
+                            <Button txt="Enviar" tipo="menta" onClick={nueva} />
                         </div>
                     </div>
                 </Popup>

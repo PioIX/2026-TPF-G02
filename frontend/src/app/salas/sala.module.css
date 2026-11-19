@@ -58,16 +58,40 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  max-width: 28rem;
-  padding: 2rem;
+  gap: 1.2rem;
+  max-width: 30rem;
+  padding: 2rem 2.5rem;
   text-align: center;
+  color: var(--blanco);
   background: var(--panel-sala);
   border: 0.15rem solid var(--panel-borde);
   border-radius: 1.2rem;
 }
 
+/* "Compartí el código", igual que los títulos del resto del juego */
+.modal h2 {
+  margin: 0;
+  color: var(--menta-fuerte);
+  text-transform: uppercase;
+  -webkit-text-stroke: 1.5px var(--navy);
+}
+
+.modal p {
+  margin: 0;
+}
+
+/* el código en una tarjeta blanca */
 .codigoGrande {
+  padding: 0.6rem 1.6rem;
   font-size: 3rem;
   letter-spacing: 0.6rem;
+  color: var(--navy);
+  background: var(--blanco);
+  border-radius: 1rem;
+}
+
+/* los dos botones uno al lado del otro */
+.botonesModal {
+  display: flex;
+  gap: 1rem;
 }

@@ -42,7 +42,7 @@ export default function Escribir() {
 
     function terminar() {
         console.log(JSON.parse(localStorage.getItem("usuario")), texto)
-        socket.emit("envio", { usuario: JSON.parse(localStorage.getItem("usuario")), contenido: texto})
+        socket.emit("envio", { usuario: JSON.parse(localStorage.getItem("usuario")), contenido: texto })
         setEnviado(true)
     }
 
