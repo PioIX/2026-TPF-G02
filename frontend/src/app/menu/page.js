@@ -2,72 +2,53 @@
 import { useState } from "react";
 import styles from "./page.module.css"
 import { useRouter } from "next/navigation";
-import { useSocket } from "@/hooks/useSocket";
-import { useSearchParams } from "next/navigation";
-export default function Menu(){
-    const searchParams = useSearchParams();
-    const socket = useSocket()
-    const usuario = searchParams.get("user")
-    const [nuevo,setNuevo] = useState("")
-    const [codigo,setCodigo] = useState("")
-    const [datos,setDatos] = useState()
+import Header from "@/components/Header";
+export default function Menu() {
+    const [codigo, setCodigo] = useState("")
     const router = useRouter()
-    const volver = () => {
-        router.replace("http://localhost:3000/")
-    }
-    const crear = () =>{
-        fetch("http://localhost:4000/salas",{
+    const crear = () => {
+        const verif = {
+            usuario: JSON.parse(localStorage.getItem("usuario"))
+        }
+        fetch("http://localhost:4000/salas", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(verif)
         })
-        .then((res) => res.json())
-        .then((data) => {
-            setDatos({
-                codigo:data.data,
-                username:usuario
-            }),
-                socket.emit("unirseSala",(datos))
-        })
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.ok) {
+                    router.push(`/salas?codigo=${data.codigo}`)
+                } else {
+                    alert(data.mensaje)
+                }
+            })
     }
-    const unirse = () =>{
-        fetch(`http://localhost:4000/salas?codigo=${codigo}`)
-        .then(response => response.json())
-        .then(data => {
-            setDatos({
-                codigo:data.codigo,
-                username:usuario
-            }),
-            socket.emit("unirseSala",(datos))
-        });        
+    const unirse = () => {
+        router.push(`/salas?codigo=${codigo}`)
     }
-    return(
+    return (
         <main className={styles.pagina}>
-            <header>
-                <button className={styles.salir} onClick={volver}>
-                    <span className={styles.flecha} />
-                    Salir
-                </button>
-                <h1>¿Qué queres hacer?</h1>
-            </header>
+            <Header textoVolver="Salir" rutaVolver="/" />
+            <h1>¿Qué queres hacer?</h1>
             <section className={styles.opciones}>
-                <div className={styles.tarjeta}> 
+                <div className={styles.tarjeta}>
                     <h2 className={styles.tarjetaTitulo}>CREAR SALA</h2>
-                    <span className={styles.circulo}/>    
+                    <span className={styles.circulo} />
                     <p className={styles.texto} >Crea una sala nueva y comparti el codigo con tus amigos.</p>
                     <button className={styles.boton} onClick={crear}>
-                        <span className={styles.play}/>
+                        <span className={styles.play} />
                         CREAR SALA</button>
                 </div>
-                <div  className={styles.tarjeta}>
+                <div className={styles.tarjeta}>
                     <h2 className={styles.tarjetaTitulo} >UNIRSE A SALA</h2>
                     <p className={styles.texto} >Ingresa el código que te pasaron</p>
                     <input
                         className={styles.codigo}
                         type="text"
-                        placeholder={"AAAAA"}
+                        placeholder={"12345"}
                         value={codigo}
-                        onChange={(e) => {setCodigo(e.target.value)}}
+                        onChange={(e) => { setCodigo(e.target.value) }}
                         maxLength={5}
                     />
                     <button className={styles.boton} disabled={codigo.length < 5} onClick={unirse}>
@@ -76,8 +57,7 @@ export default function Menu(){
                 </div>
             </section>
             <footer className={styles.pie}>
-                <button className={styles.secundario}>MIS ÁLBUMES</button>
-                <button className={styles.secundario}>MIS PARTIDAS</button>
+                <button className={styles.secundario} onClick={() => router.push("/misalbumes")}>MIS ÁLBUMES</button>
             </footer>
         </main>
     )

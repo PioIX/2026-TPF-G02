@@ -20,6 +20,7 @@
     "socket.io-client": "^4.8.4"
   },
   "devDependencies": {
-    "babel-plugin-react-compiler": "^1.0.0"
+    "babel-plugin-react-compiler": "^1.0.0",
+    "cross-env": "^10.1.0"
   }
 }

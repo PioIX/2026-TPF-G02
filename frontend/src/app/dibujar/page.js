@@ -1,21 +1,23 @@
-"use client";
+"use client"
 
-import Button from "@/components/Button";
-import Input from "@/components/Input";
-import { useRef, useState,useEffect } from "react";
-import styles from "./page.module.css";
+import Button from "@/components/Button"
+import { useRef, useState,useEffect } from "react"
+import styles from "./page.module.css"
+import { useSocket } from "@/hooks/useSocket"
 import { useRouter } from "next/navigation"
 export default function Draw() {
+    const { socket,isConnected } = useSocket()
     const [color, setColor] = useState("#000000");
     const [grosor, setGrosor] = useState(5)
-    const [datos, setDatos] = useState({});
-    const canvasRef = useRef(null);
-    const dibujando = useRef(false);
+    const canvasRef = useRef(null)
+    const dibujando = useRef(false)
     const ultimo = useRef({ x: 0, y: 0 });
     const [tiempo,setTiempo] = useState(60)
     const circunferencia = 2 * Math.PI * 9 
     const router = useRouter()
     const [frase, setFrase] = useState("")
+    const [enviado, setEnviado] = useState(false)
+    const [tiempoTotal, setTiempoTotal] = useState(60)
 
     function empezar (event) {
         dibujando.current = true;
@@ -61,7 +63,12 @@ export default function Draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    let user=sessionStorage.getItem("user")
+    function terminar() {
+        const guardado = canvasRef.current.toDataURL("image/png", 0.8);
+        console.log("tamaño del dibujo:", guardado.length)
+        socket.emit("envio", { usuario: JSON.parse(localStorage.getItem("usuario")), contenido: guardado })
+        setEnviado(true)
+    }
 
     const colorSetter = (event) => {
         setColor(event.target.value)
@@ -72,40 +79,47 @@ export default function Draw() {
     }
 
     useEffect(() => {
-        const timer = setInterval(() => setTiempo(prev => prev - 1), 1000);
+        const timer = setInterval(() => setTiempo(prev => (prev > 0 ? prev - 1 : 0)), 1000);
         return () => clearInterval(timer); // cleanup
     }, []);
     useEffect(() => {
-        if(tiempo === 0){
-            router.replace("http://localhost:3000/dibujar")
+        if(tiempo === 0 && !enviado){
+            terminar()
         }
     })
 
-    const fraccion = tiempo/60
+    const fraccion = tiempo/tiempoTotal
 
     //SOCKET
-    
-    function terminar() {
-        const guardado = canvasRef.current.toDataURL("image/png", 0.8)
-        setDatos({ link: guardado, user: user })
-        socket.emit("terminado")
-    }
+    useEffect(() => {
+        if (!socket) return
+        socket.on("nextStep", (data) => {
+            
+            if(data.nextstep==true) {
+                router.push("/escribir")
+            } else {
+                router.push("/albumsrevelacion")
+            }
+        })
 
-    socket.on("nextStep", (data) => {//next step
-        socket.emit("envio",datos)
-        if /*Validacion de cual es el siguiente paso*/(data.nextstep==true) {
-            router.replace("http://localhost:3000/escribir")
-        } else {
-            router.replace("http://localhost:3000/albumsrevelacion")
-        }
-    })
+        socket.on("recepcion", (data) => {
+            console.log("LLEGÓ RECEPCIÓN:", data)
+            setFrase(data.recibido.contenido)
+            setTiempo(data.segundos)
+            setEnviado(data.enviado)
+            setTiempoTotal(data.segundos)
+            console.log(frase)
+        })
+    }, [socket]);
 
-    socket.on("recepcion", (data) => {
-        setfrase(data.content)
-    })
+    useEffect(() => {
+        if(!isConnected) return;
+        socket.emit("unirseSala", {usuario: JSON.parse(localStorage.getItem("usuario")) })
+    }, [isConnected])
+
     return (
-        <>  
-            <header>
+        <main className={styles.pagina}>  
+            <header className={styles.header}>
                 {<svg
                     className={styles.cronometro}
                     viewBox="0 0 64 64"
@@ -126,18 +140,26 @@ export default function Draw() {
                         transform="rotate(-90 32 38)"
                     />
                 </svg> }
-                <h1>{frase}</h1>
+               <p className={styles.instruccion}>Dibuja esta frase</p>
+                {frase!== "" && <h1 className={styles.frase}>{frase}</h1>}
             </header>
-            <canvas ref={canvasRef} width={600} height={400} style={{ backgroundColor: "white" }}
-                onMouseDown={empezar}
-                onMouseUp={parar}
-                onMouseLeave={parar}
-                onMouseMove={dibujar}
-            />
-            <Input type="color" onChange={colorSetter}/>
-            <Input type="range" value={grosor} step="1" min="1" max="20" onChange={grosorSetter}/>
-            <Button onClick={limpiar} txt="Limpiar" />
-            <Button onClick={terminar} txt="TODO LISTO" />
-        </>
+            <div className={styles.contenido}>
+                <canvas ref={canvasRef} width={600} height={400} style={{ backgroundColor: "white" }}
+                    onMouseDown={empezar}
+                    onMouseUp={parar}
+                    onMouseLeave={parar}
+                    onMouseMove={dibujar}
+                />
+            </div>
+            <div className={styles.controles}>
+                <input type="color" onChange={colorSetter} className={styles.color}/>
+                <input type="range" value={grosor} step="1" min="1" max="20" onChange={grosorSetter} className={styles.grosor}/>
+                <Button onClick={limpiar} txt="Limpiar" />
+                <button onClick={terminar} className={styles.hecho} disabled={enviado}>
+                    <span className={styles.play} />
+                    TODO LISTO
+                </button>
+            </div>
+        </main>
     );
 }

@@ -27,20 +27,3 @@
     font-weight: 700;
     overflow-wrap: anywhere;      
 }
-
-.borrar {
-    background: #e64a4f;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 14px 32px;
-    font-family: inherit;
-    font-weight: 700;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: filter 0.15s;
-}
-
-.borrar:hover {
-    filter: brightness(0.93);
-}

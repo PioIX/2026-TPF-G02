@@ -2,66 +2,83 @@
 import { useEffect, useState } from "react"
 import styles from "./page.module.css"
 import { useRouter } from "next/navigation"
-export default function Escribir(){
-    const [datos, setDatos] = useState({});
+import { useSocket } from "@/hooks/useSocket"
+import Logo from "@/components/Logo"
+export default function Escribir() {
+    const { socket,isConnected } = useSocket()
     const router = useRouter()
-    const CIRCUNFERENCIA = 2 * Math.PI * 9 
-    const [tiempo,setTiempo] = useState(20)
-    const [texto,setTexto] = useState("")
-    const [dibujo,setDibujo] = useState("")
-    const fraccion = tiempo/20
+    const CIRCUNFERENCIA = 2 * Math.PI * 9
+    const [tiempo, setTiempo] = useState(20)
+    const [tiempoTotal, setTiempoTotal] = useState(20)
+    const [ronda, setRonda] = useState(1)
+    const [enviado, setEnviado] = useState(false)
+    const [texto, setTexto] = useState("")
+    const [dibujo, setDibujo] = useState("")
+    const [totalRondas, setTotalRondas] = useState(1)
+    const fraccion = tiempo / tiempoTotal
 
-    let dibujo_existente=false //quizas tenga que ser usestate (testear)
-
-    const fraseAzar = () =>{
-            fetch("http://localhost:4000/frases/azar")
+    const fraseAzar = () => {
+        fetch("http://localhost:4000/frases/azar")
             .then(response => response.json())
             .then(data => {
-                if(data.ok){
+                if (data.ok) {
                     setTexto(data.frase)
-                    console.log(frases)
-                }else{
+                } else {
                     console.log(data.mensaje)
-                }});
-        }
+                }
+            });
+    }
     useEffect(() => {
-        const timer = setInterval(() => setTiempo(prev => prev - 1), 1000);
+        const timer = setInterval(() => setTiempo(prev => (prev > 0 ? prev - 1 : 0)), 1000);
         return () => clearInterval(timer); // cleanup
     }, []);
     useEffect(() => {
-        if(tiempo === 0){
-            router.replace("http://localhost:3000/dibujar")
+        if (tiempo === 0 && !enviado && texto !== "") {
+            terminar()
         }
     })
 
     //SOCKET
 
     function terminar() {
-        setDatos({ link: texto, user: user });
-        socket.emit("terminado")
+        console.log(JSON.parse(localStorage.getItem("usuario")), texto)
+        socket.emit("envio", { usuario: JSON.parse(localStorage.getItem("usuario")), contenido: texto })
+        setEnviado(true)
     }
-    
-    socket.on("nextStep", (data) => {//next step
-        socket.emit("envio",datos)
-        if /*Validacion de cual es el siguiente paso*/(data.nextstep==true) {
-            router.replace("http://localhost:3000/dibujar")
-        } else {
-            router.replace("http://localhost:3000/albumsrevelacion")
-        }
-    })
+    useEffect(() => {
+        if (!socket) return;
+        socket.on("nextStep", (data) => {
+            if (data.nextstep == true) {
+                router.push("/dibujar")
+            } else {
+                router.push("/albumsrevelacion")
+            }
+        })
 
-    socket.on("recepcion", (data) => {
-        setDibujo(data.content)
-        dibujo_existente=true
-    })
+        socket.on("recepcion", (data) => {
+            if (data.recibido && !data.recibido.esTexto) {
+                console.log(data.recibido, " ", data.recibido.contenido)
+                setDibujo(data.recibido.contenido)
+            }
+            setRonda(data.ronda)
+            setTotalRondas(data.totalRondas)
+            setTiempo(data.segundos)
+            setTiempoTotal(data.segundos)
+            setEnviado(data.enviado)
+        })
+    }, [socket]);
 
-    return(
+    useEffect(() => {
+        if(!isConnected) return;
+        socket.emit("unirseSala", {usuario: JSON.parse(localStorage.getItem("usuario")) })
+    }, [isConnected])
+
+
+    return (
         <main className={styles.pagina}>
             <header className={styles.header}>
-                <p className={styles.ronda}>1</p>
-
-                <img  alt="Gartic Phone" className={styles.logo}/> 
-
+                <p className={styles.ronda}>{ronda}/{totalRondas}</p>
+                <Logo />
                 <svg
                     className={styles.cronometro}
                     viewBox="0 0 64 64"
@@ -83,49 +100,57 @@ export default function Escribir(){
                     />
                 </svg>
             </header>
-            
-            { dibujo_existente ? (
-                <canvas defaultValue={dibujo}></canvas>
-                
-            ):(
+
+            {dibujo !== "" ? (
+                <img className={styles.dibujo} src={dibujo} alt="Dibujo para describir" />
+
+            ) : (
                 <div className={styles.libreta}>
-                <div className={styles.anillos}>
-                    {[0, 1, 2, 3, 4].map(i => (
-                        <span key={i} className={styles.anillo} />
-                    ))}
-                </div>
+                    <div className={styles.anillos}>
+                        {[0, 1, 2, 3, 4].map(i => (
+                            <span key={i} className={styles.anillo} />
+                        ))}
+                    </div>
 
-                <div className={styles.lineas}>
-                    <span className={styles.linea} />
-                    <span className={styles.linea} />
-                    <span className={styles.linea} />
-                </div>
+                    <div className={styles.lineas}>
+                        <span className={styles.linea} />
+                        <span className={styles.linea} />
+                        <span className={styles.linea} />
+                    </div>
 
-                <svg className={styles.lapiz} viewBox="0 0 60 122" aria-hidden="true">
-                    <rect x="14" y="2" width="32" height="16" rx="6" fill="#e86a6a" />
-                    <rect x="14" y="18" width="32" height="10" fill="#b9b9b9" />
-                    <rect x="14" y="28" width="20" height="60" fill="#ffc93c" />
-                    <rect x="34" y="28" width="12" height="60" fill="#e0a63a" />
-                    <polygon points="14,88 46,88 30,118" fill="#f4c7a1" />
-                    <polygon points="25,108 35,108 30,118" fill="#222" />
-                </svg>
-            </div>
+                    <svg className={styles.lapiz} viewBox="0 0 60 122" aria-hidden="true">
+                        <rect x="14" y="2" width="32" height="16" rx="6" fill="#e86a6a" />
+                        <rect x="14" y="18" width="32" height="10" fill="#b9b9b9" />
+                        <rect x="14" y="28" width="20" height="60" fill="#ffc93c" />
+                        <rect x="34" y="28" width="12" height="60" fill="#e0a63a" />
+                        <polygon points="14,88 46,88 30,118" fill="#f4c7a1" />
+                        <polygon points="25,108 35,108 30,118" fill="#222" />
+                    </svg>
+                </div>
             )}
-            
-        <div className={styles.controles}>
-            <input className={styles.input}
-             value={texto}
-             placeholder={"Un arbol con una manzana"}
-            onChange={(e)=>{setTexto(e.target.value)}}/>
 
-            <button className={styles.hecho} onClick={terminar}>
-                <span className={styles.play} />
-                Hecho
-            </button>
-            <button className={styles.azar} onClick={fraseAzar}>
-                    Frase al azar
-            </button>
-        </div>
+            {enviado ? (
+                <h1 className={styles.titulo}>Esperando a los demás jugadores...</h1>
+            ) : (
+                <>
+                    <h1 className={styles.titulo}>{dibujo !== "" ? "Describí lo que ves" : "Escribí una frase"}</h1>
+                    <div className={styles.controles}>
+                        <input className={styles.input}
+                            value={texto}
+                            placeholder={"Un árbol con una manzana"}
+                            onChange={(e) => { setTexto(e.target.value) }} />
+                        <button className={styles.hecho} onClick={terminar} disabled={texto === ""}>
+                            <span className={styles.play} />
+                            Hecho
+                        </button>
+                        {dibujo === "" && (
+                            <button className={styles.azar} onClick={fraseAzar}>
+                                Frase al azar
+                            </button>
+                        )}
+                    </div>
+                </>
+            )}
         </main>
     )
 }

@@ -1,3 +1,4 @@
+import Button from "./Button"
 import styles from "./Moderacion.module.css"
 export default function Moderacion({nombre,tipo,data,borrar}){
     const imgOTxt = () =>{
@@ -22,7 +23,7 @@ export default function Moderacion({nombre,tipo,data,borrar}){
             {
                 imgOTxt()
             }
-            <button className={styles.borrar} onClick={borrar}>Borrar</button>
+            <Button txt="Borrar" tipo="rojo" onClick={borrar} />
         </div>
     )
 }

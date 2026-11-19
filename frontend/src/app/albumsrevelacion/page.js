@@ -1,108 +1,102 @@
+"use client"
 import { useEffect, useState } from "react"
-
+import { useRouter } from "next/navigation"
+import { useSocket } from "@/hooks/useSocket"
+import styles from "./page.module.css"
+import Button from "@/components/Button"
+import Header from "@/components/Header"
+import Avatar from "@/components/Avatar"
 export default function AlbumsRevelacion() {
-    const [player,setPlayer] = useState("")
+    const { socket,isConnected } = useSocket()
+    const router = useRouter()
     const [anfitrion,setAnfitrion] = useState(false)
     const [content,setContent] = useState({})
-    const [nextrend,setNextrend] = useState("")
-    const [totalrend,setTotalrend] = useState("")
-    const [players,setPlayers] = useState({})
-    
+    const [players,setPlayers] = useState([])
+    const [album,setAlbum] = useState(0) 
+    const [paso,setPaso] = useState(-1) 
+    const [fin,setFin] = useState(false)
+    const [idAnfitrion, setIdAnfitrion] = useState(null)
     //SOCKET
+    useEffect(() => {
+        if (!socket) return
+        const usuario = JSON.parse(localStorage.getItem("usuario"))
+        socket.on("albums", (data) => {
+            setContent(data.content)
+            setAnfitrion(data.anfitrion === usuario.id)
+            setIdAnfitrion(data.anfitrion)
+            setPlayers(data.players)
+            setAlbum(data.album)
+            setPaso(data.paso)
+        })
+        socket.on("pasoRevelado", (data) => {
+            if (data.fin) {
+                setFin(true)
+            } else {
+                setAlbum(data.album)
+                setPaso(data.paso)
+            }
+        })
 
-    socket.on("albums", (data) => {
-        setContent(data.content)
-        setAnfitrion(data.anfitrion)
-        setPlayers(data.players)
-    })
+    }, [socket]);
+
+    useEffect(() => {
+        if(!isConnected) return;
+        socket.emit("unirseSala", {usuario: JSON.parse(localStorage.getItem("usuario")) })
+    }, [isConnected])
 
     //PAGINA
 
-    {players.map(player => (
-        <div key={player.id}>
-            <img src={player.img}></img>
-            <p>{player.nombre}</p>
-        </div>
-    ))}
-
-    let a=0
-    let b=0
-
     function revelar() {
-        for (let i = 0; i < content.length; i++) {
-            if (a>content.length) {
-                setTotalrend(<h3>Se termino, JUUUUUUUUUUAQUIIIIIIIIIIII</h3>)
-                return
-            }
-            if (i==a) {
-                for (let j = 0; j < content.i.length; j++) {
-                    if (j==content.i.length) {
-                        a++
-                        b=0
-                    }
-                    if (j==b) {
-                        if (j==0) {
-                            setPlayer(content[i,j,2])
-                        }
-                        if (content[i,j,0]==true) {
-                            setNextrend(<p>{content[i,j,1].contenido}</p>)
-                        } else {
-                            setNextrend(<img src={content[i,j,1].contenido}></img>)
-                        }
-                        b++
-                        return
-                    }
-                }
-            }
-        }
+        socket.emit("revelar", { usuario: JSON.parse(localStorage.getItem("usuario")) })
     }
 
-    useEffect(() => {
-        setTotalrend(totalrend+nextrend)
-    }, [nextrend]);
+    const albumActual = content[album]
+    const pasosVisibles = albumActual ? albumActual.pasos.filter((pasoDelAlbum, i) => i <= paso) : []
+    const dueno = albumActual ? albumActual.dueno : ""
+    const finDelAlbum = albumActual && paso === albumActual.pasos.length - 1
 
-    //ejemplo array content
-/*
-{
-    album1:{
-        step1:{
-            text:true
-            contenido:lorem
-            id:1
-        }
-        step2:{
-            text:true
-            contenido:lorem
-            id:2
-        }
-        step3:{
-            text:true
-            contenido:lorem
-            id:3
-        }
-        step4:{
-            text:true
-            contenido:lorem
-            id:4
-        }
-    }
-    album2:{}
-    album3:{}
-}
-*/
-
-    return(
-        <>
-        <h2>JUGADORES</h2>
-        <div>
-            players
-        </div>
-        <h2>ALBUM DE {player}</h2>
-        <div>
-            {/*esto seria el album*/}
-            {totalrend}
-            <Button onclick={revelar} txt="Revelar" disabled={!anfitrion}></Button>
-        </div>
-        </>
+    return (
+        <main className={styles.pagina}>
+            <Header textoVolver="Inicio" rutaVolver="/menu" />
+            <div className={styles.contenido}>
+                <section>
+                    <h2 className={styles.titulo}>JUGADORES</h2>
+                    <div className={styles.panelJugadores}>
+                        {players.map(player => (
+                            <div key={player.id} className={player.username === dueno ? styles.jugadorResaltado : styles.jugador}>
+                                <Avatar nombre={player.username} />
+                                <p>{player.username}</p>
+                                {player.id === idAnfitrion && <span className={styles.corona}>♛</span>}
+                            </div>
+                        ))}
+                    </div>
+                </section>
+                <section>
+                    <h2 className={styles.titulo}>ÁLBUM DE {dueno}</h2>
+                    <div className={styles.panelAlbum}>
+                        {/*esto seria el album*/}
+                        {pasosVisibles.map((p, i) => (
+                            <div key={i} className={p.esTexto ? styles.mensajeDerecha : styles.mensaje}>
+                                <Avatar nombre={p.autor} />
+                                <div className={styles.burbuja}>
+                                    <p className={styles.autor}>{p.autor}</p>
+                                    {p.esTexto ? <p className={styles.texto}>{p.contenido}</p> : <img className={styles.dibujo} src={p.contenido}></img>}
+                                </div>
+                            </div>
+                        ))}
+                        {fin && <h3>SE TERMINÓ.</h3>}
+                        <div className={styles.botones}>
+                            {fin ? (
+                                <Button onClick={() => router.push("/menu")} txt="Volver al menú"></Button>
+                            ) : anfitrion ? (
+                                <Button onClick={revelar} txt={finDelAlbum ? "Seguir" : "Revelar"}></Button>
+                            ) : (
+                                <p>Lo avanza el anfitrión</p>
+                            )}
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
     )
 }

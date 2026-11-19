@@ -1,9 +1,7 @@
 "use client"
-
-import clsx from "clsx"
 import styles from "./Input.module.css"
 
-export default function Input({ type = "text", value, onChange, placeholder, variante = "claro", error = "" }) {
+export default function Input({ type = "text", value, onChange, placeholder}) {
     return (
         <div className={styles.contenedor}>
             <input
@@ -11,12 +9,8 @@ export default function Input({ type = "text", value, onChange, placeholder, var
                 value={value}
                 onChange={onChange}
                 placeholder={placeholder}
-                className={clsx(styles.input, {
-                    [styles.oscuro]: variante === "oscuro",
-                    [styles.conError]: error !== "",
-                })}
+                className={styles.input}
             />
-            {error !== "" && <p className={styles.mensaje}>{error}</p>}
         </div>
     )
 }

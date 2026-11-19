@@ -33,19 +33,3 @@
 .activo { color: #00c060; }
 .bloqueado { color: #ff2d2d; }
 
-.boton {
-    border: none;
-    border-radius: 8px;
-    padding: 14px 28px;
-    min-width: 150px;             /* mismo ancho para BLOQUEAR y DESBLOQUEAR */
-    color: black;
-    font-family: inherit;
-    font-weight: 700;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: filter 0.15s;
-}
-
-.boton:hover {
-    filter: brightness(0.93);
-}

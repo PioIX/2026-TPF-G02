@@ -22,7 +22,7 @@ export default function Header({ textoVolver, rutaVolver }) {
         <div className={styles.header}>
             <div>
                 {textoVolver && (
-                    <Button txt={textoVolver} tipo="oscuro" chico={true} onClick={() => router.push(rutaVolver)} />
+                    <Button txt={textoVolver} tipo="volver" flecha={true} onClick={() => router.push(rutaVolver)} />
                 )}
             </div>
 

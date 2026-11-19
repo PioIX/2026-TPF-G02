@@ -1,18 +1,18 @@
+import Button from "./Button"
 import styles from "./UsuariosAdmin.module.css"
 export default function UsuariosAdmin({usuario,email,bloqueado,control}){
-    Boolean(bloqueado)
     function status(){
         if(!bloqueado){
             return(
                 <>
                     <p className={styles.activo}>Activo</p>
-                    <button className={styles.boton} onClick={control}>Bloquear</button>
+                    <Button txt="Bloquear" tipo="rojo" onClick={control} />
                 </>)
         }else{
             return(
                 <>
                     <p className={styles.bloqueado}>Bloqueado</p>
-                    <button className={styles.boton} onClick={control}>Desbloquear</button>
+                    <Button txt="Desbloquear" tipo="verde" onClick={control} />
                 </>)
         }
     }

@@ -234,31 +234,6 @@
     box-shadow: 0 0 0 3px rgba(150, 255, 208, 0.3);
 }
 
-.botonModal {
-    min-width: 170px;
-    padding: 12px 20px;
-    background: #f0e9ff;
-    color: #2a1a5e;
-    border: 3px dashed #5ee0a0;
-    border-radius: 8px;
-    font-family: inherit;
-    font-size: 0.95rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: filter 0.15s;
-}
-
-.botonModal:hover:not(:disabled) {
-    filter: brightness(0.93);
-}
-
-.botonModal:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
 .modalBotones {
     display: flex;
     justify-content: center;
