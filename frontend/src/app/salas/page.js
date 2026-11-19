@@ -38,11 +38,6 @@ export default function Sala() {
         setUsuario(JSON.parse(user))
     }, [router])
 
-    useEffect(() => {
-        if(!isConnected) return;
-            socket.emit("unirseSala", { codigo, usuario: JSON.parse(localStorage.getItem("usuario")) })
-    })
-
     // entra a la sala y escucha lo que manda el back 
     useEffect(() => {
         if (!socket || !codigo || !usuario) {
@@ -77,6 +72,11 @@ export default function Sala() {
             socket.off("partidaIniciada")
         }
     }, [socket, codigo, usuario, router])
+
+    useEffect(() => {
+        if(!isConnected) return;
+            socket.emit("unirseSala", { codigo, usuario: JSON.parse(localStorage.getItem("usuario")) })
+    }, [isConnected])
 
     const expulsar = (idJugador) => {
         socket.emit("expulsarJugador", { usuario, idJugador })

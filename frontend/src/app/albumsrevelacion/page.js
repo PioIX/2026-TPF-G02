@@ -18,11 +18,8 @@ export default function AlbumsRevelacion() {
     const [idAnfitrion, setIdAnfitrion] = useState(null)
     //SOCKET
     useEffect(() => {
-        if(!isConnected) return;
-        socket.emit("unirseSala", {usuario: JSON.parse(localStorage.getItem("usuario")) })
-    })
-    useEffect(() => {
         if (!socket) return
+        const usuario = JSON.parse(localStorage.getItem("usuario"))
         socket.on("albums", (data) => {
             setContent(data.content)
             setAnfitrion(data.anfitrion === usuario.id)
@@ -41,6 +38,11 @@ export default function AlbumsRevelacion() {
         })
 
     }, [socket]);
+
+    useEffect(() => {
+        if(!isConnected) return;
+        socket.emit("unirseSala", {usuario: JSON.parse(localStorage.getItem("usuario")) })
+    }, [isConnected])
 
     //PAGINA
 

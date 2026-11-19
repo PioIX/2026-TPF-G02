@@ -46,10 +46,6 @@ export default function Escribir() {
         setEnviado(true)
     }
     useEffect(() => {
-        if(!isConnected) return;
-        socket.emit("unirseSala", {usuario: JSON.parse(localStorage.getItem("usuario")) })
-    })
-    useEffect(() => {
         if (!socket) return;
         socket.on("nextStep", (data) => {
             if (data.nextstep == true) {
@@ -71,6 +67,11 @@ export default function Escribir() {
             setEnviado(data.enviado)
         })
     }, [socket]);
+
+    useEffect(() => {
+        if(!isConnected) return;
+        socket.emit("unirseSala", {usuario: JSON.parse(localStorage.getItem("usuario")) })
+    }, [isConnected])
 
 
     return (

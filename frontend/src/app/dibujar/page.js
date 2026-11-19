@@ -92,10 +92,6 @@ export default function Draw() {
 
     //SOCKET
     useEffect(() => {
-        if(!isConnected) return;
-        socket.emit("unirseSala", {usuario: JSON.parse(localStorage.getItem("usuario")) })
-    })
-    useEffect(() => {
         if (!socket) return
         socket.on("nextStep", (data) => {
             
@@ -115,6 +111,11 @@ export default function Draw() {
             console.log(frase)
         })
     }, [socket]);
+
+    useEffect(() => {
+        if(!isConnected) return;
+        socket.emit("unirseSala", {usuario: JSON.parse(localStorage.getItem("usuario")) })
+    }, [isConnected])
 
     return (
         <main className={styles.pagina}>  
