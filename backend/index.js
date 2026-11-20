@@ -8,7 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 app.use(cors());
-app.use(express.json());  
+app.use(express.json());
 
 const sessionMiddleware = session({
   secret: "supersarasa",
@@ -48,7 +48,7 @@ const TIEMPO_DESCRIBIR = 20;
 const MARGEN_SEGUNDOS = 3;
 // segundos que se espera antes de sacar a un jugador desconectado
 const ESPERA_RECONEXION = 3000
- 
+
 // SALA
 // basicamente se manejan las funciones de la sala de espera: codigo, lista de jugadores y sacar jugadores
 
@@ -104,7 +104,7 @@ function albumDe(idJugador) {
 }
 
 // guarda un paso en el álbum que le toca al jugador
-function guardarPaso(user,contenido,esTexto) {
+function guardarPaso(user, contenido, esTexto) {
   albumDe(user.id).pasos.push({
     idAutor: user.id,
     autor: user.username,
@@ -219,6 +219,10 @@ app.post("/register", async (req, res) => {
       return res.json({ ok: false, mensaje: "Faltan datos" });
     }
 
+    if (!email.includes("@")) {
+      return res.json({ ok: false, mensaje: "El email tiene que tener un @" });
+    }
+
     // aca se chequea si ya existe alguien con ese username o ese email
     const existentes = await realizarQuery(
       "SELECT username FROM Users WHERE username = ? OR email = ?",
@@ -242,7 +246,7 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   try {
     const usuarios = await realizarQuery(
-      "SELECT id, username, email, admin, blocked FROM Users WHERE email = ? AND password = ?", 
+      "SELECT id, username, email, admin, blocked FROM Users WHERE email = ? AND password = ?",
       [req.body.email.trim(), req.body.password],
     );
     if (usuarios.length === 0) {
@@ -250,7 +254,7 @@ app.post("/login", async (req, res) => {
     }
     if (usuarios[0].blocked) {
       return res.json({ ok: false, mensaje: "Tu usuario está bloqueado" });
-    }      
+    }
     res.json({ ok: true, usuario: usuarios[0] });
   } catch (error) {
     errorServidor(res, error);
@@ -557,7 +561,7 @@ io.on("connection", (socket) => {
 
   // PARTIDA
   // para cuando alguien aprete hecho
-  socket.on("envio",(data) => {
+  socket.on("envio", (data) => {
     const jugador = sala.jugadores.find((j) => j.id === data.usuario.id);
     // si ya mandó en esta ronda (por ejemplo, apretó dos veces), no se hace nada
     if (sala.enviaron.includes(jugador.id)) {
@@ -571,7 +575,7 @@ io.on("connection", (socket) => {
     }
   })
 
-// el anfitrión muestra el paso siguiente de la revelación (a todos al mismo tiempo)
+  // el anfitrión muestra el paso siguiente de la revelación (a todos al mismo tiempo)
   socket.on("revelar", (data) => {
     if (sala === null || sala.estado !== "terminada" || sala.anfitrion !== data.usuario.id) {
       return error("Solo el anfitrión puede revelar los álbumes");
