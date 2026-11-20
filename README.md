@@ -141,5 +141,3 @@ Revelación sincronizada de álbumes, guardado y consulta de partidas anteriores
 ## Modelo de datos (DER)
 
 ![DER](docs/der.png)
-
-El script para crear las tablas está en `docs/script.sql`.
