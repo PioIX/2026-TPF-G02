@@ -83,6 +83,11 @@ export default function Home() {
     }
 
     const register = () => {
+        if (!email.includes("@")) {
+            alert("El email tiene que tener un @")
+            return
+        }
+
         if (password == pass) {
             const newUser = { username: user, password: password, email: email }
             fetch(`http://localhost:4000/register`, {
